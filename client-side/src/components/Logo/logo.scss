@@ -1,0 +1,191 @@
+.logo-side {
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-left: 2rem;
+
+  & h1 {
+    font-size: 2.3rem;
+    font-family: "Roboto Slab", serif;
+    font-weight: 500;
+
+    & .char-1 {
+      position: absolute;
+      top: -2px;
+      left: 48px;
+      transform: rotate(26deg);
+      @media screen and (max-width: 550px) {
+        top: -1px;
+        left: 36px;
+      }
+    }
+    & .char-2 {
+      position: absolute;
+      top: 7px;
+      left: 61px;
+      transform: rotate(45deg);
+      @media screen and (max-width: 550px) {
+        top: 7px;
+        left: 47px;
+        transform: rotate(49deg);
+      }
+    }
+    & .char-3 {
+      position: absolute;
+      top: 16px;
+      left: 69px;
+      transform: rotate(55deg);
+      @media screen and (max-width: 550px) {
+        top: 15px;
+        left: 55px;
+        transform: rotate(60deg);
+      }
+    }
+    & .char-4 {
+      position: absolute;
+      top: 37px;
+      left: 68px;
+      transform: rotate(73deg);
+      @media screen and (max-width: 550px) {
+        top: 33px;
+        left: 53px;
+        transform: rotate(85deg);
+      }
+
+      & sup {
+        font-size: 1rem;
+        color: blue;
+      }
+    }
+  }
+
+  & img {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+}
+
+// .invert-1 {
+//   position: absolute;
+//   top: -2px;
+//   left: 48px;
+//   transform: rotate(26deg);
+//   animation: invertAnim1 5s infinite;
+// }
+
+// @keyframes invertAnim1 {
+//   0% {
+//     transform: rotate(26deg);
+//     top: -2px;
+//     left: 48px;
+//   }
+//   33% {
+//     top: 7px;
+//     left: 58px;
+//     transform: rotate(45deg);
+//   }
+//   66% {
+//     top: 16px;
+//     left: 64px;
+//     transform: rotate(65deg);
+//   }
+//   100% {
+//     top: 37px;
+//     left: 63px;
+//     transform: rotate(90deg);
+//   }
+// }
+
+// .invert-2 {
+//   position: absolute;
+//   top: 7px;
+//   left: 58px;
+//   transform: rotate(45deg);
+//   animation: invertAnim2 5s infinite;
+// }
+
+// @keyframes invertAnim2 {
+//   0% {
+//     top: 7px;
+//     left: 58px;
+//     transform: rotate(45deg);
+//   }
+//   33% {
+//     top: 19px;
+//     left: 66px;
+//     transform: rotate(69deg);
+//   }
+//   66% {
+//     top: 34px;
+//     left: 69px;
+//     transform: rotate(90deg);
+//   }
+//   100% {
+//     top: 51px;
+//     left: 65px;
+//     transform: rotate(112deg);
+//   }
+// }
+
+// .invert-3 {
+//   position: absolute;
+//   top: 16px;
+//   left: 66px;
+//   transform: rotate(65deg);
+//   animation: invertAnim3 5s infinite;
+// }
+
+// @keyframes invertAnim3 {
+//   0% {
+//     top: 16px;
+//     left: 66px;
+//     transform: rotate(65deg);
+//   }
+//   33% {
+//     top: 34px;
+//     left: 69px;
+//     transform: rotate(90deg);
+//   }
+//   66% {
+//     top: 49px;
+//     left: 67px;
+//     transform: rotate(105deg);
+//   }
+//   100% {
+//     top: 66px;
+//     left: 57px;
+//     transform: rotate(127deg);
+//   }
+// }
+
+// .invert-4 {
+//   position: absolute;
+//   top: 34px;
+//   left: 69px;
+//   transform: rotate(90deg);
+//   animation: invertAnim4 5s infinite;
+// }
+
+// @keyframes invertAnim4 {
+//   0% {
+//     top: 34px;
+//     left: 69px;
+//     transform: rotate(90deg);
+//   }
+//   33% {
+//     top: 52px;
+//     left: 64px;
+//     transform: rotate(105deg);
+//   }
+//   66% {
+//     top: 66px;
+//     left: 55px;
+//     transform: rotate(127deg);
+//   }
+//   100% {
+//     top: 75px;
+//     left: 35px;
+//     transform: rotate(150deg);
+//   }
+// }

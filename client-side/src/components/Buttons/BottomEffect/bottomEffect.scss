@@ -1,0 +1,20 @@
+.bottom-effect {
+  &:hover,
+  &-active {
+    color: black !important;
+  }
+  &::after,
+  &-active::after {
+    display: block;
+    padding-bottom: 2px;
+    content: "";
+    border-bottom: 2px solid black;
+    transform: scaleX(0);
+    transition: 0.2s ease;
+  }
+
+  &:hover::after,
+  &-active::after {
+    transform: scaleX(1);
+  }
+}

@@ -1,0 +1,83 @@
+.our-features {
+  max-width: 1350px;
+  margin: 0 auto 25rem auto;
+  text-align: center;
+  @media screen and (max-width: 550px) {
+    margin: 0 auto 15rem auto;
+  }
+
+  & h1 {
+    color: black;
+    @media screen and (max-width: 550px) {
+      font-size: 4.6rem;
+    }
+    & span {
+      color: blue;
+      font-size: 10rem;
+    }
+  }
+
+  &-grid {
+    margin-top: 10rem;
+    display: grid;
+    grid-template-columns: 31.3% 31.3% 31.3%;
+    row-gap: 10rem;
+    column-gap: 3%;
+    @media screen and (max-width: 1100px) {
+      grid-template-columns: 47.5% 47.5%;
+      row-gap: 9rem;
+    }
+    @media screen and (max-width: 550px) {
+      grid-template-columns: 100%;
+      row-gap: 5rem;
+    }
+
+    img {
+      width: 5rem;
+      height: 5rem;
+      @media screen and (max-width: 1250px) {
+        width: 4rem;
+        height: 4rem;
+      }
+      @media screen and (max-width: 1100px) {
+        width: 5rem;
+        height: 5rem;
+      }
+    }
+  }
+}
+
+.element-container {
+  &__upside {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & h2 {
+      font-size: 4.5rem;
+      margin-left: 2.3rem;
+      color: rgb(0, 81, 255);
+      font-family: "Roboto Slab";
+      font-weight: 100;
+      @media screen and (max-width: 1400px) {
+        font-size: 4rem;
+        margin-left: 2rem;
+      }
+      @media screen and (max-width: 1200px) {
+        font-size: 3.7rem;
+        margin-left: 1.5rem;
+      }
+      @media screen and (max-width: 1100px) {
+        font-size: 4.5rem;
+        margin-left: 2.3rem;
+      }
+    }
+  }
+
+  &__downside {
+    padding: 2rem;
+    font-size: 2rem;
+    font-family: "Roboto";
+    letter-spacing: 1.1px;
+  }
+}

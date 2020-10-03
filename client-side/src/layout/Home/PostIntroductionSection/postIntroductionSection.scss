@@ -1,0 +1,111 @@
+.post-section {
+  max-width: 1400px;
+  margin: auto;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("/images/home/background-image-2.jpg");
+  background-size: cover;
+  border-radius: 15px;
+  padding: 15rem 2.5rem;
+  @media screen and (max-width: 1400px) {
+    border-radius: 3px;
+  }
+  @media screen and (max-width: 550px) {
+    padding: 7rem 2.5rem;
+  }
+}
+
+.post-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  @media screen and (max-width: 700px) {
+    display: block;
+    margin: auto;
+    text-align: center;
+  }
+}
+
+.post-right-side {
+  @media screen and (max-width: 550px) {
+    margin-top: 5rem;
+  }
+  & img {
+    max-width: 100%;
+  }
+}
+
+.post-left-side {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rem;
+  align-items: center;
+  padding-right: 5rem;
+  @media screen and (max-width: 1250px) {
+    margin-top: -1rem;
+  }
+  @media screen and (max-width: 800px) {
+    margin-top: -4rem;
+  }
+  @media screen and (max-width: 750px) {
+    margin-top: -6rem;
+    margin-bottom: 3rem;
+  }
+  @media screen and (max-width: 550px) {
+    padding-right: 0;
+  }
+
+  & h2 {
+    font-family: "Roboto Slab";
+    font-weight: 100;
+    font-style: italic;
+    margin-bottom: 4rem;
+    font-size: 6rem;
+    @media screen and (max-width: 1130px) {
+      font-size: 5.5rem;
+    }
+    @media screen and (max-width: 900px) {
+      font-size: 5rem;
+    }
+    @media screen and (max-width: 800px) {
+      font-size: 4.7rem;
+    }
+    @media screen and (max-width: 750px) {
+      font-size: 4.5rem;
+    }
+    @media screen and (max-width: 730px) {
+      font-size: 4.3rem;
+    }
+    @media screen and (max-width: 700px) {
+      font-size: 5.5rem;
+    }
+    & span {
+      font-family: "Roboto";
+      font-size: 10rem;
+      color: blue;
+    }
+  }
+
+  & p {
+    font-family: "Lato";
+    font-size: 2rem;
+    line-height: 1.35;
+    color: black;
+  }
+}
+
+.logo-container {
+  position: absolute;
+  top: -120px;
+  right: 20px;
+  @media screen and (max-width: 700px) {
+    top: -60px;
+    right: 20px;
+  }
+  @media screen and (max-width: 550px) {
+    top: -5px;
+    right: 10px;
+  }
+}

@@ -1,0 +1,6 @@
+.home > * {
+  margin-bottom: 15rem;
+  @media screen and (max-width: 550px) {
+    margin-bottom: 7rem;
+  }
+}
