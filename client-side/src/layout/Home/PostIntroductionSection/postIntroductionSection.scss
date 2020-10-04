@@ -81,6 +81,9 @@
     @media screen and (max-width: 700px) {
       font-size: 5.5rem;
     }
+    @media screen and (max-width: 430px) {
+      margin-top: 3rem;
+    }
     & span {
       font-family: "Roboto";
       font-size: 10rem;

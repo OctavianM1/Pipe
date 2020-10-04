@@ -14,7 +14,7 @@ const Header = ({ openLoginModal, isOpenRegisterModal }) => {
   };
 
   const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, setDropDown);
+  useOutsideAlerter(wrapperRef, setDropDown, "menu-mobile-btn");
 
   return (
     <div className="header header-mobile">

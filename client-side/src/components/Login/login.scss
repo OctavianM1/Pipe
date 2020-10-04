@@ -1,29 +1,3 @@
-.non-render {
-  animation: displayNone 0.9s ease;
-  animation-fill-mode: forwards;
-}
-
-@keyframes displayNone {
-  to {
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-  }
-}
-
-.login-mobile {
-  @media screen and (min-width: 670px) {
-    display: none;
-  }
-}
-
-.login-desktop {
-  @media screen and (max-width: 669px) {
-    display: none;
-  }
-}
-
 .login-container {
   position: absolute;
   top: 50%;
@@ -38,46 +12,31 @@
     width: 768px;
     max-width: 100%;
     min-height: 480px;
-    animation: scaleLogin .6s ease;
+    animation: scaleLogin 0.6s ease;
     transform: translate(-50%, -50%) scale(1);
   }
   @media screen and (max-width: 669px) {
     padding: 3.5rem;
     width: 50rem;
-    height: 60rem;
+    height: 82rem;
     border-radius: 5rem;
     text-align: center;
     overflow: hidden;
-    animation: scaleLogin .6s ease;
+    animation: scaleLogin 0.6s ease;
     transform: translate(-50%, -50%) scale(1);
     transition: transform 1s ease;
   }
   @media screen and (max-width: 450px) {
     padding: 2.5rem;
     width: 45rem;
-    height: 58rem;
   }
   @media screen and (max-width: 400px) {
     padding: 2rem;
     width: 42rem;
   }
-}
-
-.show-register-mobile {
-  transform: translate(-50%, -50%) scale(1) rotateY(180deg);
-}
-
-.register {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotateY(180deg);
-  visibility: hidden;
-  animation: displayRegister 0s ease 0.3s;
-  animation-fill-mode: forwards;
-  &-side-login-btn {
-    margin-left: 25px;
-    margin-top: 25px;
+  @media screen and (max-width: 330px) {
+    padding: 2rem;
+    width: 38rem;
   }
 }
 
@@ -89,159 +48,6 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
-
-@keyframes displayRegister {
-  to {
-    width: 100%;
-    height: 100%;
-    visibility: visible;
-  }
-}
-
-////////////////////////////////////////////////////////////////
-// MOBILE
-////////////////////////////////////////////////////////////////
-
-.login-mobile {
-  &-close {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    width: 25px;
-    height: 25px;
-    background-color: transparent;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 47%;
-      right: 0;
-      width: 25px;
-      height: 3px;
-      background-color: rgb(30, 30, 30);
-      border-radius: 155px;
-      transform: rotate(-45deg);
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      top: 47%;
-      right: 0;
-      width: 25px;
-      height: 3px;
-      background-color: rgb(30, 30, 30);
-      border-radius: 155px;
-      transform: rotate(45deg);
-    }
-  }
-
-  &-header {
-    margin-top: 2rem;
-    font-family: "Lato", "sans-serif";
-    font-weight: 100;
-    font-style: italic;
-    font-size: 3rem;
-
-    & span {
-      color: rgb(87, 146, 255);
-      font-size: 3.5rem;
-    }
-  }
-
-  &-form {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    & input:focus {
-      outline: none;
-    }
-
-    & input[type="submit"] {
-      font-family: "Roboto Slab";
-      padding: 0.7rem 2.2rem;
-      font-size: 1.8rem;
-      background-color: transparent;
-      border: none;
-      box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      color: #5759ff;
-      font-weight: 500;
-      cursor: pointer;
-      transform: scale(1);
-      transition: transform 0.2s ease, box-shadow 0.5s ease;
-
-      &:hover {
-        transform: scale(1.15);
-        box-shadow: 0 2px 5px 5px rgba(0, 0, 0, 0.2);
-      }
-
-      &:active {
-        transform: scale(0.95);
-        box-shadow: 0 2px 1px 1px rgba(0, 0, 0, 0.5);
-      }
-    }
-
-    & > div {
-      position: relative;
-      width: 80%;
-      margin-bottom: 4rem;
-
-      & > .non-filled-input {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        font-size: 2rem;
-        color: rgb(175, 175, 175);
-        transition: 0.5s ease;
-      }
-
-      & input {
-        font-size: 1.6rem;
-        width: 100%;
-        padding: 1.5rem;
-        border: none;
-        border-bottom: 1px solid black;
-        background-color: rgb(245, 245, 245);
-      }
-
-      & input:focus + .non-filled-input {
-        position: absolute;
-        top: -1.4rem;
-        left: 0;
-        font-size: 1.4rem;
-        color: blue;
-      }
-    }
-  }
-  &-forget-pass {
-    display: flex;
-    margin-top: 2rem;
-    font-size: 1.8rem;
-    padding: 0.1rem;
-
-    & a {
-      border-bottom: 1px solid black;
-    }
-  }
-
-  &-l-header {
-    margin: 3rem 0;
-  }
-}
-
-.filled-input {
-  position: absolute;
-  top: -1.4rem;
-  left: 0;
-  font-size: 1.4rem;
-  color: blue;
-}
-
-////////////////////////////////////////////////////////////////
-// DESKTOP
-////////////////////////////////////////////////////////////////
 
 .login {
   position: absolute;
@@ -278,6 +84,10 @@
     &:hover {
       text-decoration: underline;
     }
+
+    @media screen and (max-width: 669px) {
+      margin: 0 0 5px 0;
+    }
   }
 
   &-button {
@@ -285,13 +95,18 @@
     border: 1px solid #ff4b2b;
     background-color: #ff4b2b;
     color: #ffffff;
-    font-size: 12px;
+    font-size: 1.3rem;
     font-weight: bold;
     padding: 12px 45px;
     letter-spacing: 1px;
     text-transform: uppercase;
     transition: transform 80ms ease-in;
     cursor: pointer;
+
+    @media screen and (max-width: 669px) {
+      padding: 10px 40px;
+      font-size: 1.4rem;
+    }
   }
 
   &-button:active {
@@ -316,6 +131,10 @@
     padding: 0 5rem;
     height: 100%;
     text-align: center;
+    @media screen and (max-width: 669px) {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   &-input {
@@ -328,6 +147,9 @@
     &:focus {
       outline: none;
     }
+    @media screen and (max-width: 669px) {
+      padding: 10px 15px;
+    }
   }
 
   &-form-container {
@@ -335,16 +157,30 @@
     top: 0;
     height: 100%;
     transition: all 0.6s ease-in-out;
+
+    @media screen and (max-width: 669px) {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+    }
   }
 
   &-sign-in-container {
-    left: 0;
+    top: 0;
     width: 50%;
     z-index: 2;
+    @media screen and (max-width: 669px) {
+      width: 100%;
+      height: 50%;
+    }
   }
 
   &-container.login-right-panel-active .login-sign-in-container {
     transform: translateX(100%);
+    @media screen and (max-width: 669px) {
+      transform: translateY(100%);
+    }
   }
 
   &-sign-up-container {
@@ -352,6 +188,9 @@
     width: 50%;
     opacity: 0;
     z-index: 1;
+    @media screen and (max-width: 669px) {
+      width: 100%;
+    }
   }
 
   &-container.login-right-panel-active .login-sign-up-container {
@@ -359,6 +198,9 @@
     opacity: 1;
     z-index: 5;
     animation: show 0.6s;
+    @media screen and (max-width: 669px) {
+      transform: translateY(100%);
+    }
   }
 
   &-overlay-container {
@@ -370,10 +212,19 @@
     overflow: hidden;
     transition: transform 0.6s ease-in-out;
     z-index: 100;
+    @media screen and (max-width: 669px) {
+      top: 50%;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
   }
 
   &-container.login-right-panel-active .login-overlay-container {
     transform: translateX(-100%);
+    @media screen and (max-width: 669px) {
+      transform: translateY(-100%);
+    }
   }
 
   &-overlay {
@@ -395,10 +246,16 @@
     width: 200%;
     transform: translateX(0);
     transition: transform 0.6s ease-in-out;
+    @media screen and (max-width: 669px) {
+      transform: translateY(0);
+    }
   }
 
   &-container.login-right-panel-active .login-overlay {
     transform: translateX(50%);
+    @media screen and (max-width: 669px) {
+      transform: translateY(50%);
+    }
   }
 
   &-overlay-panel {
@@ -414,27 +271,51 @@
     width: 50%;
     transform: translateX(0);
     transition: transform 0.6s ease-in-out;
+    @media screen and (max-width: 669px) {
+      transform: translateY(0);
+    }
   }
 
   &-overlay-left {
     transform: translateX(-20%);
+    @media screen and (max-width: 669px) {
+      transform: translate(100%, -90%);
+      z-index: 100;
+    }
   }
 
   &-container.login-right-panel-active .login-overlay-left {
     transform: translateX(0);
+    @media screen and (max-width: 669px) {
+      transform: translate(100%, -25%);
+    }
   }
 
   &-overlay-right {
     right: 0;
     transform: translateX(0);
+    @media screen and (max-width: 669px) {
+      top: -25%;
+      transform: translateY(0);
+    }
   }
 
   &-container.login-right-panel-active .login-overlay-right {
     transform: translateX(20%);
+    @media screen and (max-width: 669px) {
+      transform: translateY(60%);
+    }
   }
 
-  &-social-container {
-    margin: 2rem 0;
+  &-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      flex: 1 0 auto;
+      margin: 0 1rem;
+    }
   }
 
   &-social-container a {
@@ -446,11 +327,28 @@
     margin: 0 5px;
     height: 40px;
     width: 40px;
+    transition: 1s ease;
+
+    @media screen and (max-width: 669px) {
+      height: 35px;
+      width: 35px;
+    }
 
     img {
       width: 70%;
       height: 70%;
     }
+  }
+
+  &__logger {
+    position: relative;
+    display: block;
+    top: -5px;
+    left: 5px;
+    width: 100%;
+    text-align: left;
+    color: red;
+    font-family: "Lato";
   }
 }
 
@@ -466,8 +364,4 @@
     opacity: 1;
     z-index: 5;
   }
-}
-
-.display-none {
-  display: none;
 }

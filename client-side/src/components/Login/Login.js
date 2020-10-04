@@ -2,58 +2,15 @@ import React, { useRef, useState } from "react";
 import useOutsideAlerter from "../../Hooks/OutsideAlerter";
 import "./login.scss";
 
-import StandardButton from "../Buttons/StandardBtn/StandardButton";
-
 const Login = ({ isOpenLoginModal, openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
+
   const wrapper = useRef(null);
   useOutsideAlerter(wrapper, isOpenLoginModal);
 
-  const [inputLoginLabel, setInputLoginLabel] = useState({
-    email: false,
-    password: false,
-  });
-
-  const [inputRegisterLabel, setInputRegisterLabel] = useState({
-    email: false,
-    password: false,
-    name: false,
-  });
-
-  const [registerMobile, setRegisterMobile] = useState(false);
-
-  const handleInputLoginLabel = (ev) => {
-    if (ev.target.value !== "") {
-      const newState = { ...inputLoginLabel };
-      newState[ev.target.name] = true;
-      setInputLoginLabel(newState);
-    } else {
-      const newState = { ...inputLoginLabel };
-      newState[ev.target.name] = false;
-      setInputLoginLabel(newState);
-    }
-  };
-
-  const registerName = useRef(null);
-  const registerEmail = useRef(null);
-  const registerPassword = useRef(null);
-  const loginEmail = useRef(null);
-  const loginPassword = useRef(null);
-  const handleClickOnLabel = (ref) => {
-    ref.current.focus();
-  };
-
-  const handleRegisterLoginLabel = (ev) => {
-    if (ev.target.value !== "") {
-      const newState = { ...inputRegisterLabel };
-      newState[ev.target.name] = true;
-      setInputRegisterLabel(newState);
-    } else {
-      const newState = { ...inputRegisterLabel };
-      newState[ev.target.name] = false;
-      setInputRegisterLabel(newState);
-    }
-  };
+  const [nameRegisterLogger, setNameRegisterLogger] = useState("");
+  const [emailRegisterLogger, setEmailRegisterLogger] = useState("");
+  const [passwordRegisterLogger, setPasswordRegisterLogger] = useState("");
 
   const handleLoginSubmit = (event) => {
     const email = event.target.email.value;
@@ -73,25 +30,58 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
     event.preventDefault();
   };
 
-  const handleBlurName = (event) => {
-    console.log(event.target);
+  const handleBlurNameRegister = (event) => {
+    const name = event.target.value;
+    if (name.trim().length < 2 && name.length > 0) {
+      setNameRegisterLogger("Name cannot be less then 2 characters");
+    } else {
+      setNameRegisterLogger("");
+    }
   };
 
-  const handleBlurEmail = (event) => {
-    console.log(event.target);
+  const handleBlurEmailRegister = (event) => {
+    const email = event.target.value;
+    const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    if (!re.test(email) && email.length > 0) {
+      setEmailRegisterLogger("Email is invalid");
+    } else {
+      setEmailRegisterLogger("");
+    }
+  };
+  console.log('login');
+
+  const handleBlurPasswordRegister = (event) => {
+    const password = event.target.value;
+    let log = [];
+    if (password.length < 8) {
+      log.push("8 charachters");
+    }
+    if (!/[a-zA-Z]+/g.test(password)) {
+      log.push("a lowercase character or a uppercase character");
+    }
+    if (!/[\d\W]/g.test(password)) {
+      log.push("a digit or a non alphanumeric charachter");
+    }
+    if (log.length !== 0 && log.length !== 3) {
+      // log.length !== 3 -> 3 tests
+      setPasswordRegisterLogger("Your password must contain " + log.join(", "));
+    } else {
+      setPasswordRegisterLogger("");
+    }
   };
 
-  const handleBlurPassword = (event) => {
-    console.log(event.target);
+  const handleBlurEmailLogin = (event) => {
+    console.log(event.target.value);
+  };
+
+  const handleBlurPasswordLogin = (event) => {
+    console.log(event.target.value);
   };
 
   let loginClasses = ["login-container"];
   if (signUp) {
     loginClasses.push("login-right-panel-active");
-  } else if (registerMobile) {
-    loginClasses.push("show-register-mobile");
   }
-
   return (
     <div className="login">
       <div
@@ -105,17 +95,24 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
               className="login-form"
               onSubmit={(ev) => handleRegisterSubmit(ev)}
             >
-              <h1>Create Account</h1>
-              <div className="login-social-container">
-                <a href="/" className="login-social">
-                  <img src="/images/login/logos/google.png" alt="google logo" />
-                </a>
-                <a href="/" className="login-social">
-                  <img
-                    src="/images/login/logos/facebook.png"
-                    alt="facebook logo"
-                  />
-                </a>
+              <div className="login-title">
+                <div className="login-social-container">
+                  <a href="/" className="login-social">
+                    <img
+                      src="/images/login/logos/google.png"
+                      alt="google logo"
+                    />
+                  </a>
+                </div>
+                <h1>Create Account</h1>
+                <div className="login-social-container">
+                  <a href="/" className="login-social">
+                    <img
+                      src="/images/login/logos/facebook.png"
+                      alt="facebook logo"
+                    />
+                  </a>
+                </div>
               </div>
               <span className="login-span">
                 or use your email for registration
@@ -125,27 +122,26 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
                 name="name"
                 type="text"
                 placeholder="Name"
-                onBlur={(ev) => handleBlurName(ev)}
+                onBlur={(ev) => handleBlurNameRegister(ev)}
               />
+              <span className="login__logger">{nameRegisterLogger}</span>
               <input
                 className="login-input"
                 name="email"
                 type="email"
                 placeholder="Email"
-                onBlur={(ev) => handleBlurEmail(ev)}
+                onBlur={(ev) => handleBlurEmailRegister(ev)}
               />
+              <span className="login__logger">{emailRegisterLogger}</span>
               <input
                 className="login-input"
                 name="password"
                 type="password"
                 placeholder="Password"
-                onBlur={(ev) => handleBlurPassword(ev)}
+                onBlur={(ev) => handleBlurPasswordRegister(ev)}
               />
-              <input
-                className="login-button"
-                type="submit"
-                value="Sign Up"
-              ></input>
+              <span className="login__logger">{passwordRegisterLogger}</span>
+              <input className="login-button" type="submit" value="Sign Up" />
             </form>
           </div>
           <div className="login-form-container login-sign-in-container">
@@ -171,14 +167,14 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
                 name="email"
                 type="email"
                 placeholder="Email"
-                onBlur={(ev) => handleBlurEmail(ev)}
+                onBlur={(ev) => handleBlurEmailLogin(ev)}
               />
               <input
                 className="login-input"
                 type="password"
                 name="password"
                 placeholder="Password"
-                onBlur={(ev) => handleBlurPassword(ev)}
+                onBlur={(ev) => handleBlurPasswordLogin(ev)}
               />
               <a className="login-a" href="/">
                 Forgot your password?
@@ -219,173 +215,6 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="login-mobile">
-          <div className={registerMobile ? "register" : "display-none"}>
-            <div className="register-side-login-btn">
-              <StandardButton onClick={() => setRegisterMobile(false)}>
-                Login
-              </StandardButton>
-            </div>
-
-
-            {/* Mobile */}
-            <div
-              className={registerMobile ? "login-mobile-close" : "display-none"}
-              onClick={() => isOpenLoginModal(false)}
-            >
-              &nbsp;
-            </div>
-            <h3 className="login-mobile-header">
-              Register on Pipe<span>!</span>
-            </h3>
-            <div className="login-social-container">
-              <a href="/" className="login-social">
-                <img src="/images/login/logos/google.png" alt="google logo" />
-              </a>
-              <a href="/" className="login-social">
-                <img
-                  src="/images/login/logos/facebook.png"
-                  alt="facebook logo"
-                />
-              </a>
-            </div>
-            <form
-              className="login-mobile-form"
-              onSubmit={(ev) => handleRegisterSubmit(ev)}
-            >
-              <div>
-                <input
-                  ref={registerName}
-                  type="text"
-                  name="name"
-                  onChange={handleRegisterLoginLabel}
-                  onBlur={(ev) => handleBlurName(ev)}
-                />
-                <div
-                  className={
-                    inputRegisterLabel["name"]
-                      ? "filled-input"
-                      : "non-filled-input"
-                  }
-                  onClick={() => handleClickOnLabel(registerName)}
-                >
-                  Name
-                </div>
-              </div>
-              <div>
-                <input
-                  ref={registerEmail}
-                  type="email"
-                  name="email"
-                  onChange={handleRegisterLoginLabel}
-                  onBlur={(ev) => handleBlurEmail(ev)}
-                />
-                <div
-                  className={
-                    inputRegisterLabel["email"]
-                      ? "filled-input"
-                      : "non-filled-input"
-                  }
-                  onClick={() => handleClickOnLabel(registerEmail)}
-                >
-                  Email
-                </div>
-              </div>
-              <div>
-                <input
-                  ref={registerPassword}
-                  type="password"
-                  name="password"
-                  onChange={handleRegisterLoginLabel}
-                  onBlur={(ev) => handleBlurPassword(ev)}
-                />
-                <div
-                  className={
-                    inputRegisterLabel["password"]
-                      ? "filled-input"
-                      : "non-filled-input"
-                  }
-                  onClick={() => handleClickOnLabel(registerPassword)}
-                >
-                  Password
-                </div>
-              </div>
-              <input type="submit" value="Submit"></input>
-            </form>
-          </div>
-          <div className={registerMobile ? "non-render" : ""}>
-            <StandardButton onClick={() => setRegisterMobile(true)}>
-              Register
-            </StandardButton>
-            <div
-              className={registerMobile ? "display-none" : "login-mobile-close"}
-              onClick={() => isOpenLoginModal(false)}
-            >
-              &nbsp;
-            </div>
-            <h3 className="login-mobile-header login-mobile-l-header">
-              Welcome back to Pipe<span>!</span>
-            </h3>
-            <div className="login-social-container">
-              <a href="/" className="login-social">
-                <img src="/images/login/logos/google.png" alt="google logo" />
-              </a>
-              <a href="/" className="login-social">
-                <img
-                  src="/images/login/logos/facebook.png"
-                  alt="facebook logo"
-                />
-              </a>
-            </div>
-            <form
-              className="login-mobile-form"
-              onSubmit={(ev) => handleLoginSubmit(ev)}
-            >
-              <div>
-                <input
-                  ref={loginEmail}
-                  type="email"
-                  name="email"
-                  onChange={handleInputLoginLabel}
-                  onBlur={(ev) => handleBlurEmail(ev)}
-                />
-                <div
-                  className={
-                    inputLoginLabel["email"]
-                      ? "filled-input"
-                      : "non-filled-input"
-                  }
-                  onClick={() => handleClickOnLabel(loginEmail)}
-                >
-                  Email
-                </div>
-              </div>
-              <div>
-                <input
-                  ref={loginPassword}
-                  type="password"
-                  name="password"
-                  onChange={handleInputLoginLabel}
-                  onBlur={(ev) => handleBlurPassword(ev)}
-                />
-                <div
-                  className={
-                    inputLoginLabel["password"]
-                      ? "filled-input"
-                      : "non-filled-input"
-                  }
-                  onClick={() => handleClickOnLabel(loginPassword)}
-                >
-                  Password
-                </div>
-                <div className="login-mobile-forget-pass">
-                  <a href="/">Forget Password?</a>
-                </div>
-              </div>
-              <input type="submit" value="Submit"></input>
-            </form>
           </div>
         </div>
       </div>
