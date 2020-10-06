@@ -1,11 +1,14 @@
-import React, { useRef, useState } from "react";
-import useOutsideAlerter from "../../Hooks/OutsideAlerter";
+import React, { useContext, useRef, useState } from "react";
+import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import "./login.scss";
 
 import { Users } from "../../api/axios";
+import { Context } from "../../context";
 
-const Login = ({ isOpenLoginModal, openRegisterModal }) => {
+const Login = ({ openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
+
+  const { isOpenLoginModal } = useContext(Context);
 
   const wrapper = useRef(null);
   useOutsideAlerter(wrapper, isOpenLoginModal);

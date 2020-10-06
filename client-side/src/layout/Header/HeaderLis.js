@@ -1,44 +1,50 @@
-import React from "react";
+import React, { useContext } from "react";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 
+import { Link, useLocation } from "react-router-dom";
+import { Context } from "../../context";
 
+const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
+  const { pathname } = useLocation();
 
-const HeaderLis = ({openLoginModal, closeDropDown, isOpenRegisterModal}) => {
-  const path = window.location.pathname;
+  const { isOpenLoginModal } = useContext(Context);
+
   const onClickLoginMobile = () => {
     isOpenRegisterModal(false);
-    openLoginModal();
+    isOpenLoginModal(true);
     closeDropDown();
-  }
+  };
   return (
     <>
       <li>
-        <a
-          href="/"
-          className={path === "/" ? "bottom-effect-active" : "bottom-effect"}
+        <Link
+          to="/"
+          className={
+            pathname === "/" ? "bottom-effect-active" : "bottom-effect"
+          }
         >
           Home
-        </a>
+        </Link>
       </li>
       <li>
-        <a
-          href="/features"
+        <Link
+          to="/features"
           className={
-            path === "/features" ? "bottom-effect-active" : "bottom-effect"
+            pathname === "/features" ? "bottom-effect-active" : "bottom-effect"
           }
         >
           Features
-        </a>
+        </Link>
       </li>
       <li>
-        <a
-          href="/docs"
+        <Link
+          to="/docs"
           className={
-            path === "/docs" ? "bottom-effect-active" : "bottom-effect"
+            pathname === "/docs" ? "bottom-effect-active" : "bottom-effect"
           }
         >
           Docs
-        </a>
+        </Link>
       </li>
       <li>
         <StandardButton onClick={onClickLoginMobile}>Login</StandardButton>

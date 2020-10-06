@@ -2,54 +2,19 @@ import React from "react";
 import Header1 from "../../../components/Headers/Header1";
 import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
 import "./IntroductionSection.scss";
+import useScrollUpAndOpenLogin from "../../../Hooks/useScrollUpAndOpenLogin";
 
-const IntroductionSection = ({ openLoginModal, isOpenRegisterModal }) => {
+const IntroductionSection = ({ isOpenRegisterModal }) => {
+  const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();
+
   const displayLogin = () => {
-    const scrollY = window.scrollY;
     isOpenRegisterModal(false);
-    window.scroll({
-      top: 0,
-      behavior: "smooth",
-    });
-    if (scrollY < 100) {
-      openLoginModal();
-    } else if (scrollY < 200) {
-      setTimeout(() => {
-        openLoginModal();
-      }, 100);
-    } else if (scrollY < 350) {
-      setTimeout(() => {
-        openLoginModal();
-      }, 200);
-    } else {
-      setTimeout(() => {
-        openLoginModal();
-      }, 270);
-    }
+    scrollUpAndOpenLogin();
   };
 
   const displayRegister = () => {
-    const scrollY = window.scrollY;
     isOpenRegisterModal(true);
-    window.scroll({
-      top: 0,
-      behavior: "smooth",
-    });
-    if (scrollY < 100) {
-      openLoginModal();
-    } else if (scrollY < 200) {
-      setTimeout(() => {
-        openLoginModal();
-      }, 100);
-    } else if (scrollY < 350) {
-      setTimeout(() => {
-        openLoginModal();
-      }, 200);
-    } else {
-      setTimeout(() => {
-        openLoginModal();
-      }, 270);
-    }
+    scrollUpAndOpenLogin();
   };
 
   return (

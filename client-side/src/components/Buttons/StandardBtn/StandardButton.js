@@ -1,10 +1,10 @@
 import React from "react";
 import "./standardButton.scss";
 
-const StandardButton = props => {
+const StandardButton = ({onClick, children}) => {
   return (
-    <button className="standard-btn" onClick={props.onClick}>
-      {props.children}
+    <button className="standard-btn" onClick={onClick}>
+      {children}
     </button>
   );
 };

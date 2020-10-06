@@ -4,9 +4,10 @@ import "../../components/Buttons/BottomEffect/bottomEffect.scss";
 import "../../components/Buttons/StandardBtn/standardButton.scss";
 import HeaderLis from "./HeaderLis";
 import Logo from "../../components/Logo/Logo";
-import useOutsideAlerter from "../../Hooks/OutsideAlerter";
+import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
+import { Link } from "react-router-dom";
 
-const Header = ({ openLoginModal, isOpenRegisterModal }) => {
+const Header = ({ isOpenRegisterModal }) => {
   const [dropDown, setDropDown] = useState(false);
 
   const toggleDropDown = () => {
@@ -18,12 +19,11 @@ const Header = ({ openLoginModal, isOpenRegisterModal }) => {
 
   return (
     <div className="header header-mobile">
-      <a href="/">
+      <Link to="/">
         <Logo />
-      </a>
+      </Link>
       <ul className="info-side">
         <HeaderLis
-          openLoginModal={openLoginModal}
           closeDropDown={() => setDropDown(false)}
           isOpenRegisterModal={isOpenRegisterModal}
         />
@@ -40,7 +40,6 @@ const Header = ({ openLoginModal, isOpenRegisterModal }) => {
       >
         <ul className="info-side-mobile">
           <HeaderLis
-            openLoginModal={openLoginModal}
             closeDropDown={() => setDropDown(false)}
             isOpenRegisterModal={isOpenRegisterModal}
           />

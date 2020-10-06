@@ -5,11 +5,10 @@ import IntroductionSection from "./IntroductionSection/IntroductionSection";
 import OurFeatures from "./OurFeatures/OurFeatures";
 import PostIntroductionSection from "./PostIntroductionSection/PostIntroductionSection";
 
-const Home = ({ openLoginModal, isOpenRegisterModal }) => {
+const Home = ({ isOpenRegisterModal }) => {
   return (
     <div className="home">
       <IntroductionSection
-        openLoginModal={openLoginModal}
         isOpenRegisterModal={isOpenRegisterModal}
       />
       <OurFeatures />

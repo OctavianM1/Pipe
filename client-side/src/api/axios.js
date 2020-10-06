@@ -3,15 +3,15 @@ import axios from "axios";
 axios.defaults.baseURL = "http://localhost:5000/api";
 
 axios.interceptors.response.use(undefined, (error) => {
-  //   if (error.message === "Network Error" && !error.response) {
-  //     throw error.message;
-  //   }
+  if (error.message === "Network Error" && !error.response) {
+    console.log("Network Error");
+    throw error.message;
+  }
   throw error.response;
 });
 
 axios.interceptors.request.use(
   (config) => {
-    console.log(config);
     const user = JSON.parse(window.localStorage.getItem("user"));
     if (user) config.headers.Authorization = `Bearer ${user.token}`;
     return config;
