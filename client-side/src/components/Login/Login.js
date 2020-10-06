@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import useOutsideAlerter from "../../Hooks/OutsideAlerter";
 import "./login.scss";
 
+import { Users } from "../../api/axios";
+
 const Login = ({ isOpenLoginModal, openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
 
@@ -12,11 +14,29 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
   const [emailRegisterLogger, setEmailRegisterLogger] = useState("");
   const [passwordRegisterLogger, setPasswordRegisterLogger] = useState("");
 
+  const [createdAccountText, setCreatedAccountText] = useState("");
+
+  const [emailLoginLogger, setEmailLoginLogger] = useState("");
+  const [passwordLoginLogger, setPasswordLoginLogger] = useState("");
+
   const handleLoginSubmit = (event) => {
     const email = event.target.email.value;
     const password = event.target.password.value;
-    console.log(email);
-    console.log(password);
+    Users.login({ email, password })
+      .then((data) => {
+        setEmailLoginLogger("");
+        setPasswordLoginLogger("");
+        window.localStorage.setItem("user", JSON.stringify(data));
+      })
+      .catch((err) => {
+        const errors = err.data.errors;
+        if (errors.email) {
+          setEmailLoginLogger(errors.email);
+        }
+        if (errors.password) {
+          setPasswordLoginLogger(errors.password);
+        }
+      });
     event.preventDefault();
   };
 
@@ -24,9 +44,32 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
     const name = event.target.name.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
-    console.log(email);
-    console.log(password);
-    console.log(name);
+    if (
+      nameRegisterLogger === "" &&
+      emailRegisterLogger === "" &&
+      passwordRegisterLogger === "" &&
+      name.trim() !== "" &&
+      email.trim() !== "" &&
+      password.trim() !== ""
+    ) {
+      const user = { name, email, password };
+      Users.create(user)
+        .then(() => {
+          setCreatedAccountText("You have successfully registered");
+          setSignUp(false);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      if (name.trim().length === 0) {
+        setNameRegisterLogger("Name cannot be empty");
+      }
+      if (email.trim().length === 0) {
+        setEmailRegisterLogger("Email cannot be empty");
+      }
+      if (password.trim().length === 0) {
+        setPasswordRegisterLogger("Password cannot be empty");
+      }
+    }
     event.preventDefault();
   };
 
@@ -48,7 +91,6 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
       setEmailRegisterLogger("");
     }
   };
-  console.log('login');
 
   const handleBlurPasswordRegister = (event) => {
     const password = event.target.value;
@@ -70,14 +112,6 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
     }
   };
 
-  const handleBlurEmailLogin = (event) => {
-    console.log(event.target.value);
-  };
-
-  const handleBlurPasswordLogin = (event) => {
-    console.log(event.target.value);
-  };
-
   let loginClasses = ["login-container"];
   if (signUp) {
     loginClasses.push("login-right-panel-active");
@@ -89,6 +123,9 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
         className={loginClasses.join(" ")}
         id="login-container"
       >
+        <button className="login-close" onClick={() => isOpenLoginModal(false)}>
+          &nbsp;
+        </button>
         <div className="login-desktop">
           <div className="login-form-container login-sign-up-container">
             <form
@@ -150,6 +187,9 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
               onSubmit={(ev) => handleLoginSubmit(ev)}
             >
               <h1 className="login-h1">Sign in</h1>
+              <span className="login-create-account-text">
+                {createdAccountText}
+              </span>
               <div className="login-social-container">
                 <a href="/" className="login-social">
                   <img src="/images/login/logos/google.png" alt="google logo" />
@@ -167,15 +207,15 @@ const Login = ({ isOpenLoginModal, openRegisterModal }) => {
                 name="email"
                 type="email"
                 placeholder="Email"
-                onBlur={(ev) => handleBlurEmailLogin(ev)}
               />
+              <span className="login__logger">{emailLoginLogger}</span>
               <input
                 className="login-input"
                 type="password"
                 name="password"
                 placeholder="Password"
-                onBlur={(ev) => handleBlurPasswordLogin(ev)}
               />
+              <span className="login__logger">{passwordLoginLogger}</span>
               <a className="login-a" href="/">
                 Forgot your password?
               </a>

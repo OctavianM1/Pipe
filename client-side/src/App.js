@@ -12,6 +12,7 @@ import Features from "./layout/Features/Features";
 function App() {
   const [openLoginModal, isOpenLoginModal] = useState(false);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
+
   return (
     <div className="App">
       {openLoginModal && (
