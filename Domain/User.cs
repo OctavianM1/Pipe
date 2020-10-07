@@ -12,3 +12,19 @@ namespace Domain
         public int CountFollowing { get; set; }
     }
 }
+
+// migrationBuilder.CreateTable(
+//         name: "Activities",
+//         columns: table => new
+//         {
+//           Id = table.Column<Guid>(nullable: false),
+//           UserHostId = table.Column<Guid>(nullable: false),
+//           Title = table.Column<string>(nullable: true),
+//           Body = table.Column<string>(nullable: true),
+//           Subject = table.Column<string>(nullable: true),
+//           DateTimeCreated = table.Column<DateTime>(nullable: true),
+//         },
+//         constraints: table =>
+//         {
+//           table.PrimaryKey("PK_Activities", x => x.Id);
+//         });
