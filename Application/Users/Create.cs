@@ -43,9 +43,6 @@ namespace Application.Users
           throw new RestException(HttpStatusCode.BadRequest, new { errors });
         }
 
-
-
-
         var rfc2898DeriveBytes = new Rfc2898DeriveBytes(request.Password, 32)
         {
           IterationCount = 10000

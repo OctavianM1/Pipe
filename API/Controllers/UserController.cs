@@ -22,14 +22,12 @@ namespace API.Controllers
       _mediator = mediator;
     }
 
-    // [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<User>>> Get()
     {
       return await _mediator.Send(new List.Query());
     }
 
-    // [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {

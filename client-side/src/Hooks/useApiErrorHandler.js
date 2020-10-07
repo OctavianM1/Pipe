@@ -4,7 +4,7 @@ export default function useApiErrorHandler() {
   const history = useHistory();
   const errorHandler = (error) => {
     if (error.status === 401) {
-      history.push("/non-authenticated");
+      history.push("/unauthorized");
     }
   };
 

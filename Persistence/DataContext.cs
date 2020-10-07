@@ -11,5 +11,12 @@ namespace Persistence
 
     }
     public DbSet<User> Users { get; set; }
+    public DbSet<Activity> Activities { get; set; }
+    public DbSet<ActivityComment> ActivityComments { get; set; }
+    public DbSet<ActivityLikes> ActivityLikes { get; set; }
+    public DbSet<ActivityRaiting> ActivityRaiting { get; set; }
+    public DbSet<Follows> Follows { get; set; }
+    public DbSet<CommentLikes> CommentsLikes { get; set; }
+
   }
 }
