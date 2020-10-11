@@ -18,6 +18,8 @@ const MyActivities = () => {
       .catch(errorHandler);
   }, [errorHandler]);
 
+  console.log(activities);
+
 
   return (
     <>

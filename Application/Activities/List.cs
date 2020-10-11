@@ -108,20 +108,6 @@ namespace Application.Activities
               CommentLikeUsers = appCommentLikeUsers
             });
           }
-
-          appActivities.Add(new AppActivity
-          {
-            Id = a.Id,
-            UserHostId = a.UserHostId,
-            UserHostName = _context.Users.Where(x => x.Id == a.UserHostId).Select(u => u.Name).FirstOrDefault(),
-            Title = a.Title,
-            Subject = a.Subject,
-            Body = a.Body,
-            DateTimeCreated = a.DateTimeCreated,
-            Raiting = appRaiting,
-            Likes = appLikes,
-            Comments = comments
-          });
           appActivities.Add(new AppActivity
           {
             Id = a.Id,
@@ -137,9 +123,6 @@ namespace Application.Activities
           });
         }
         return appActivities;
-
-
-        // return activities;
       }
     }
   }
