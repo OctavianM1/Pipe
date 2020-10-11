@@ -1,0 +1,131 @@
+.create-activity {
+  max-width: 1200px;
+  margin: 10rem auto;
+
+  &__container {
+    width: 80%;
+    margin: 0 auto;
+
+    & > div {
+      position: relative;
+      width: 100%;
+      display: block;
+      margin: 2rem auto;
+      font-family: "Roboto";
+
+      & input,
+      & textarea {
+        width: 100%;
+        padding: 2rem;
+        border-radius: 7px;
+        border: 1px solid #ddd;
+        margin-top: 1rem;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      & textarea {
+        resize: vertical;
+      }
+
+      & .input-label {
+        position: absolute;
+        top: 4rem;
+        left: 2%;
+        transform: translateY(-50%);
+        font-size: 1.7rem;
+        transition: 0.5s ease;
+      }
+
+      & .input-label-active {
+        font-size: 1.55rem;
+        top: 0;
+        left: 2px;
+        color: #5759ff;
+        transform: translateY(-50%);
+        font-weight: bold;
+      }
+
+      & .textarea-label {
+        position: absolute;
+        top: 50%;
+        left: 2%;
+        transform: translateY(-50%) scale(1);
+        font-size: 1.7rem;
+        transition: 0.5s ease;
+      }
+
+      & .textarea-label-active {
+        top: 0;
+        left: 2px;
+        color: #5759ff;
+        transform: translateY(-50%) scale(0.9);
+        font-weight: bold;
+      }
+    }
+
+    &__submit {
+      width: 20rem;
+      margin: 0 auto;
+
+      & > button {
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.logger {
+  font-family: "Roboto";
+  color: red;
+  margin-left: 7px;
+}
+
+.succes-submit-pop-up {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  &__container {
+    position: absolute;
+    text-align: center;
+    top: 10vh;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 5rem 10rem;
+    animation: popUp 0.5s ease;
+    animation-fill-mode: forwards;
+
+    @media screen and (max-width: 1000px) {
+      padding: 5rem;
+    }
+
+    & h1 {
+      font-family: "Roboto";
+      color: rgb(0, 175, 0);
+    }
+
+    & a button {
+      margin: 4rem auto 0 auto;
+      font-size: 1.6rem;
+    }
+  }
+}
+
+@keyframes popUp {
+  from {
+    transform: translateX(-50%) scale(0.5);
+  }
+  to {
+    transform: translateX(-50%) scale(1);
+  }
+}

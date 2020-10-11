@@ -26,6 +26,17 @@
     @media screen and (max-width: 500px) {
       padding: 1.5rem;
     }
+
+    &__follow-btns {
+      & > a {
+        padding: 0 !important;
+
+        & > button {
+          padding: 1rem 4rem !important;
+          font-size: 2.3rem;
+        }
+      }
+    }
   }
 
   &-grid {

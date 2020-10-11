@@ -7,6 +7,9 @@ axios.interceptors.response.use(undefined, (error) => {
     console.log("Network Error");
     throw error.message;
   }
+  if (error.response.status === 401) {
+    window.localStorage.setItem("user", "{}");
+  }
   throw error.response;
 });
 
@@ -38,4 +41,9 @@ const Users = {
   login: (body) => request.post("user/login", body),
 };
 
-export { Users };
+const Activities = {
+  create: (body) => request.post("/activity/create", body),
+  list: (id) => request.get(`/activity/${id}`)
+};
+
+export { Users, Activities };

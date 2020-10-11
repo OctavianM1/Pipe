@@ -14,13 +14,13 @@ namespace Persistence.Migrations
                                 {
                                   Id = table.Column<Guid>(nullable: false),
                                   UserId = table.Column<Guid>(nullable: false),
-                                  CommentId = table.Column<Guid>(nullable: false),
+                                  ActivityId = table.Column<Guid>(nullable: false),
                                 },
                                 constraints: table =>
                                 {
                                   table.PrimaryKey("PK_Activities", x => x.Id);
                                   table.ForeignKey("FK_Users", x => x.UserId, "Users", "Id");
-                                  table.ForeignKey("FK_Comments", x => x.CommentId, "ActivityComments", "Id");
+                                  table.ForeignKey("FK_Comments", x => x.ActivityId, "ActivityComments", "Id");
                                 });
     }
     protected override void Down(MigrationBuilder migrationBuilder)

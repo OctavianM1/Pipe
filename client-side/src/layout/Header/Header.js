@@ -17,6 +17,7 @@ const Header = ({ isOpenRegisterModal }) => {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, setDropDown, "menu-mobile-btn");
 
+
   return (
     <div className="header header-mobile">
       <Link to="/">

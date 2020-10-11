@@ -24,7 +24,7 @@ namespace Persistence.Migrations
                       .ValueGeneratedOnAdd()
                       .HasColumnType("TEXT");
 
-            b.Property<Guid>("Comment_Id")
+            b.Property<Guid>("Activity_Id")
                       .HasColumnType("TEXT");
 
             b.Property<Guid>("User_Id")

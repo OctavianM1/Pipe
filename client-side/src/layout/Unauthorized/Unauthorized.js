@@ -11,18 +11,32 @@ import "./unauthorized.scss";
 const Unauthorized = () => {
   const history = useHistory();
   const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();
+
+  const userId = JSON.parse(window.localStorage.getItem("user"))["id"];
+
   return (
     <div className="unauthorized">
       <div className="unauthorized__container">
         <div className="unauthorized__container--left">
           <div className="unauthorized__container--left__401">
-            <h1>401</h1>
+            {!userId && <h1>401</h1>}
           </div>
           <div className="unauthorized__container--left__msg">
-            <h1>Unauthorized: Acces to this resource is denied.</h1>
-            <StandardButton onClick={() => scrollUpAndOpenLogin()}>
-              Login
-            </StandardButton>
+            {userId ? (
+              <>
+                <h1 className='unauthorized__container--left__msg__auth'>You are authorized, go to home page</h1>
+                <StandardButton onClick={() => history.push("/")}>
+                  Home
+                </StandardButton>
+              </>
+            ) : (
+              <>
+                <h1>Unauthorized: Acces to this resource is denied.</h1>
+                <StandardButton onClick={() => scrollUpAndOpenLogin()}>
+                  Login
+                </StandardButton>
+              </>
+            )}
           </div>
         </div>
         <div className="unauthorized__container--right">

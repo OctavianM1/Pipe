@@ -8,7 +8,7 @@
     margin: 0 0 2rem 0;
     padding: 0;
   }
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     display: none;
   }
 }
@@ -24,12 +24,28 @@
   @media screen and (max-width: 1000px) {
     margin-right: 1rem;
   }
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 900px) {
+    margin-right: 0;
+  }
+  @media screen and (max-width: 650px) {
     display: none;
   }
 
   & li {
     margin-right: 6rem;
+
+    @media screen and (max-width: 900px) {
+      margin-right: 5rem;
+    }
+    @media screen and (max-width: 840px) {
+      margin-right: 4rem;
+      &:last-child {
+        margin-right: 1rem;
+      }
+    }
+    @media screen and (max-width: 760px) {
+      margin-right: 3rem;
+    }
   }
 
   & li a {
@@ -46,7 +62,7 @@
 // MOBILE
 ////////////////////////////////////////////////////////////////////
 .header-mobile {
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     position: relative;
     display: flex;
     align-items: center;
@@ -92,7 +108,7 @@
 
 .info-side-mobile {
   display: none;
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     display: block;
     & > * {
       padding: 2rem;
@@ -109,7 +125,7 @@
 
 .menu-mobile-btn {
   display: none !important;
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     display: block !important;
     margin-right: 3rem;
     color: #5759ff;
@@ -119,11 +135,11 @@
 
 .drop-down {
   display: none;
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     position: absolute;
     top: 100%;
     width: 90%;
-    max-height: 40vh;
+    max-height: 70vh;
     background-color: red;
     transform: translateY(-10%);
     opacity: 0;
@@ -133,7 +149,7 @@
   }
 }
 .drop-down-active {
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 650px) {
     z-index: 20;
     position: absolute;
     padding: 2rem;
@@ -156,6 +172,6 @@
 
   100% {
     opacity: 1;
-    max-height: 45vh;
+    max-height: 70vh;
   }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Activities;
+using ApplicationActivity;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace API.Controllers
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<List<Activity>>> GetActivities(string id)
+    public async Task<ActionResult<List<AppActivity>>> GetActivities(string id)
     {
       return await _mediator.Send(new List.Query { Id = id });
     }
@@ -31,7 +32,7 @@ namespace API.Controllers
       return await _mediator.Send(new FollowingActivityList.Query { Id = Guid.Parse(id) });
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<ActionResult<Unit>> CreateActivity(Create.Command command)
     {
       return await _mediator.Send(command);

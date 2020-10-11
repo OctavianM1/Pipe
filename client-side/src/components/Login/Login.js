@@ -4,6 +4,7 @@ import "./login.scss";
 
 import { Users } from "../../api/axios";
 import { Context } from "../../context";
+import CloseBtn from "../Buttons/CloseBtn/CloseBtn";
 
 const Login = ({ openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
@@ -30,6 +31,7 @@ const Login = ({ openRegisterModal }) => {
         setEmailLoginLogger("");
         setPasswordLoginLogger("");
         window.localStorage.setItem("user", JSON.stringify(data));
+        isOpenLoginModal(false);
       })
       .catch((err) => {
         const errors = err.data.errors;
@@ -126,9 +128,7 @@ const Login = ({ openRegisterModal }) => {
         className={loginClasses.join(" ")}
         id="login-container"
       >
-        <button className="login-close" onClick={() => isOpenLoginModal(false)}>
-          &nbsp;
-        </button>
+        <CloseBtn onClick={() => isOpenLoginModal(false)} />
         <div className="login-desktop">
           <div className="login-form-container login-sign-up-container">
             <form

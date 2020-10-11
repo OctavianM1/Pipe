@@ -2,15 +2,7 @@ import React from "react";
 
 import "./notFound.scss";
 
-import { useHistory, useLocation, useParams } from "react-router-dom";
-
 const NotFound = () => {
-  let history = useHistory();
-  console.log(history);
-  let location = useLocation();
-  console.log(location);
-  let params = useParams();
-  console.log(params);
   return (
     <div className="not-found">
       <img src="/images/not-found/404.png" alt="Not Found" />

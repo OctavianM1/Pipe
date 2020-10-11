@@ -1,0 +1,249 @@
+.my-activities {
+  max-width: 140rem;
+  margin: 10rem auto;
+
+  display: flex;
+
+  &__filter-side {
+    margin-right: 15rem;
+  }
+
+  &__activities-side {
+    width: 100%;
+    &__activity {
+      position: relative;
+      width: 98%;
+      margin-bottom: 5rem;
+      padding: 3rem;
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      font-family: "Roboto";
+
+      &__personal-raiting {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: flex;
+        align-items: center;
+
+        & h3 {
+          margin-right: 5px;
+        }
+
+        & svg {
+          width: 20px;
+          height: 20px;
+          fill: black;
+          cursor: pointer;
+        }
+      }
+
+      &__total-raiting {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        display: flex;
+        align-items: center;
+
+        & h3 {
+          margin-right: 5px;
+        }
+
+        & svg {
+          width: 20px;
+          height: 20px;
+          fill: black;
+        }
+      }
+
+      &__title {
+        width: 85%;
+        padding: 2rem 0;
+      }
+
+      &__subject {
+        width: 85%;
+        padding: 2rem 0;
+      }
+
+      &__body {
+        padding: 2rem 0;
+      }
+
+      &__date {
+        padding: 2rem 0;
+      }
+
+      &__buttons {
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 5px 0;
+        display: flex;
+        justify-content: space-between;
+
+        & > button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-family: "Roboto";
+          font-size: 1.7rem;
+          font-weight: bold;
+          letter-spacing: 0.5px;
+          color: rgb(100, 100, 100);
+          position: relative;
+          width: 50%;
+          margin: 0 3px;
+          padding: 1rem 0;
+          border-radius: 7px;
+          background-color: transparent;
+          z-index: 5;
+          cursor: pointer;
+
+          & img {
+            position: relative;
+            width: 1.9rem;
+            height: 1.9rem;
+            margin-right: 1rem;
+          }
+
+          & span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            height: 50%;
+            border-radius: 7px;
+            background-color: #ddd;
+            z-index: -1;
+            opacity: 0;
+            transition: 0.2s ease;
+          }
+          &:hover span {
+            opacity: 1;
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+
+      &__comments {
+        &__comment {
+          display: flex;
+          margin-top: 1rem;
+          padding-bottom: 2rem;
+          & > img {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            margin-right: 2rem;
+          }
+
+          & > div {
+            position: relative;
+            background-color: rgb(232, 232, 232);
+            display: inline-block;
+            padding: 1rem;
+            border-radius: 15px;
+
+            & .comment-likes {
+              position: absolute;
+              bottom: -2rem;
+              right: -2rem;
+              display: flex;
+              align-items: center;
+              background-color: rgb(253, 253, 253);
+              border-radius: 20px;
+              padding: 0.6rem;
+              box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
+
+              & img {
+                width: 2rem;
+                height: 2rem;
+              }
+
+              & span {
+                margin-left: 5px;
+                font-size: 1.8rem;
+              }
+            }
+
+            & button {
+              position: absolute;
+              bottom: -20px;
+              left: 3%;
+              cursor: pointer;
+              background-color: transparent;
+              font-size: 1.55rem;
+              font-family: "Lato";
+              font-weight: 600;
+              color: rgb(48, 48, 48);
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          &__name {
+            color: rgb(15, 15, 15);
+            font-weight: bold;
+            font-family: "Roboto";
+          }
+
+          &__body {
+            font-family: "Roboto";
+            padding-top: 5px;
+          }
+        }
+      }
+
+      &__add-comment {
+        display: flex;
+        margin-top: 2rem;
+
+        & input {
+          padding: 1rem 2rem;
+          border-radius: 40px;
+          background-color: rgb(232, 232, 232);
+          border: none;
+          flex: 1 0 auto;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        & img {
+          width: 4rem;
+          height: 4rem;
+          border-radius: 50%;
+          margin-right: 2rem;
+        }
+      }
+    }
+  }
+}
+
+.add-activity {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
+  z-index: 100;
+
+  & img {
+    width: 5.5rem;
+    height: 5.5rem;
+    transform: scale(1);
+    transition: 0.3s ease;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+
+    &:active {
+      transform: scale(1);
+    }
+  }
+}
