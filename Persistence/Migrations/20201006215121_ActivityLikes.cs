@@ -20,7 +20,7 @@ namespace Persistence.Migrations
                                 {
                                   table.PrimaryKey("PK_Activities", x => x.Id);
                                   table.ForeignKey("FK_Users", x => x.UserId, "Users", "Id");
-                                  table.ForeignKey("FK_Comments", x => x.ActivityId, "ActivityComments", "Id");
+                                  table.ForeignKey("FK_Activities", x => x.ActivityId, "Activities", "Id");
                                 });
     }
     protected override void Down(MigrationBuilder migrationBuilder)

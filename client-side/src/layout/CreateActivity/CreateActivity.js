@@ -101,7 +101,11 @@ const CreateActivity = () => {
         <div className="succes-submit-pop-up">
           <div ref={successPopUp} className="succes-submit-pop-up__container">
             <h1>You successfully created a activity!</h1>
-            <Link to="/my-activities">
+            <Link
+              to={`/activities/${
+                JSON.parse(window.localStorage.getItem("user")).id
+              }`}
+            >
               <StandardButton>Go to activities</StandardButton>
             </Link>
             <CloseBtn onClick={() => setSuccessCreatedPopUp(false)} />

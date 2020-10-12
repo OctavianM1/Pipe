@@ -13,6 +13,7 @@ using Application.Activities.ApplicationRaiting;
 using ApplicationComment;
 using ApplicationActivityLikes;
 using Application.Activities.AppCommentLikes;
+using ApplicationUser;
 
 namespace Application.Activities
 {
@@ -47,13 +48,12 @@ namespace Application.Activities
           }
           var usersRaitingIds = await _context.ActivityRaiting.Where(r => r.ActivityId == a.Id).Select(a => a.UserId).ToListAsync();
 
-          List<AppUser> usersRaitings = await _context.Users.Where(u => usersRaitingIds.Contains(u.Id)).Select(u => new AppUser
+          List<AppUserRaiting> usersRaitings = await _context.Users.Where(u => usersRaitingIds.Contains(u.Id)).Select(u => new AppUserRaiting
           {
             Id = u.Id,
             Email = u.Email,
             Name = u.Name,
-            CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing
+            Rate = _context.ActivityRaiting.Where(ar => ar.UserId == u.Id).Select(ar => ar.Raiting).FirstOrDefault()
           }).ToListAsync();
 
           var appRaiting = new AppRaiting { Raiting = raiting, Users = usersRaitings };
@@ -86,8 +86,8 @@ namespace Application.Activities
               CountFollowers = userCommentator.CountFollowers,
               CountFollowing = userCommentator.CountFollowing
             };
-
-            var usersCommentLikesIds = await _context.CommentsLikes.Where(com => com.CommentId == comment.Id).Select(com => com.UserId).ToListAsync();
+            
+            var usersCommentLikesIds = await _context.CommentLikes.Where(com => com.CommentId == comment.Id).Select(com => com.UserId).ToListAsync();
             List<AppUser> appCommentLikeUsers = await _context.Users.Where(u => usersCommentLikesIds.Contains(u.Id)).Select(u => new AppUser
             {
               Id = u.Id,
@@ -119,7 +119,7 @@ namespace Application.Activities
             DateTimeCreated = a.DateTimeCreated,
             Raiting = appRaiting,
             Likes = appLikes,
-            Comments = null
+            Comments = comments
           });
         }
         return appActivities;

@@ -38,12 +38,18 @@ const Users = {
   details: (id) => request.get(`/user/${id}`),
   create: (body) => request.post("/user/register", body),
   delete: (id) => request.delete(`/user/${id}`),
-  login: (body) => request.post("user/login", body),
+  login: (body) => request.post("/user/login", body),
 };
 
 const Activities = {
   create: (body) => request.post("/activity/create", body),
-  list: (id) => request.get(`/activity/${id}`)
+  list: (id) => request.get(`/activity/${id}`),
+  like: (body) => request.post("/activity/like", body),
+  rate: (body) => request.post("/activity/rate", body),
+  deleteRate: (body) => request.post("/activity/delete-rate", body),
+  delete: (id) => request.delete(`/activity/${id}`),
+  addComment: (body) => request.post("/activity/add-comment", body),
+  addLikeToComment: (body) => request.post('activity/like-comment', body)
 };
 
 export { Users, Activities };

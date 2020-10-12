@@ -16,7 +16,7 @@ namespace Persistence
     public DbSet<ActivityLikes> ActivityLikes { get; set; }
     public DbSet<ActivityRaiting> ActivityRaiting { get; set; }
     public DbSet<Follows> Follows { get; set; }
-    public DbSet<CommentLikes> CommentsLikes { get; set; }
+    public DbSet<CommentLikes> CommentLikes { get; set; }
 
   }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Star = ({ onMouseEnter, color, onClick }) => {
+const Star = ({ onMouseLeave, onMouseEnter, color, onClick }) => {
   return (
     <svg
       version="1.1"
@@ -13,6 +13,7 @@ const Star = ({ onMouseEnter, color, onClick }) => {
       viewBox="0 0 492.892 492.892"
       style={{ fill: color}}
       onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
       <path

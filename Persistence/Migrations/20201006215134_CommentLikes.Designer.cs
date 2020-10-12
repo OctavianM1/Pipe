@@ -30,6 +30,9 @@ namespace Persistence.Migrations
             b.Property<Guid>("User_Id")
                             .HasColumnType("TEXT");
 
+            b.Property<Guid>("Activity_Id")
+                            .HasColumnType("TEXT");
+
             b.HasKey("Id");
 
             b.ToTable("CommentLikes");

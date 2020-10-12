@@ -9,13 +9,12 @@ import { Route, Switch } from "react-router-dom";
 import NotFound from "./layout/NotFound/NotFound";
 import { Context } from "./context";
 import NonAuthenticated from "./layout/Unauthorized/Unauthorized";
-import MyActivities from "./layout/MyActivities/MyActivities";
+import UserActivities from "./layout/UserActivities/UserActivities";
 import CreateActivity from "./layout/CreateActivity/CreateActivity";
 
 function App() {
   const { openLoginModal } = useContext(Context);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
-  
   return (
     <div className="App">
       {openLoginModal && <Login openRegisterModal={openRegisterModal} />}
@@ -25,11 +24,11 @@ function App() {
         <Route path="/profile" exact>
           <h1>Profile</h1>
         </Route>
-        <Route path="/my-activities">
-          <MyActivities />
-        </Route>
         <Route path='/add-activity' exact>
           <CreateActivity />
+        </Route>
+        <Route path='/activities/:userId'>
+          <UserActivities />
         </Route>
         <Route path="/following" exact>
           <h1>Following</h1>

@@ -7,7 +7,7 @@ import { Context } from "../../context";
 import { useHistory } from "react-router-dom";
 
 const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
-  const pathname = useLocation().pathname.split("/")[1];
+  const { pathname } = useLocation();
 
   const { isOpenLoginModal } = useContext(Context);
 
@@ -30,7 +30,7 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
       <li>
         <Link
           to="/"
-          className={pathname === "" ? "bottom-effect-active" : "bottom-effect"}
+          className={pathname === "/" ? "bottom-effect-active" : "bottom-effect"}
         >
           Home
         </Link>
@@ -42,7 +42,7 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
             <Link
               to="/followers"
               className={
-                pathname === "followers"
+                pathname === "/followers"
                   ? "bottom-effect-active"
                   : "bottom-effect"
               }
@@ -54,7 +54,7 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
             <Link
               to="/following"
               className={
-                pathname === "following"
+                pathname === "/following"
                   ? "bottom-effect-active"
                   : "bottom-effect"
               }
@@ -64,9 +64,9 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
           </li>
           <li>
             <Link
-              to="/my-activities"
+              to={`/activities/${user["id"]}`}
               className={
-                pathname === "my-activities"
+                pathname === `/activities/${user["id"]}`
                   ? "bottom-effect-active"
                   : "bottom-effect"
               }
@@ -78,7 +78,7 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
             <Link
               to="/profile"
               className={
-                pathname === "profile"
+                pathname === "/profile"
                   ? "bottom-effect-active"
                   : "bottom-effect"
               }

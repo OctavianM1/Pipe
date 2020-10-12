@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Activities;
 using ApplicationActivity;
+using ApplicationComment;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,42 @@ namespace API.Controllers
 
     [HttpPost("create")]
     public async Task<ActionResult<Unit>> CreateActivity(Create.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Unit>> DeleteActivity(string id)
+    {
+      return await _mediator.Send(new Delete.Query { Id = id });
+    }
+
+    [HttpPost("like")]
+    public async Task<ActionResult<Unit>> LikeActivity(LikeActivity.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("rate")]
+    public async Task<ActionResult<Unit>> RateActivity(RateActivity.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("delete-rate")]
+    public async Task<ActionResult<Unit>> DeleteRateActivity(DeleteRateActivity.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("add-comment")]
+    public async Task<ActionResult<AppComment>> AddComment(AddComment.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("like-comment")]
+    public async Task<ActionResult<Unit>> LikeComment(LikeComment.Command command)
     {
       return await _mediator.Send(command);
     }
