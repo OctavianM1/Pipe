@@ -16,7 +16,7 @@ namespace Persistence.Migrations
           Title = table.Column<string>(nullable: true),
           Body = table.Column<string>(nullable: true),
           Subject = table.Column<string>(nullable: true),
-          DateTimeCreated = table.Column<DateTime>(nullable: true),
+          DateTimeCreated = table.Column<string>(nullable: true),
         },
         constraints: table =>
         {

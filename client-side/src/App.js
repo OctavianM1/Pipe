@@ -11,6 +11,7 @@ import { Context } from "./context";
 import NonAuthenticated from "./layout/Unauthorized/Unauthorized";
 import UserActivities from "./layout/UserActivities/UserActivities";
 import CreateActivity from "./layout/CreateActivity/CreateActivity";
+import EditActivity from "./layout/UserActivities/EditActivity";
 
 function App() {
   const { openLoginModal } = useContext(Context);
@@ -24,11 +25,14 @@ function App() {
         <Route path="/profile" exact>
           <h1>Profile</h1>
         </Route>
-        <Route path='/add-activity' exact>
+        <Route path="/add-activity" exact>
           <CreateActivity />
         </Route>
-        <Route path='/activities/:userId'>
+        <Route path="/activities/:userId" exact>
           <UserActivities />
+        </Route>
+        <Route path={`/activities/:userId/edit/:activityId`}>
+          <EditActivity exact/>
         </Route>
         <Route path="/following" exact>
           <h1>Following</h1>

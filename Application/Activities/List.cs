@@ -5,14 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Users.ApplicationUser;
 using ApplicationActivity;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Application.Activities.ApplicationRaiting;
 using ApplicationComment;
 using ApplicationActivityLikes;
-using Application.Activities.AppCommentLikes;
 using ApplicationUser;
 
 namespace Application.Activities
@@ -53,7 +51,7 @@ namespace Application.Activities
             Id = u.Id,
             Email = u.Email,
             Name = u.Name,
-            Rate = _context.ActivityRaiting.Where(ar => ar.UserId == u.Id).Select(ar => ar.Raiting).FirstOrDefault()
+            Rate = _context.ActivityRaiting.Where(ar => ar.UserId == u.Id && ar.ActivityId == a.Id).Select(ar => ar.Raiting).FirstOrDefault()
           }).ToListAsync();
 
           var appRaiting = new AppRaiting { Raiting = raiting, Users = usersRaitings };
@@ -69,7 +67,7 @@ namespace Application.Activities
             CountFollowers = u.CountFollowers,
             CountFollowing = u.CountFollowing
           }).ToListAsync();
-          
+
           var appLikes = new AppActivityLikes { Likes = likes, Users = usersLikes };
 
           var commentsDb = await _context.ActivityComments.Where(c => c.ActivityId == a.Id).ToListAsync();
@@ -86,7 +84,7 @@ namespace Application.Activities
               CountFollowers = userCommentator.CountFollowers,
               CountFollowing = userCommentator.CountFollowing
             };
-            
+
             var usersCommentLikesIds = await _context.CommentLikes.Where(com => com.CommentId == comment.Id).Select(com => com.UserId).ToListAsync();
             List<AppUser> appCommentLikeUsers = await _context.Users.Where(u => usersCommentLikesIds.Contains(u.Id)).Select(u => new AppUser
             {

@@ -6,6 +6,8 @@ export default function useApiErrorHandler() {
   const errorHandler = useCallback((error) => {
     if (error.status === 401) {
       history.push("/unauthorized");
+    } else if (error.status === 500) {
+      history.push('/server-error');
     }
   }, [history]);
 

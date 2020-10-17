@@ -27,6 +27,12 @@ namespace API.Controllers
       return await _mediator.Send(new List.Query { Id = id });
     }
 
+    [HttpGet("{userId}/{activityId}")]
+    public async Task<ActionResult<AppActivity>> GetActivity(string userId, string activityId)
+    {
+      return await _mediator.Send(new Detail.Query { userId = userId, activityId = activityId });
+    }
+
     [HttpGet("following/{id}")]
     public async Task<ActionResult<List<Activity>>> GetFollowingActivities(string id)
     {

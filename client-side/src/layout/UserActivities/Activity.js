@@ -7,6 +7,7 @@ import Comment from "./Comment";
 import { Link } from "react-router-dom";
 
 import "./userActivities.scss";
+import StarsRaiting from "../../components/StarsRaiting/StarsRaiting";
 
 const Activity = ({
   id,
@@ -22,6 +23,7 @@ const Activity = ({
   visitorUserId,
   onRemove,
   comments,
+  edit,
 }) => {
   const commentInput = useRef(null);
 
@@ -48,25 +50,12 @@ const Activity = ({
         .then(() => setRateActivity(0))
         .catch((err) => console.log(err));
     } else {
+      console.log(visitorUserId, id, rate);
       Activities.rate({ userId: visitorUserId, activityId: id, rate: rate })
         .then(() => setRateActivity(rate))
         .catch((err) => console.log(err));
     }
   };
-
-  const [yellowStarsPersonal, setYellowStarsPersonal] = useState(rateActivity);
-  let personalStars = [];
-  for (let i = 1; i <= 5; i++) {
-    personalStars.push(
-      <Star
-        key={i}
-        color={yellowStarsPersonal >= i ? "#fff220" : "black"}
-        onMouseEnter={() => setYellowStarsPersonal(i)}
-        onMouseLeave={() => setYellowStarsPersonal(rateActivity)}
-        onClick={() => handleRateActivity(i)}
-      />
-    );
-  }
 
   let totalStars = [];
   for (let i = 1; i <= 5; i++) {
@@ -108,6 +97,10 @@ const Activity = ({
     return isLiked;
   };
 
+  const handleEdit = () => {
+    console.log("edit");
+  };
+
   let displayedComments = [];
   for (let i = 0; i < displayedCommentNumber; i++) {
     if (activityComments[i]) {
@@ -118,136 +111,162 @@ const Activity = ({
   }
 
   return (
-    <div style={{ position: "relative" }}>
-      {hostUserId === JSON.parse(localStorage.getItem("user"))["id"] && (
-        <div className="my-activities__activities-side__activity__editing">
-          <img src="/images/activities/edit.svg" alt="edit" />
-          <img
-            src="/images/activities/delete.svg"
-            alt="delete"
-            onClick={() => onRemove()}
-          />
-        </div>
-      )}
-      <div className="my-activities__activities-side__activity">
-        <div className='my-activities__activities-side__activity__total-raiting__container'>
-          <div
-            className="my-activities__activities-side__activity__total-raiting"
-            onMouseEnter={() => setIsHoveringTotalRaiting(true)}
-            onMouseLeave={() => setIsHoveringTotalRaiting(false)}
-          >
-            <div
-              className={
-                isHoveringTotalRaiting && totalRaiting.raiting !== 0
-                  ? "my-activities__activities-side__activity__total-raiting__users my-activities__activities-side__activity__total-raiting__users-active"
-                  : "my-activities__activities-side__activity__total-raiting__users"
-              }
-            >
-              <div className="my-activities__activities-side__activity__total-raiting__users__arrow">
-                &nbsp;
-              </div>
-              {totalRaiting.users.map((u) => (
-                <Link
-                  className="my-activities__activities-side__activity__total-raiting__users__user"
-                  to={`/activities/${u.id}`}
-                  key={u.id}
-                >
-                  <h3>
-                    {u.name}: <span>{u.rate}</span>
-                  </h3>
-                  <Star color="yellow" />
+    <>
+      <div style={{ position: "relative" }}>
+        {hostUserId === JSON.parse(localStorage.getItem("user"))["id"] && (
+          <div className="my-activities__activities-side__activity__editing">
+            {edit ? (
+              <>
+                <img src="/images/activities/check.svg" alt="save" />
+                <Link to={`activities/${hostUserId}`}>
+                  <img
+                    src="/images/activities/delete.svg"
+                    alt="delete"
+                    onClick={() => onRemove()}
+                  />
                 </Link>
-              ))}
-            </div>
-            <h3>Total raiting:</h3>
-            <div>{totalStars}</div>
-          </div>
-          <div className="my-activities__activities-side__activity__personal-raiting">
-            <h3>Your raiting:</h3>
-            {personalStars}
-          </div>
-        </div>
-        <div className="my-activities__activities-side__activity__title">
-          {title}
-        </div>
-        <div className="my-activities__activities-side__activity__subject">
-          {subject}
-        </div>
-        <div className="my-activities__activities-side__activity__body">
-          {body}
-        </div>
-        <div className="my-activities__activities-side__activity__date">
-          {date}
-        </div>
-        <div className="my-activities__activities-side__activity__buttons">
-          <button onClick={() => handleLikeButton()}>
-            {likedActivity ? (
-              <img src="/images/activities/blueLike.svg" alt="blue like" />
+              </>
             ) : (
-              <img src="/images/activities/like.svg" alt="like" />
+              <>
+                <Link to={`${hostUserId}/edit/${id}`}>
+                  <img
+                    src="/images/activities/edit.svg"
+                    alt="edit"
+                    onClick={handleEdit}
+                  />
+                </Link>
+                <img
+                  src="/images/activities/delete.svg"
+                  alt="delete"
+                  onClick={() => onRemove()}
+                />
+              </>
             )}
+          </div>
+        )}
+        <div className="my-activities__activities-side__activity">
+          <div className="my-activities__activities-side__activity__total-raiting__container">
             <div
-              className={
-                likedActivity
-                  ? "my-activities__activities-side__activity__buttons__like"
-                  : ""
-              }
+              className="my-activities__activities-side__activity__total-raiting"
+              onMouseEnter={() => setIsHoveringTotalRaiting(true)}
+              onMouseLeave={() => setIsHoveringTotalRaiting(false)}
             >
-              Like ({numberOfLikes})
+              <div
+                className={
+                  isHoveringTotalRaiting && totalRaiting.raiting !== 0
+                    ? "my-activities__activities-side__activity__total-raiting__users my-activities__activities-side__activity__total-raiting__users-active"
+                    : "my-activities__activities-side__activity__total-raiting__users"
+                }
+              >
+                <div className="my-activities__activities-side__activity__total-raiting__users__arrow">
+                  &nbsp;
+                </div>
+                {totalRaiting.users.map((u) => (
+                  <Link
+                    className="my-activities__activities-side__activity__total-raiting__users__user"
+                    to={`/activities/${u.id}`}
+                    key={u.id}
+                  >
+                    <h3>
+                      {u.name}: <span>{u.rate}</span>
+                    </h3>
+                    <Star color="yellow" />
+                  </Link>
+                ))}
+              </div>
+              <h3>Total raiting:</h3>
+              <div>{totalStars}</div>
             </div>
-            <span>&nbsp;</span>
-          </button>
-          <button onClick={() => commentInput.current.focus()}>
-            <img src="/images/activities/comment.svg" alt="comment" />
-            Comment<span>&nbsp;</span>
-          </button>
-        </div>
-        <div className="my-activities__activities-side__activity__comments">
-          {displayedComments.map((c) => (
-            <Comment
-              key={c.id}
-              userName={c.user.name}
-              commentBody={c.comment}
-              commentLikes={c.commentLikeUsers.length}
-              id={c.id}
-              visitorUserId={visitorUserId}
-              activityId={id}
-              isLiked={() => handleIsLikedComment(c.commentLikeUsers)}
-              commentLikeUsers={c.commentLikeUsers}
-            />
-          ))}
-          {displayedCommentNumber < activityComments.length ? (
-            <button
-              className="my-activities__activities-side__activity__comments__show-more"
-              onClick={() =>
-                setDisplayedCommentsNumber(displayedCommentNumber * 2)
-              }
-            >
-              Show more ({activityComments.length - displayedCommentNumber})
+            <div className="my-activities__activities-side__activity__personal-raiting">
+              <h3>Your raiting:</h3>
+              <StarsRaiting
+                initialState={rateActivity}
+                handleStarClick={handleRateActivity}
+              />
+            </div>
+          </div>
+          <div className="my-activities__activities-side__activity__title">
+            {title}
+          </div>
+          <div className="my-activities__activities-side__activity__subject">
+            {subject}
+          </div>
+          <div className="my-activities__activities-side__activity__body">
+            {body}
+          </div>
+          <div className="my-activities__activities-side__activity__date">
+            {date}
+          </div>
+          <div className="my-activities__activities-side__activity__buttons">
+            <button onClick={() => handleLikeButton()}>
+              {likedActivity ? (
+                <img src="/images/activities/blueLike.svg" alt="blue like" />
+              ) : (
+                <img src="/images/activities/like.svg" alt="like" />
+              )}
+              <div
+                className={
+                  likedActivity
+                    ? "my-activities__activities-side__activity__buttons__like"
+                    : ""
+                }
+              >
+                Like ({numberOfLikes})
+              </div>
+              <span>&nbsp;</span>
             </button>
-          ) : (
-            <button
-              className="my-activities__activities-side__activity__comments__show-more"
-              onClick={() => setDisplayedCommentsNumber(2)}
-            >
-              Show less
+            <button onClick={() => commentInput.current.focus()}>
+              <img src="/images/activities/comment.svg" alt="comment" />
+              Comment<span>&nbsp;</span>
             </button>
-          )}
-          <form
-            className="my-activities__activities-side__activity__add-comment"
-            onSubmit={handleSubmitComment}
-          >
-            <img src="/images/activities/anonym.jpg" alt="anonym user" />
-            <input
-              ref={commentInput}
-              type="text"
-              name="commentBody"
-              placeholder="Write a comment..."
-            />
-          </form>
+          </div>
+          <div className="my-activities__activities-side__activity__comments">
+            {displayedComments.map((c) => (
+              <Comment
+                key={c.id}
+                userName={c.user.name}
+                commentBody={c.comment}
+                commentLikes={c.commentLikeUsers.length}
+                id={c.id}
+                visitorUserId={visitorUserId}
+                activityId={id}
+                isLiked={() => handleIsLikedComment(c.commentLikeUsers)}
+                commentLikeUsers={c.commentLikeUsers}
+              />
+            ))}
+            {displayedCommentNumber < activityComments.length ? (
+              <button
+                className="my-activities__activities-side__activity__comments__show-more"
+                onClick={() =>
+                  setDisplayedCommentsNumber(displayedCommentNumber * 2)
+                }
+              >
+                Show more ({activityComments.length - displayedCommentNumber})
+              </button>
+            ) : (
+              <button
+                className="my-activities__activities-side__activity__comments__show-more"
+                onClick={() => setDisplayedCommentsNumber(2)}
+              >
+                {activityComments.length > 2 ? "Show less" : ""}
+              </button>
+            )}
+            <form
+              className="my-activities__activities-side__activity__add-comment"
+              onSubmit={handleSubmitComment}
+            >
+              <img src="/images/activities/anonym.jpg" alt="anonym user" />
+              <input
+                ref={commentInput}
+                type="text"
+                name="commentBody"
+                placeholder="Write a comment..."
+              />
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

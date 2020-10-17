@@ -33,7 +33,7 @@ namespace Persistence.Migrations
             b.Property<string>("Subject")
                       .HasColumnType("TEXT");
 
-            b.Property<DateTime>("DateTimeCreated")
+            b.Property<string>("DateTimeCreated")
                       .HasColumnType("TEXT");
 
             b.HasKey("Id");

@@ -44,6 +44,7 @@ const Users = {
 const Activities = {
   create: (body) => request.post("/activity/create", body),
   list: (id) => request.get(`/activity/${id}`),
+  detail: (userId, activityId) => request.get(`/activity/${userId}/${activityId}`),
   like: (body) => request.post("/activity/like", body),
   rate: (body) => request.post("/activity/rate", body),
   deleteRate: (body) => request.post("/activity/delete-rate", body),

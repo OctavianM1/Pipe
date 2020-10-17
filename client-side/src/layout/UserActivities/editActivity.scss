@@ -1,0 +1,17 @@
+.edit {
+
+  max-width: 140rem;
+  margin: 10rem auto;
+
+
+  &__loader {
+    display: flex;
+    justify-content: center;
+    margin: 10rem auto;
+
+    & img {
+      width: 12rem;
+      height: 12rem;
+    }
+  }
+}

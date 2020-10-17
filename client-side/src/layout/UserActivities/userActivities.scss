@@ -4,8 +4,19 @@
 
   display: flex;
 
+  &__loader {
+    display: block;
+    margin: 10rem auto;
+
+    & img {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+
   &__filter-side {
-    margin-right: 15rem;
+    margin-right: 5%;
+    flex-basis: 25%;
   }
 
   &__activities-side {
@@ -63,6 +74,7 @@
           transform: translateX(0);
           opacity: 0;
           min-height: 5rem;
+          visibility: hidden;
           transition: 0.4s ease;
 
           &__arrow {
@@ -73,14 +85,14 @@
             height: 15px;
             background: linear-gradient(
               45deg,
-              rgb(245, 245, 245) 0%,
-              rgb(245, 245, 245) 50%,
+              rgb(250, 250, 250) 0%,
+              rgb(250, 250, 250) 50%,
               transparent 50%,
               transparent 100%
             );
             transform: rotate(45deg) translateX(0);
-            border-left: 1px solid rgb(100, 100, 100);
-            border-bottom: 1px solid rgb(100, 100, 100);
+            border-left: 1px solid rgb(150, 150, 150);
+            border-bottom: 1px solid rgb(150, 150, 150);
             box-shadow: -2px 2px 1px rgba(0, 0, 0, 0.2);
           }
 
@@ -110,6 +122,7 @@
           transform: translateX(25px);
           z-index: 50;
           opacity: 1;
+          visibility: visible;
         }
 
         & h3 {

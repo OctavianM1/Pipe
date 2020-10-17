@@ -34,7 +34,7 @@ namespace Application.Activities
           Title = request.Title,
           Body = request.Body,
           Subject = request.Subject,
-          DateTimeCreated = DateTime.Now
+          DateTimeCreated = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
         };
 
         _context.Activities.Add(activity);

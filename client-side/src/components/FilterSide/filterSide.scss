@@ -19,7 +19,9 @@
       padding: 1rem 2rem;
       border-radius: 5rem;
       border: 1px solid #ddd;
+      min-width: 100%;
       transition: 0.5s ease;
+      
 
       &:hover {
         border: 1px solid rgb(133, 133, 133);
@@ -87,6 +89,18 @@
         margin-top: 2rem;
         text-transform: capitalize;
         font-weight: 400;
+
+        &__raiting-stars {
+          display: flex;
+          align-self: center;
+
+          & span {
+            font-size: 1.6rem;
+            font-weight: bold;
+            font-family: "Roboto";
+            margin-right: 1rem;
+          }
+        }
 
         & > * {
           display: flex;
