@@ -24,7 +24,6 @@ const Footer = () => {
   };
 
   const handleSubmit = (ev) => {
-    console.log(ev.target.email.value);
     ev.preventDefault();
   };
 

@@ -29,15 +29,16 @@ const FilterSide = () => {
   const addHashOnChecked = useAddHashOnChecked();
 
   const changeSortFilter = (ev, string) => {
+    let newHashPath = replaceHash(hashPath, `&p=${hashObj["p"]}`, "&p=1");
     if (ev.target.value === `${string}-ascending`) {
       replaceHash(
-        hashPath,
+        newHashPath,
         `&${string}-descending=true`,
         `&${string}-ascending=true`
       );
     } else if (ev.target.value === `${string}-descending`) {
       replaceHash(
-        hashPath,
+        newHashPath,
         `&${string}-ascending=true`,
         `&${string}-descending=true`
       );
@@ -45,8 +46,9 @@ const FilterSide = () => {
   };
 
   const handleRaitingStarClick = (nrStars) => {
+    let newHashPath = replaceHash(hashPath, `&p=${hashObj["p"]}`, "&p=1");
     replaceHash(
-      hashPath,
+      newHashPath,
       `&raiting-stars=${numberRaitingStars}`,
       `&raiting-stars=${nrStars}`
     );
@@ -59,6 +61,7 @@ const FilterSide = () => {
 
   const handleRemoveRadio = (ev) => {
     if (hashObj[ev.target.value] === "true") {
+      replaceHash(hashPath, `&p=${hashObj["p"]}`, "&p=1");
       replaceHash(hashPath, `&${ev.target.value}=true`, "");
     }
   };

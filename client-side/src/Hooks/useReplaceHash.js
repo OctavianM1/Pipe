@@ -10,5 +10,6 @@ export default function useReplaceHash() {
     }
     newHashPath += actualHash;
     window.location.hash = newHashPath;
+    return newHashPath;
   };
 }

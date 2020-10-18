@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import FilterSide from "../../components/FilterSide/FilterSide";
 
 import "./userActivities.scss";
@@ -11,6 +11,8 @@ import useHavePutRate from "../../Hooks/useHavePutRate";
 import Activity from "./Activity";
 import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
+import useReplaceHash from "../../Hooks/useReplaceHash";
+import { useMemo } from "react";
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams();
@@ -18,21 +20,37 @@ const MyActivities = () => {
 
   const errorHandler = useApiErrorHandler();
   const [activities, setActivities] = useState([]);
-  const [displayedActivities, setDisplayedActivities] = useState([]);
 
   const [loader, setLoader] = useState(true);
+
+  const { hash } = useLocation();
+  const replaceHash = useReplaceHash();
+  const hashObj = useHash();
+
+  const page = Number(hashObj["p"]) || 1;
+
+  const sortedActivities = useMemo(() => {
+    return sortActivities(activities, hashObj);
+  }, [activities, hashObj]);
+
+  const nrOfPages = Math.ceil(sortedActivities.length / 5);
+
+  const activitiesOnCurrentPage = useMemo(() => {
+    const result = [];
+    for (let i = (page - 1) * 5; i < 5 * page && sortedActivities[i]; i++) {
+      result.push(sortedActivities[i]);
+    }
+    return result;
+  }, [page, sortedActivities]);
 
   useEffect(() => {
     Activities.list(hostUserId)
       .then((activs) => {
         setActivities(activs);
-        setDisplayedActivities(activs);
         setLoader(false);
       })
       .catch(errorHandler);
   }, [errorHandler, hostUserId]);
-
-  const hashObj = useHash();
 
   const havePutLike = useHavePutLike();
   const havePutRate = useHavePutRate();
@@ -43,108 +61,32 @@ const MyActivities = () => {
         const newActivities = activities.filter((a) => a.id !== activityId);
         setActivities(newActivities);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const sortActivitiesByRaiting = useCallback(() => {
-    if (hashObj["raiting-stars"]) {
-      const displayedActivities = [];
-      const raitingStars = +hashObj["raiting-stars"];
-      for (let i = 0; i < activities.length; i++) {
-        if (activities[i].raiting.raiting >= raitingStars) {
-          displayedActivities.push(activities[i]);
+  const handleChangePage = (page) => {
+    window.scroll({ top: 0 });
+    replaceHash(hash, `&p=${hashObj["p"]}`, `&p=${page}`);
+  };
+
+  const paginationNumbers = [];
+  for (let i = 1; i <= nrOfPages; i++) {
+    paginationNumbers.push(
+      <button
+        key={i}
+        className={
+          i === page
+            ? "my-activities__pagination__page my-activities__pagination__page__current"
+            : "my-activities__pagination__page"
         }
-      }
-      if (hashObj["raiting-ascending"] === "true") {
-        const sortedActivities = displayedActivities.sort(
-          (a, b) => a.raiting.raiting - b.raiting.raiting
-        );
-        setDisplayedActivities(sortedActivities);
-      } else if (hashObj["raiting-descending"] === "true") {
-        const sortedActivities = displayedActivities.sort(
-          (a, b) => b.raiting.raiting - a.raiting.raiting
-        );
-        console.log(sortedActivities);
-        setDisplayedActivities(sortedActivities);
-      } else {
-        setDisplayedActivities(displayedActivities);
-      }
-    } else if (hashObj["raiting-ascending"] === "true") {
-      const newActivities = [...activities].sort(
-        (a, b) => a.raiting.raiting - b.raiting.raiting
-      );
-      setDisplayedActivities(newActivities);
-    } else if (hashObj["raiting-descending"] === "true") {
-      const newActivities = [...activities].sort(
-        (a, b) => b.raiting.raiting - a.raiting.raiting
-      );
-      setDisplayedActivities(newActivities);
-    } else {
-      setDisplayedActivities([...activities]);
-    }
-  }, [hashObj, activities]);
-
-  useEffect(() => {
-    sortActivitiesByRaiting();
-  }, [sortActivitiesByRaiting]);
-
-  const sortActivitiesByDate = useCallback(() => {
-    if (hashObj["date-ascending"] === "true") {
-      console.log(activities);
-      const newActivities = [...activities].sort((a, b) =>
-        sortDateOldest(a, b)
-      );
-      setDisplayedActivities(newActivities);
-    } else if (hashObj["date-descending"] === "true") {
-      const newActivities = [...activities].sort((a, b) =>
-        sortDateNewest(a, b)
-      );
-      setDisplayedActivities(newActivities);
-    }
-  }, [hashObj, activities]);
-
-  useEffect(() => {
-    sortActivitiesByDate();
-  }, [sortActivitiesByDate]);
-
-  const filterBySubject = useCallback(() => {
-    if (!hashObj["art"] && !hashObj["sport"]) {
-      return;
-    }
-    const newActivities = [];
-    if (hashObj["art"] === "true") {
-      for (let i = 0; i < activities.length; i++) {
-        if (activities[i].subject.toLowerCase().includes("art")) {
-          newActivities.push(activities[i]);
-        }
-      }
-    }
-    if (hashObj["sport"] === "true") {
-      for (let i = 0; i < activities.length; i++) {
-        if (activities[i].subject.toLowerCase().includes("sport")) {
-          newActivities.push(activities[i]);
-        }
-      }
-    }
-    if (newActivities.length === activities.length) {
-      let same = true;
-      for (let i = 0; i < activities.length; i++) {
-        if (activities[i].id !== newActivities[i].id) {
-          same = false;
-          break;
-        }
-      }
-      if (!same) {
-        setDisplayedActivities(newActivities);
-      }
-    } else {
-      setDisplayedActivities(newActivities);
-    }
-  }, [hashObj, activities]);
-
-  useEffect(() => {
-    filterBySubject();
-  }, [filterBySubject]);
+        onClick={() => handleChangePage(i)}
+      >
+        <h3>{i}</h3>
+      </button>
+    );
+  }
 
   return (
     <>
@@ -162,7 +104,7 @@ const MyActivities = () => {
               <FilterSide />
             </div>
             <div className="my-activities__activities-side">
-              {displayedActivities.map((activity) => (
+              {activitiesOnCurrentPage.map((activity) => (
                 <Activity
                   key={activity.id}
                   id={activity.id}
@@ -184,6 +126,9 @@ const MyActivities = () => {
                   comments={activity.comments}
                 />
               ))}
+              <div className="my-activities__pagination">
+                {paginationNumbers}
+              </div>
             </div>
           </>
         )}
@@ -191,6 +136,65 @@ const MyActivities = () => {
     </>
   );
 };
+
+function filterSubject(activities, hashObj) {
+  if (!hashObj["art"] && !hashObj["sport"]) {
+    return activities;
+  }
+  const newActivities = [];
+  if (hashObj["art"] === "true") {
+    for (let i = 0; i < activities.length; i++) {
+      if (activities[i].subject.toLowerCase().includes("art")) {
+        newActivities.push(activities[i]);
+      }
+    }
+  }
+  if (hashObj["sport"] === "true") {
+    for (let i = 0; i < activities.length; i++) {
+      if (activities[i].subject.toLowerCase().includes("sport")) {
+        newActivities.push(activities[i]);
+      }
+    }
+  }
+  return newActivities;
+}
+
+function sortByRaitingStars(hashObj, activities) {
+  const newDisplayedActivities = [];
+  const raitingStars = +hashObj["raiting-stars"];
+  for (let i = 0; i < activities.length; i++) {
+    if (activities[i].raiting.raiting >= raitingStars) {
+      newDisplayedActivities.push(activities[i]);
+    }
+  }
+  if (hashObj["raiting-ascending"] === "true") {
+    return newDisplayedActivities.sort(
+      (a, b) => a.raiting.raiting - b.raiting.raiting
+    );
+  } else if (hashObj["raiting-descending"] === "true") {
+    return newDisplayedActivities.sort(
+      (a, b) => b.raiting.raiting - a.raiting.raiting
+    );
+  }
+  return newDisplayedActivities;
+}
+
+function sortActivities(activities, hashObj) {
+  let result = [...activities];
+  if (hashObj["raiting-stars"]) {
+    result = [...sortByRaitingStars(hashObj, result)];
+  } else if (hashObj["raiting-ascending"] === "true") {
+    result.sort((a, b) => a.raiting.raiting - b.raiting.raiting);
+  } else if (hashObj["raiting-descending"] === "true") {
+    result.sort((a, b) => b.raiting.raiting - a.raiting.raiting);
+  }
+  if (hashObj["date-ascending"] === "true") {
+    result.sort((a, b) => sortDateOldest(a, b));
+  } else if (hashObj["date-descending"] === "true") {
+    result.sort((a, b) => sortDateNewest(a, b));
+  }
+  return filterSubject(result, hashObj);
+}
 
 function sortDateOldest(a, b) {
   const yearA = getYear(a.dateTimeCreated);

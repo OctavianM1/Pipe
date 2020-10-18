@@ -45,12 +45,15 @@ const Activities = {
   create: (body) => request.post("/activity/create", body),
   list: (id) => request.get(`/activity/${id}`),
   detail: (userId, activityId) => request.get(`/activity/${userId}/${activityId}`),
+  update: (body) => request.put('/activity/update', body),
   like: (body) => request.post("/activity/like", body),
   rate: (body) => request.post("/activity/rate", body),
   deleteRate: (body) => request.post("/activity/delete-rate", body),
   delete: (id) => request.delete(`/activity/${id}`),
   addComment: (body) => request.post("/activity/add-comment", body),
-  addLikeToComment: (body) => request.post('activity/like-comment', body)
+  addLikeToComment: (body) => request.post('activity/like-comment', body),
+  deleteComment: (id) => request.delete(`activity/delete-comment/${id}`),
+  updateComment: (body) => request.put('/activity/update-comment', body)
 };
 
 export { Users, Activities };

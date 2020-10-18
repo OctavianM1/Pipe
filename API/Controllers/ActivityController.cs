@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Activities;
+using Application.Activities.Comments;
+using Application.Activities.Rate;
 using ApplicationActivity;
 using ApplicationComment;
 using Domain;
@@ -45,6 +47,12 @@ namespace API.Controllers
       return await _mediator.Send(command);
     }
 
+    [HttpPut("update")]
+    public async Task<ActionResult<Unit>> UpdateActivity(Update.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult<Unit>> DeleteActivity(string id)
     {
@@ -73,6 +81,18 @@ namespace API.Controllers
     public async Task<ActionResult<AppComment>> AddComment(AddComment.Command command)
     {
       return await _mediator.Send(command);
+    }
+
+    [HttpPut("update-comment")]
+    public async Task<ActionResult<Unit>> UpdateComment(UpdateComment.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpDelete("delete-comment/{id}")]
+    public async Task<ActionResult<Unit>> DeleteComment(string id)
+    {
+      return await _mediator.Send(new DeleteComment.Query { Id = id });
     }
 
     [HttpPost("like-comment")]

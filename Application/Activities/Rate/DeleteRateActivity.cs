@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Activities.Rate
 {
   public class DeleteRateActivity
   {

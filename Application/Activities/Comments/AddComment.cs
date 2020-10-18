@@ -9,7 +9,7 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Activities.Comments
 {
   public class AddComment
   {
@@ -36,8 +36,8 @@ namespace Application.Activities
           UserId = request.UserId,
           ActivityId = request.ActivityId,
           Comment = request.CommentBody,
-          DateTimeCreated = DateTime.Now,
-          DateTimeEdited = DateTime.Now
+          DateTimeCreated = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+          DateTimeEdited = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
         };
 
         _context.ActivityComments.Add(activityComment);

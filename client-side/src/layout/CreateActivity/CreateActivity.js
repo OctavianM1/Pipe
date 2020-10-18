@@ -10,10 +10,10 @@ import { Activities } from "../../api/axios";
 import CloseBtn from "../../components/Buttons/CloseBtn/CloseBtn";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 
-const CreateActivity = () => {
-  const [titleLabel, setTitleLabel] = useState(false);
-  const [subjectLabel, setSubjectLabel] = useState(false);
-  const [bodyLabel, setBodyLabel] = useState(false);
+const CreateActivity = ({ edit, title, subject, body, activity }) => {
+  const [titleLabel, setTitleLabel] = useState(edit);
+  const [subjectLabel, setSubjectLabel] = useState(edit);
+  const [bodyLabel, setBodyLabel] = useState(edit);
 
   const [titleLogger, setTitleLogger] = useState(false);
   const [subjectLogger, setSubjectLogger] = useState(false);
@@ -73,23 +73,40 @@ const CreateActivity = () => {
       errors = true;
       setBodyLogger(true);
     }
+
     if (!errors) {
-      Activities.create({
-        userHostId: JSON.parse(window.localStorage.getItem("user")).id,
-        title: ev.target.title.value,
-        subject: ev.target.subject.value,
-        body: ev.target.body.value,
-      })
-        .then(() => {
-          setSuccessCreatedPopUp(true);
-          titleInput.current.value = "";
-          subjectInput.current.value = "";
-          bodyInput.current.value = "";
-          setTitleLabel(false);
-          setSubjectLabel(false);
-          setBodyLabel(false);
+      const title = ev.target.title.value;
+      const subject = ev.target.subject.value;
+      const body = ev.target.body.value;
+      if (edit) {
+        Activities.update({
+          activityId: activity.id,
+          title: title,
+          subject: subject,
+          body: body,
         })
-        .catch((err) => console.log(err));
+          .then(() => {
+            setSuccessCreatedPopUp(true);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        Activities.create({
+          userHostId: JSON.parse(window.localStorage.getItem("user")).id,
+          title: title,
+          subject: subject,
+          body: body,
+        })
+          .then(() => {
+            setSuccessCreatedPopUp(true);
+            titleInput.current.value = "";
+            subjectInput.current.value = "";
+            bodyInput.current.value = "";
+            setTitleLabel(false);
+            setSubjectLabel(false);
+            setBodyLabel(false);
+          })
+          .catch((err) => console.log(err));
+      }
     }
 
     ev.preventDefault();
@@ -100,7 +117,7 @@ const CreateActivity = () => {
       {successCreatedPopUp && (
         <div className="succes-submit-pop-up">
           <div ref={successPopUp} className="succes-submit-pop-up__container">
-            <h1>You successfully created a activity!</h1>
+            <h1>You successfully {edit ? "updated" : "created"} a activity!</h1>
             <Link
               to={`/activities/${
                 JSON.parse(window.localStorage.getItem("user")).id
@@ -126,6 +143,7 @@ const CreateActivity = () => {
               className="create-activity__container__title"
               onBlur={handleBlurInput}
               onFocus={handleFocusInput}
+              defaultValue={edit ? title : ""}
             />
             <span
               className={
@@ -149,6 +167,7 @@ const CreateActivity = () => {
               className="create-activity__container__subject"
               onBlur={handleBlurInput}
               onFocus={handleFocusInput}
+              defaultValue={edit ? subject : ""}
             />
             <span
               className={
@@ -172,6 +191,7 @@ const CreateActivity = () => {
               className="create-activity__container__body"
               onBlur={handleBlurInput}
               onFocus={handleFocusInput}
+              defaultValue={edit ? body : ""}
             />
             <span
               className={

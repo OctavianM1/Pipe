@@ -10,8 +10,8 @@ namespace ApplicationComment
     public Guid Id { get; set; }
     public AppUser User { get; set; }
     public string Comment { get; set; }
-    public DateTime DateTimeCreated { get; set; }
-    public DateTime DateTimeEdited { get; set; }
+    public string DateTimeCreated { get; set; }
+    public string DateTimeEdited { get; set; }
     public List<AppUser> CommentLikeUsers { get; set; }
   }
 }

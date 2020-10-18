@@ -23,7 +23,6 @@ const Activity = ({
   visitorUserId,
   onRemove,
   comments,
-  edit,
 }) => {
   const commentInput = useRef(null);
 
@@ -50,7 +49,6 @@ const Activity = ({
         .then(() => setRateActivity(0))
         .catch((err) => console.log(err));
     } else {
-      console.log(visitorUserId, id, rate);
       Activities.rate({ userId: visitorUserId, activityId: id, rate: rate })
         .then(() => setRateActivity(rate))
         .catch((err) => console.log(err));
@@ -97,10 +95,6 @@ const Activity = ({
     return isLiked;
   };
 
-  const handleEdit = () => {
-    console.log("edit");
-  };
-
   let displayedComments = [];
   for (let i = 0; i < displayedCommentNumber; i++) {
     if (activityComments[i]) {
@@ -110,38 +104,27 @@ const Activity = ({
     }
   }
 
+  const handleDeleteComment = (id) => {
+    Activities.deleteComment(id)
+      .then(() => {
+        setActivityComments([...activityComments].filter((c) => c.id !== id));
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <div style={{ position: "relative" }}>
         {hostUserId === JSON.parse(localStorage.getItem("user"))["id"] && (
           <div className="my-activities__activities-side__activity__editing">
-            {edit ? (
-              <>
-                <img src="/images/activities/check.svg" alt="save" />
-                <Link to={`activities/${hostUserId}`}>
-                  <img
-                    src="/images/activities/delete.svg"
-                    alt="delete"
-                    onClick={() => onRemove()}
-                  />
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to={`${hostUserId}/edit/${id}`}>
-                  <img
-                    src="/images/activities/edit.svg"
-                    alt="edit"
-                    onClick={handleEdit}
-                  />
-                </Link>
-                <img
-                  src="/images/activities/delete.svg"
-                  alt="delete"
-                  onClick={() => onRemove()}
-                />
-              </>
-            )}
+            <Link to={`${hostUserId}/edit/${id}`}>
+              <img src="/images/activities/edit.svg" alt="edit" />
+            </Link>
+            <img
+              src="/images/activities/delete.svg"
+              alt="delete"
+              onClick={() => onRemove()}
+            />
           </div>
         )}
         <div className="my-activities__activities-side__activity">
@@ -224,6 +207,7 @@ const Activity = ({
             {displayedComments.map((c) => (
               <Comment
                 key={c.id}
+                hostUserId={c.user.id}
                 userName={c.user.name}
                 commentBody={c.comment}
                 commentLikes={c.commentLikeUsers.length}
@@ -232,6 +216,9 @@ const Activity = ({
                 activityId={id}
                 isLiked={() => handleIsLikedComment(c.commentLikeUsers)}
                 commentLikeUsers={c.commentLikeUsers}
+                onDeleteComment={() => handleDeleteComment(c.id)}
+                dateTimeCreated={c.dateTimeCreated}
+                dateTimeEdited={c.dateTimeEdited}
               />
             ))}
             {displayedCommentNumber < activityComments.length ? (

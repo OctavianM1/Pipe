@@ -6,7 +6,7 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Activities.Rate
 {
   public class RateActivity
   {

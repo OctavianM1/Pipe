@@ -4,6 +4,36 @@
 
   display: flex;
 
+  &__pagination {
+    display: flex;
+    justify-content: center;
+
+    &__page {
+      position: relative;
+      padding: 2.2rem;
+      background-color: #5758ff;
+      margin-right: 1.3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      transform: scale(1);
+
+      & h3 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-family: "Roboto";
+        font-weight: 500;
+        color: #fff;
+        transform: translate(-50%, -50%);
+      }
+
+      &__current {
+        background-color: red;
+        transform: scale(0.8);
+      }
+    }
+  }
+
   &__loader {
     display: block;
     margin: 10rem auto;
@@ -31,6 +61,7 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
       font-family: "Roboto";
       z-index: 10;
+      overflow: hidden;
 
       &__personal-raiting {
         position: relative;
@@ -229,11 +260,59 @@
           }
         }
 
-
         &__comment {
           display: flex;
           margin-top: 1rem;
           padding-bottom: 2rem;
+
+          &__display-date {
+            position: absolute;
+            z-index: 10;
+            bottom: 105%;
+            left: 50%;
+            transform: translate(-50%, 0px);
+            background-color: #5758ff;
+            padding: 1.5rem;
+            border-radius: 9px;
+            opacity: 0;
+            visibility: hidden;
+            width: 30rem;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.589);
+            transition: 0.5s;
+
+            & > div {
+              color: white;
+            }
+
+            div:first-child {
+              margin-bottom: 1rem;
+            }
+
+            &::before {
+              content: "";
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              transform: translate(-50%, -7.5px) rotate(45deg);
+              width: 12px;
+              height: 12px;
+              background: linear-gradient(
+                -45deg,
+                #5758ff 0%,
+                #5758ff 50%,
+                transparent 50%,
+                transparent 100%
+              );
+            }
+          }
+
+          &__display-date-active {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -10px);
+          }
+
           & > img {
             width: 4rem;
             height: 4rem;
@@ -295,12 +374,17 @@
             color: rgb(15, 15, 15);
             font-weight: bold;
             font-family: "Roboto";
+            transition: 0.3s;
+
+            & a:hover {
+              color: #5759ff;
+            }
           }
 
           &__body {
             font-family: "Roboto";
             padding-top: 5px;
-            word-break: break-all;
+            word-break: break-word;
           }
         }
       }
@@ -347,7 +431,7 @@
           width: 22.5px;
           height: 22.5px;
           cursor: pointer;
-          transition: .2s ease;
+          transition: 0.2s ease;
 
           &:hover {
             transform: scale(1.1);
@@ -379,6 +463,72 @@
 
     &:active {
       transform: scale(1);
+    }
+  }
+}
+
+.comment {
+  &__container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__edit {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    padding-left: 1.8rem;
+
+    &__form {
+      position: relative;
+    }
+
+    &__input {
+      position: relative;
+      margin-top: 4px;
+      border: none;
+      padding: 0.8rem 1.3rem;
+      background-color: transparent;
+      transition: 0.3s;
+
+      &__border {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%);
+        width: 10%;
+        height: 1.5px;
+        background-color: rgb(2, 177, 80);
+        transition: 0.4s;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus + &__border {
+        width: 100%;
+      }
+    }
+
+    & img {
+      width: 21px;
+      height: 21px;
+      cursor: pointer;
+      transform: scale(1);
+      transition: transform 0.3s;
+
+      &:first-child {
+        margin-bottom: 1rem;
+      }
+
+      &:hover {
+        transform: scale(1.2);
+      }
+
+      &:active {
+        transform: scale(1);
+      }
     }
   }
 }
