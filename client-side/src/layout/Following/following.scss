@@ -1,0 +1,110 @@
+.following {
+  max-width: 140rem;
+  margin: 5rem auto 10rem auto;
+
+  &__search {
+    width: 70%;
+    margin: 0 auto;
+    & > form {
+      width: 100%;
+    }
+  }
+
+  &__display-grid {
+    display: block;
+    text-align: right;
+    margin-right: 5rem;
+    margin-top: 5rem;
+    & svg {
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      margin: 0 1rem;
+
+      &:nth-child(1) {
+        @media screen and (max-width: 700px) {
+          display: none;
+        }
+      }
+      &:nth-child(2) {
+        @media screen and (max-width: 700px) {
+          display: none;
+        }
+      }
+      &:nth-child(3) {
+        @media screen and (max-width: 1000px) {
+          display: none;
+        }
+      }
+    }
+
+    &__active {
+      fill: blue;
+    }
+  }
+
+  &__users {
+    margin: 5rem 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__nobody {
+    display: block;
+    margin: 0 auto;
+    font-family: "Roboto";
+    & > div {
+      font-size: 5rem;
+      font-weight: 100;
+    }
+    & > a {
+      & > button {
+        font-size: 2rem;
+        margin: 7rem 0 1rem 18rem;
+      }
+    }
+  }
+}
+
+.search-users {
+  position: fixed;
+  right: 4rem;
+  bottom: 4rem;
+  z-index: 30;
+  padding: 3.1rem;
+  border-radius: 50%;
+  background-color: #20bf55;
+  background-image: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+  transform: scale(1);
+  transition: transform 0.3s ease;
+
+  & svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3.6rem;
+    height: 3.6rem;
+    fill: white;
+  }
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:active {
+    transform: scale(1);
+  }
+}
+
+.f-loader {
+  display: block;
+  margin: 5rem auto;
+
+  & img {
+    display: block;
+    margin: 0 auto;
+    width: 12rem;
+    height: 12rem;
+  }
+}

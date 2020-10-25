@@ -22,12 +22,6 @@ namespace API.Controllers
       _mediator = mediator;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<User>>> Get()
-    {
-      return await _mediator.Send(new List.Query());
-    }
-
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {

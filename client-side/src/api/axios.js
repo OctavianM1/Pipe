@@ -44,16 +44,41 @@ const Users = {
 const Activities = {
   create: (body) => request.post("/activity/create", body),
   list: (id) => request.get(`/activity/${id}`),
-  detail: (userId, activityId) => request.get(`/activity/${userId}/${activityId}`),
-  update: (body) => request.put('/activity/update', body),
+  detail: (userId, activityId) =>
+    request.get(`/activity/${userId}/${activityId}`),
+  update: (body) => request.put("/activity/update", body),
   like: (body) => request.post("/activity/like", body),
   rate: (body) => request.post("/activity/rate", body),
   deleteRate: (body) => request.post("/activity/delete-rate", body),
   delete: (id) => request.delete(`/activity/${id}`),
   addComment: (body) => request.post("/activity/add-comment", body),
-  addLikeToComment: (body) => request.post('activity/like-comment', body),
+  addLikeToComment: (body) => request.post("activity/like-comment", body),
   deleteComment: (id) => request.delete(`activity/delete-comment/${id}`),
-  updateComment: (body) => request.put('/activity/update-comment', body)
+  updateComment: (body) => request.put("/activity/update-comment", body),
 };
 
-export { Users, Activities };
+const Follows = {
+  following: (id) => request.get(`/follows/following/${id}`),
+};
+
+const Search = {
+  userNumber: (number) => request.get(`/search/usersNumber/${number}`),
+  allUsers: (userId, matchString) =>
+    request.get(`/search/searchAllUsers/${userId}/${matchString}`),
+  followingUsers: (userId, matchString) =>
+    request.get(`/search/searchFollowingUsers/${userId}/${matchString}`),
+  followsUsers: (userId, matchString) =>
+    request.get(`/search/searchFollowsUsers/${userId}/${matchString}`),
+  setInputAllUsers: (body) => request.post("/search/setInputAllUsers", body),
+  setInputFollowingUsers: (body) =>
+    request.post("/search/setInputFollowingUsers", body),
+  setInputFollowsUsers: (body) =>
+    request.post("/search/setInputFollowsUsers", body),
+  deleteAllUsersInput: (input) => request.delete(`/search/allUsers/${input}`),
+  deleteFollowingUsersInput: (input) =>
+    request.delete(`/search/followingUsers/${input}`),
+  deleteFollowsUsersInput: (input) =>
+    request.delete(`/search/followsUsers/${input}`),
+};
+
+export { Users, Activities, Follows, Search };

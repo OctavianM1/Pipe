@@ -34,6 +34,8 @@ const Activity = ({
 
   const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
 
+  const activityRef = useRef(null);
+
   const handleLikeButton = () => {
     Activities.like({ userId: visitorUserId, activityId: id })
       .then(() => {
@@ -127,7 +129,7 @@ const Activity = ({
             />
           </div>
         )}
-        <div className="my-activities__activities-side__activity">
+        <div ref={activityRef} className="my-activities__activities-side__activity">
           <div className="my-activities__activities-side__activity__total-raiting__container">
             <div
               className="my-activities__activities-side__activity__total-raiting"
@@ -187,15 +189,13 @@ const Activity = ({
               ) : (
                 <img src="/images/activities/like.svg" alt="like" />
               )}
-              <div
-                className={
-                  likedActivity
-                    ? "my-activities__activities-side__activity__buttons__like"
-                    : ""
-                }
-              >
-                Like ({numberOfLikes})
-              </div>
+              {likedActivity ? (
+                <div className="my-activities__activities-side__activity__buttons__like">
+                  UnLike ({numberOfLikes})
+                </div>
+              ) : (
+                <div>Like ({numberOfLikes})</div>
+              )}
               <span>&nbsp;</span>
             </button>
             <button onClick={() => commentInput.current.focus()}>
@@ -219,6 +219,7 @@ const Activity = ({
                 onDeleteComment={() => handleDeleteComment(c.id)}
                 dateTimeCreated={c.dateTimeCreated}
                 dateTimeEdited={c.dateTimeEdited}
+                activityRef={activityRef}
               />
             ))}
             {displayedCommentNumber < activityComments.length ? (

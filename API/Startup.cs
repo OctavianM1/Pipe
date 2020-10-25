@@ -48,7 +48,7 @@ namespace API
           policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
         });
       });
-      services.AddMediatR(typeof(List.Handler).Assembly);
+      services.AddMediatR(typeof(Login.Handler).Assembly);
       services.AddControllers(opt =>
       {
         var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();

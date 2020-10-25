@@ -87,6 +87,9 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
         })
           .then(() => {
             setSuccessCreatedPopUp(true);
+            setBodyLogger(false);
+            setTitleLogger(false);
+            setSubjectLogger(false);
           })
           .catch((err) => console.log(err));
       } else {
@@ -104,6 +107,9 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
             setTitleLabel(false);
             setSubjectLabel(false);
             setBodyLabel(false);
+            setBodyLogger(false);
+            setTitleLogger(false);
+            setSubjectLogger(false);
           })
           .catch((err) => console.log(err));
       }

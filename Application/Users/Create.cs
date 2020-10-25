@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Application.Errors;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Users
@@ -41,6 +42,12 @@ namespace Application.Users
           if (string.IsNullOrEmpty(request.Password)) errors["password"] = "Invalid password";
           if (string.IsNullOrEmpty(request.Name)) errors["name"] = "Invalid name";
           throw new RestException(HttpStatusCode.BadRequest, new { errors });
+        }
+
+        var existEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        if (existEmail != null)
+        {
+          throw new RestException(HttpStatusCode.BadRequest, new { email = "Email already exists" });
         }
 
         var rfc2898DeriveBytes = new Rfc2898DeriveBytes(request.Password, 32)

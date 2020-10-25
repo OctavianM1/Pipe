@@ -27,7 +27,7 @@ namespace Application.Activities.Comments
 
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
       {
-        var alreadyLiked = _context.CommentLikes.Where(cl => cl.ActivityId == request.ActivityId && cl.UserId == request.UserId).FirstOrDefault();
+        var alreadyLiked = _context.CommentLikes.Where(cl => cl.ActivityId == request.ActivityId && cl.UserId == request.UserId && cl.CommentId == request.CommentId).FirstOrDefault();
         if (alreadyLiked == null)
         {
           var commentLike = new CommentLikes

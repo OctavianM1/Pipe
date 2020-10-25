@@ -1,0 +1,150 @@
+.searchInput {
+  display: inline-block;
+  position: relative;
+
+  &__input {
+    padding: 1.4rem 2rem;
+    border-radius: 35px;
+    border: 1px solid #ddd;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+    font-family: "Roboto";
+    font-weight: 300;
+    color: black;
+    font-size: 1.8rem;
+    letter-spacing: 1.09px;
+    margin-right: -60px;
+    width: 100%;
+    transition: border 0.6s;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      border: 1px solid black;
+    }
+  }
+
+  &__container {
+    display: flex;
+    position: relative;
+  }
+
+  &__back {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0 2.2rem;
+    cursor: pointer;
+    display: flex;
+    background-color: transparent;
+    border: none;
+
+    & svg {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      transition: 0.3s ease-in-out;
+    }
+
+    & span {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      width: 25%;
+      height: 25%;
+      background-color: black;
+      border-top-right-radius: 35px;
+      border-bottom-right-radius: 35px;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: 0.3s ease-in-out;
+    }
+
+    &:hover span {
+      opacity: 0.07;
+      width: 96%;
+      height: 96%;
+    }
+  }
+
+  &__input:focus + &__back span {
+    opacity: 1;
+    width: 97%;
+    height: 97%;
+  }
+
+  &__input:focus + &__back svg {
+    fill: white;
+  }
+
+  &__drop-down {
+    position: absolute;
+    top: 100%;
+    left: 2%;
+    padding: 1rem 0;
+    width: 96%;
+    margin: 0 auto;
+    background-color: white;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.26);
+    z-index: 50;
+    max-height: 0rem;
+    visibility: hidden;
+    overflow: hidden;
+    opacity: 0;
+    transition: 0.5s;
+
+    & > li {
+      font-family: "Roboto";
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-size: 1.7rem;
+
+      & div {
+        & span {
+          &:nth-child(1) {
+            font-weight: 400;
+            opacity: 0.9;
+          }
+          &:nth-child(2) {
+            font-weight: bold;
+          }
+        }
+      }
+
+      &:hover {
+        background-color: rgb(240, 240, 240);
+      }
+    }
+
+    &__visited {
+      display: flex;
+      justify-content: space-between;
+
+      div {
+        color: rgb(105, 0, 105);
+      }
+
+      button {
+        color: #0066ff;
+        background-color: transparent;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &__drop-down-active {
+    max-height: 40rem;
+    visibility: visible;
+    opacity: 1;
+  }
+}

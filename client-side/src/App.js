@@ -12,12 +12,18 @@ import NonAuthenticated from "./layout/Unauthorized/Unauthorized";
 import UserActivities from "./layout/UserActivities/UserActivities";
 import CreateActivity from "./layout/CreateActivity/CreateActivity";
 import EditActivity from "./layout/UserActivities/EditActivity";
+import useDisableScroll from "./Hooks/useDisableScroll";
+import Following from "./layout/Following/Following";
+import SearchUsers from "./layout/SearchUsers/SearchUsers";
 
 function App() {
   const { openLoginModal } = useContext(Context);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
+
+  useDisableScroll([openLoginModal]);
+
   return (
-    <div className="App">
+    <div className="App disable-scroll">
       {openLoginModal && <Login openRegisterModal={openRegisterModal} />}
       <Header isOpenRegisterModal={isOpenRegisterModal} />
 
@@ -32,13 +38,16 @@ function App() {
           <UserActivities />
         </Route>
         <Route path={`/activities/:userId/edit/:activityId`}>
-          <EditActivity exact/>
+          <EditActivity exact />
         </Route>
         <Route path="/following" exact>
-          <h1>Following</h1>
+          <Following />
         </Route>
         <Route path="/followers" exact>
           <h1>Followers</h1>
+        </Route>
+        <Route path="/search-users" exact>
+          <SearchUsers />
         </Route>
         <Route path="/unauthorized" exact>
           <NonAuthenticated />

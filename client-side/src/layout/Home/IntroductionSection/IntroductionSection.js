@@ -23,7 +23,7 @@ const IntroductionSection = ({ isOpenRegisterModal }) => {
   return (
     <section className="introduction-section">
       <div className="introduction-section-container">
-        {user.id ? (
+        {user && user.id ? (
           <Header1>Welcome back to Pipe!</Header1>
         ) : (
           <Header1>Welcome to Pipe!</Header1>
@@ -41,7 +41,7 @@ const IntroductionSection = ({ isOpenRegisterModal }) => {
               Smallchat and convert those visitors into customers. All from
               inside Pipe.
             </p>
-            {user.id ? (
+            {user && user.id ? (
               <div className="introduction-section-container__follow-btns">
                 <Link to={'/followers'}>
                   <StandardButton>

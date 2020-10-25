@@ -11,8 +11,8 @@ import useHavePutRate from "../../Hooks/useHavePutRate";
 import Activity from "./Activity";
 import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
-import useReplaceHash from "../../Hooks/useReplaceHash";
 import { useMemo } from "react";
+import Pagination from "../../components/Pagination/Pagination";
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams();
@@ -23,8 +23,7 @@ const MyActivities = () => {
 
   const [loader, setLoader] = useState(true);
 
-  const { hash } = useLocation();
-  const replaceHash = useReplaceHash();
+  const { hash, pathname } = useLocation();
   const hashObj = useHash();
 
   const page = Number(hashObj["p"]) || 1;
@@ -48,6 +47,7 @@ const MyActivities = () => {
       .then((activs) => {
         setActivities(activs);
         setLoader(false);
+        window.scroll(0, 0);
       })
       .catch(errorHandler);
   }, [errorHandler, hostUserId]);
@@ -66,33 +66,19 @@ const MyActivities = () => {
       });
   };
 
-  const handleChangePage = (page) => {
-    window.scroll({ top: 0 });
-    replaceHash(hash, `&p=${hashObj["p"]}`, `&p=${page}`);
-  };
-
-  const paginationNumbers = [];
-  for (let i = 1; i <= nrOfPages; i++) {
-    paginationNumbers.push(
-      <button
-        key={i}
-        className={
-          i === page
-            ? "my-activities__pagination__page my-activities__pagination__page__current"
-            : "my-activities__pagination__page"
-        }
-        onClick={() => handleChangePage(i)}
-      >
-        <h3>{i}</h3>
-      </button>
-    );
-  }
+  useEffect(() => {
+    if (activities.length === 0) {
+      setLoader(true);
+    }
+  }, [pathname, activities.length]);
 
   return (
     <>
-      <Link to="/add-activity" className="add-activity">
-        <img src="/images/activities/plus.svg" alt="plus" />
-      </Link>
+      {hostUserId === visitorUserId && (
+        <Link to="/add-activity" className="add-activity">
+          <img src="/images/activities/plus.svg" alt="plus" />
+        </Link>
+      )}
       <div className="my-activities">
         {loader ? (
           <div className="my-activities__loader">
@@ -104,30 +90,41 @@ const MyActivities = () => {
               <FilterSide />
             </div>
             <div className="my-activities__activities-side">
-              {activitiesOnCurrentPage.map((activity) => (
-                <Activity
-                  key={activity.id}
-                  id={activity.id}
-                  title={activity.title}
-                  body={activity.body}
-                  subject={activity.subject}
-                  onRemove={() => handleRemoveActivity(activity.id)}
-                  date={activity.dateTimeCreated}
-                  totalRaiting={activity.raiting}
-                  isLiked={() =>
-                    havePutLike(activity.likes.users, visitorUserId)
-                  }
-                  likesNumber={activity.likes.likes}
-                  personalRate={() =>
-                    havePutRate(activity.raiting.users, visitorUserId)
-                  }
-                  hostUserId={hostUserId}
-                  visitorUserId={visitorUserId}
-                  comments={activity.comments}
-                />
-              ))}
+              {activitiesOnCurrentPage.length > 0 ? (
+                activitiesOnCurrentPage.map((activity) => (
+                  <Activity
+                    key={activity.id}
+                    id={activity.id}
+                    title={activity.title}
+                    body={activity.body}
+                    subject={activity.subject}
+                    onRemove={() => handleRemoveActivity(activity.id)}
+                    date={activity.dateTimeCreated}
+                    totalRaiting={activity.raiting}
+                    isLiked={() =>
+                      havePutLike(activity.likes.users, visitorUserId)
+                    }
+                    likesNumber={activity.likes.likes}
+                    personalRate={() =>
+                      havePutRate(activity.raiting.users, visitorUserId)
+                    }
+                    hostUserId={hostUserId}
+                    visitorUserId={visitorUserId}
+                    comments={activity.comments}
+                  />
+                ))
+              ) : (
+                <div className="my-activities__activities-side__not-found">
+                  No activities found!
+                </div>
+              )}
               <div className="my-activities__pagination">
-                {paginationNumbers}
+                <Pagination
+                  hash={hash}
+                  hashObj={hashObj}
+                  page={page}
+                  nrOfPages={nrOfPages}
+                />
               </div>
             </div>
           </>

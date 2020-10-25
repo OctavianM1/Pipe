@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.FollowsAndFollowing
@@ -25,6 +26,7 @@ namespace Application.FollowsAndFollowing
 
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
       {
+
         var newFollow = new Follows
         {
           UserId = request.UserId,
@@ -32,6 +34,13 @@ namespace Application.FollowsAndFollowing
         };
 
         _context.Follows.Add(newFollow);
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
+        user.CountFollowers++;
+
+        var follower = await _context.Users.FirstOrDefaultAsync(u => u.Id == request.FollowUserId);
+        follower.CountFollowing++;
+        
 
         var success = await _context.SaveChangesAsync() > 0;
 

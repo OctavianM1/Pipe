@@ -1,0 +1,23 @@
+.searchUsers {
+  &__loader {
+    display: block;
+    margin: 10rem auto;
+
+    & img {
+      display: block;
+      margin: 0 auto;
+      width: 12.5rem;
+      height: 12.5rem;
+    }
+  }
+
+  &__nobody {
+    display: block;
+    margin: 0 auto;
+    font-family: "Roboto";
+    & > div {
+      font-size: 5rem;
+      font-weight: 100;
+    }
+  }
+}

@@ -36,7 +36,7 @@ const HeaderLis = ({ closeDropDown, isOpenRegisterModal }) => {
         </Link>
       </li>
 
-      {user.id ? (
+      {user && user.id ? (
         <>
           <li>
             <Link

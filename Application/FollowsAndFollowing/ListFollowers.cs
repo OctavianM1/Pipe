@@ -26,8 +26,9 @@ namespace Application.FollowsAndFollowing
 
       public async Task<List<AppUser>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var followsIds = await _context.Follows.Where(x => x.UserId == request.Id)
-          .Select(x => x.FollowerId)
+
+        var followsIds = await _context.Follows.Where(x => x.FollowerId == request.Id)
+          .Select(x => x.UserId)
           .ToListAsync();
         var follows = await _context.Users.Where(x => followsIds.Contains(x.Id))
           .Select(x => new AppUser { Id = x.Id, Email = x.Email, Name = x.Name, CountFollowers = x.CountFollowers, CountFollowing = x.CountFollowing })

@@ -1,0 +1,44 @@
+.pagination {
+  &__page {
+    position: relative;
+    padding: 2.2rem;
+    background-color: #5758ff;
+    margin-right: 1.3rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: scale(1);
+
+    & h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-family: "Roboto";
+      font-weight: 500;
+      color: #fff;
+      transform: translate(-50%, -50%);
+    }
+
+    &__current {
+      background-color: red;
+      transform: scale(0.8);
+    }
+  }
+
+  &__dots {
+    position: relative;
+    margin-right: 1rem;
+    padding: 2.2rem;
+    border-radius: 50%;
+    background-color: black;
+    color: #fff;
+    transform: scale(0.7);
+
+    & span {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.9rem;
+    }
+  }
+}

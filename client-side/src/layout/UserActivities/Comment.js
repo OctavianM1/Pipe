@@ -18,10 +18,14 @@ const Comment = ({
   onDeleteComment,
   dateTimeCreated,
   dateTimeEdited,
+  activityRef,
 }) => {
   const [commentLikesNumber, setCommentLikesNumber] = useState(commentLikes);
   const [isLikedComment, setIsLikedComment] = useState(isLiked);
-  const [isHoveringCommentLikes, setIsHoveringCommentLikes] = useState(false);
+  const [hoveringCommentLikes, setHoveringCommentLikes] = useState({
+    hover: false,
+    part: 1, // 1 to right, 2 to left
+  });
   const [comment, setComment] = useState(commentBody);
   const [displayCommentDate, setDisplayCommentDate] = useState(false);
 
@@ -29,10 +33,14 @@ const Comment = ({
 
   const cancelEdit = useRef(null);
   const commentInput = useRef(null);
+  const commentLikeRef = useRef(null);
 
   const userId = JSON.parse(window.localStorage.getItem("user"))["id"];
 
   const handleOnLikeComment = () => {
+    console.log(visitorUserId);
+    console.log(activityId);
+    console.log(id);
     Activities.addLikeToComment({
       userId: visitorUserId,
       activityId: activityId,
@@ -98,6 +106,17 @@ const Comment = ({
     };
   }, [onEditCommentSubmit, editMode, comment, id]);
 
+  const handleHoverCommentLike = () => {
+    const activityRight = activityRef.current.getBoundingClientRect().right;
+    const likeContainerRight = commentLikeRef.current.getBoundingClientRect()
+      .right;
+    if (likeContainerRight + 300 < activityRight) {
+      setHoveringCommentLikes({ hover: true, part: 1 });
+    } else {
+      setHoveringCommentLikes({ hover: true, part: 2 });
+    }
+  };
+
   return (
     <div className="comment__container">
       <div className="my-activities__activities-side__activity__comments__comment">
@@ -138,30 +157,43 @@ const Comment = ({
               {comment}
             </div>
           )}
-          <button
-            className={isLikedComment ? "button-active" : ""}
-            onClick={() => handleOnLikeComment()}
-          >
-            Like
-          </button>
+          {isLikedComment ? (
+            <button
+              className="button-active"
+              onClick={() => handleOnLikeComment()}
+            >
+              UnLike
+            </button>
+          ) : (
+            <button onClick={() => handleOnLikeComment()}>Like</button>
+          )}
+
           <div
             className="comment-likes"
-            onMouseEnter={() => setIsHoveringCommentLikes(true)}
-            onMouseLeave={() => setIsHoveringCommentLikes(false)}
+            ref={commentLikeRef}
+            onMouseEnter={() => handleHoverCommentLike()}
+            onMouseLeave={() =>
+              setHoveringCommentLikes({
+                hover: false,
+                part: hoveringCommentLikes.part,
+              })
+            }
           >
             <div
               className={
-                isHoveringCommentLikes && commentLikesNumber !== 0
-                  ? "my-activities__activities-side__activity__total-raiting__users my-activities__activities-side__activity__total-raiting__users-active"
-                  : "my-activities__activities-side__activity__total-raiting__users"
+                hoveringCommentLikes.hover && commentLikesNumber !== 0
+                  ? `comment__likes__users-${hoveringCommentLikes.part} comment__likes__users-active-${hoveringCommentLikes.part}`
+                  : `comment__likes__users-${hoveringCommentLikes.part}`
               }
             >
-              <div className="my-activities__activities-side__activity__total-raiting__users__arrow">
+              <div
+                className={`comment__likes__users__arrow-${hoveringCommentLikes.part}`}
+              >
                 &nbsp;
               </div>
               {commentLikeUsers.map((u) => (
                 <Link
-                  className="my-activities__activities-side__activity__total-raiting__users__user"
+                  className="user-liker"
                   to={`/activities/${u.id}`}
                   key={u.id}
                 >

@@ -63,7 +63,11 @@ const Login = ({ openRegisterModal }) => {
           setCreatedAccountText("You have successfully registered");
           setSignUp(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          if (err.status === 400 && err.data.errors.email) {
+            setEmailRegisterLogger(err.data.errors.email);
+          }
+        });
     } else {
       if (name.trim().length === 0) {
         setNameRegisterLogger("Name cannot be empty");

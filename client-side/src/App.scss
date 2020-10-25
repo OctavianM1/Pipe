@@ -50,5 +50,8 @@ button {
 
 .App {
   position: relative;
-  // height: 6000px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
 }
