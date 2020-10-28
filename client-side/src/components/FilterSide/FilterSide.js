@@ -68,10 +68,6 @@ const FilterSide = () => {
 
   return (
     <div className="filterSide">
-      <div className="filterSide__search">
-        <h3>Search:</h3>
-        <input placeholder="Search for activities" />
-      </div>
       <div className="filterSide__filters">
         <h3>SORT BY:</h3>
         <div

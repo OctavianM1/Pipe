@@ -17,10 +17,9 @@ const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
   const [grid, setGrid] = useState(3);
   const [users, setUsers] = useState([]);
-  const [searchInputs, setSearchInputs] = useState([]);
 
   const error = useApiErrorHandler();
-  useGridOnResize(grid, setGrid);
+  useGridOnResize(grid, setGrid); 
 
   const userId = JSON.parse(window.localStorage.getItem("user")).id;
 
@@ -33,66 +32,19 @@ const SearchUsers = () => {
       .catch(error);
   }, [error]);
 
-  useEffect(() => {
-    Search.allUsers(userId, userId)
-      .then((inputs) => setSearchInputs(inputs))
-      .catch((err) => console.log(err));
-  }, [userId]);
-
-  const onSubmitSearch = (ev) => {
-    const val = ev.target.userSearch.value;
-    if (val.trim().length > 1 && val.trim().length < 51) {
-      Search.setInputAllUsers({ userId: userId, input: val })
-        .then(() => {
-          console.log("submitted");
-        })
-        .catch(error);
-    }
-    ev.preventDefault();
-  };
-
-  const onChangeSearch = (ev) => {
-    const val = ev.target.value;
-    if (val.trim() !== "") {
-      Search.allUsers(userId, val)
-        .then(setSearchInputs)
-        .catch((err) => console.log(err));
-    } else {
-      Search.allUsers(userId, userId)
-        .then(setSearchInputs)
-        .catch((err) => console.log(err));
-    }
-  };
-
-  const onClickInput = (ev) => {
-    const val = ev.target.innerHTML
-      .split("<span>")
-      .join("")
-      .split("</span>")
-      .join("");
-    Search.setInputAllUsers({ userId: userId, input: val })
-      .then(() => {
-        console.log("submitted");
-      })
-      .catch(error);
-  };
-
-  const handleDeleteInput = (input) => {
-    Search.deleteAllUsersInput(input)
-      .then(() => console.log("deleted"))
-      .catch((err) => console.log(err));
-  };
+  console.log(users); 
 
   return (
     <>
       <div className="following__search">
         <SearchInput
           placeholder="Search for users"
-          onSubmit={onSubmitSearch}
-          inputs={searchInputs}
-          onChangeSearch={onChangeSearch}
-          onClickInput={onClickInput}
-          onDeleteInput={handleDeleteInput}
+          onGetInputs={(matchString) =>
+            Search.allUsers(userId, matchString || userId)
+          }
+          onSetInput={(input) => Search.setInputAllUsers({ userId, input })}
+          onDeleteInput={(input) => Search.deleteAllUsersInput(userId, input)}
+          setUsers={setUsers}
         />
       </div>
       {loader ? (

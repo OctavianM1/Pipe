@@ -20,7 +20,7 @@ const Activity = ({
   totalRaiting,
   personalRate,
   hostUserId,
-  visitorUserId,
+  visitorUser,
   onRemove,
   comments,
 }) => {
@@ -37,7 +37,7 @@ const Activity = ({
   const activityRef = useRef(null);
 
   const handleLikeButton = () => {
-    Activities.like({ userId: visitorUserId, activityId: id })
+    Activities.like({ userId: visitorUser.id, activityId: id })
       .then(() => {
         setNumberOfLikes(likedActivity ? numberOfLikes - 1 : numberOfLikes + 1);
         setLikedActivity(!likedActivity);
@@ -47,11 +47,11 @@ const Activity = ({
 
   const handleRateActivity = (rate) => {
     if (rate === rateActivity) {
-      Activities.deleteRate({ userId: visitorUserId, activityId: id })
+      Activities.deleteRate({ userId: visitorUser.id, activityId: id })
         .then(() => setRateActivity(0))
         .catch((err) => console.log(err));
     } else {
-      Activities.rate({ userId: visitorUserId, activityId: id, rate: rate })
+      Activities.rate({ userId: visitorUser.id, activityId: id, rate: rate })
         .then(() => setRateActivity(rate))
         .catch((err) => console.log(err));
     }
@@ -71,7 +71,7 @@ const Activity = ({
     const comment = ev.target.commentBody.value;
     if (comment.trim() !== "") {
       Activities.addComment({
-        userId: visitorUserId,
+        userId: visitorUser.id,
         activityId: id,
         commentBody: comment,
       })
@@ -90,10 +90,11 @@ const Activity = ({
     }
     let isLiked = false;
     users.forEach((u) => {
-      if (u.id === visitorUserId) {
+      if (u.id === visitorUser.id) {
         isLiked = true;
       }
     });
+    
     return isLiked;
   };
 
@@ -212,7 +213,7 @@ const Activity = ({
                 commentBody={c.comment}
                 commentLikes={c.commentLikeUsers.length}
                 id={c.id}
-                visitorUserId={visitorUserId}
+                visitorUser={visitorUser}
                 activityId={id}
                 isLiked={() => handleIsLikedComment(c.commentLikeUsers)}
                 commentLikeUsers={c.commentLikeUsers}

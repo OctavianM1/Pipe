@@ -38,5 +38,6 @@ namespace Persistence
     public DbSet<SearchAllUsers> SearchAllUsers { get; set; }
     public DbSet<SearchFollowingUsers> SearchFollowingUsers { get; set; }
     public DbSet<SearchFollowsUsers> SearchFollowsUsers { get; set; }
+    public DbSet<SearchActivities> SearchActivities { get; set; }
   }
 }

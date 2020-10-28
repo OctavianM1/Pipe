@@ -20,6 +20,7 @@ namespace Application.Activities
     public class Query : IRequest<List<AppActivity>>
     {
       public string Id { get; set; }
+      public string MatchString { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, List<AppActivity>>
@@ -33,8 +34,14 @@ namespace Application.Activities
 
       public async Task<List<AppActivity>> Handle(Query request, CancellationToken cancellationToken)
       {
+        string str = request.MatchString;
+        if (str.Equals(request.Id))
+        {
+          str = "";
+        }
         var guidId = Guid.Parse(request.Id);
-        var activities = await _context.Activities.Where(x => x.UserHostId == guidId).ToListAsync();
+        var activities = await _context.Activities.Where(x => x.UserHostId == guidId && (x.Title.Contains(str) || x.Body.Contains(str)))
+          .ToListAsync();
         var appActivities = new List<AppActivity>();
         foreach (var a in activities)
         {

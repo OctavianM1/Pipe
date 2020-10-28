@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 const Comment = ({
   id,
   activityId,
-  visitorUserId,
   userName,
+  visitorUser,
   commentBody,
   commentLikes,
   isLiked,
@@ -28,6 +28,9 @@ const Comment = ({
   });
   const [comment, setComment] = useState(commentBody);
   const [displayCommentDate, setDisplayCommentDate] = useState(false);
+  const [commentLikesDisplayedUsers, setCommentLikesDisplayedUsers] = useState(
+    commentLikeUsers
+  );
 
   const [editMode, setEditMode] = useState(false);
 
@@ -35,21 +38,25 @@ const Comment = ({
   const commentInput = useRef(null);
   const commentLikeRef = useRef(null);
 
-  const userId = JSON.parse(window.localStorage.getItem("user"))["id"];
-
   const handleOnLikeComment = () => {
-    console.log(visitorUserId);
-    console.log(activityId);
-    console.log(id);
     Activities.addLikeToComment({
-      userId: visitorUserId,
+      userId: visitorUser.id,
       activityId: activityId,
       commentId: id,
     })
       .then(() => {
-        setCommentLikesNumber(
-          isLikedComment ? commentLikesNumber - 1 : commentLikesNumber + 1
-        );
+        if (isLikedComment) {
+          setCommentLikesNumber(commentLikesNumber - 1);
+          setCommentLikesDisplayedUsers(
+            commentLikesDisplayedUsers.filter((c) => c.id !== visitorUser.id)
+          );
+        } else {
+          setCommentLikesNumber(commentLikesNumber + 1);
+          setCommentLikesDisplayedUsers([
+            ...commentLikesDisplayedUsers,
+            { ...visitorUser },
+          ]);
+        }
         setIsLikedComment(!isLikedComment);
       })
       .catch((err) => console.log(err));
@@ -191,7 +198,7 @@ const Comment = ({
               >
                 &nbsp;
               </div>
-              {commentLikeUsers.map((u) => (
+              {commentLikesDisplayedUsers.map((u) => (
                 <Link
                   className="user-liker"
                   to={`/activities/${u.id}`}
@@ -232,7 +239,7 @@ const Comment = ({
           />
         </div>
       )}
-      {hostUserId === userId && !editMode && (
+      {visitorUser && hostUserId === visitorUser.id && !editMode && (
         <div className="comment__edit">
           <img
             src="/images/activities/edit.svg"

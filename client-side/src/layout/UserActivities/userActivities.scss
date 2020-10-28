@@ -1,8 +1,19 @@
 .my-activities {
   max-width: 140rem;
-  margin: 10rem auto;
+  margin: 7rem auto;
 
   display: flex;
+
+  &__search {
+    display: block;
+    max-width: 140rem;
+    text-align: center;
+    margin: 5rem auto 0 auto;
+
+    & form {
+      width: 80%;
+    }
+  }
 
   &__pagination {
     display: flex;
@@ -316,8 +327,8 @@
 
             & .comment-likes {
               position: absolute;
-              bottom: -2rem;
-              right: -2rem;
+              bottom: -1rem;
+              right: -3.5rem;
               display: flex;
               align-items: center;
               background-color: rgb(253, 253, 253);

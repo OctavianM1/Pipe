@@ -12,6 +12,7 @@ namespace Application.Search.Inputs
   {
     public class Query : IRequest
     {
+      public Guid UserId { get; set; }
       public string Input { get; set; }
     }
 
@@ -24,7 +25,7 @@ namespace Application.Search.Inputs
       }
       public async Task<Unit> Handle(Query request, CancellationToken cancellationToken)
       {
-        var input = await _context.SearchFollowingUsers.FirstOrDefaultAsync(s => s.Input == request.Input);
+        var input = await _context.SearchFollowingUsers.FirstOrDefaultAsync(s => s.Input == request.Input && request.UserId == s.UserId);
         if (input == null)
         {
           throw new RestException(System.Net.HttpStatusCode.BadRequest, new { input = "Invalid input" });

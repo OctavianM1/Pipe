@@ -13,16 +13,19 @@ import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
+import SearchInput from "../../components/SearchInput/SearchInput";
+import { Search } from "../../api/axios";
+import User from "../../components/User/User";
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams();
-  const visitorUserId = JSON.parse(window.localStorage.getItem("user"))["id"];
+  const visitorUser = JSON.parse(window.localStorage.getItem("user"));
+
+  const [activities, setActivities] = useState([]);
+  const [loader, setLoader] = useState(true);
+  const [activitiesSearchInputs, setActivitiesSearchInputs] = useState([]);
 
   const errorHandler = useApiErrorHandler();
-  const [activities, setActivities] = useState([]);
-
-  const [loader, setLoader] = useState(true);
-
   const { hash, pathname } = useLocation();
   const hashObj = useHash();
 
@@ -72,13 +75,30 @@ const MyActivities = () => {
     }
   }, [pathname, activities.length]);
 
+  useEffect(() => {
+    Search.getActivities(hostUserId, "f")
+      .then((activ) => console.log(activ))
+      .catch(console.log('asd'));
+  }, []);
+
   return (
     <>
-      {hostUserId === visitorUserId && (
+      {visitorUser && hostUserId === visitorUser.id && (
         <Link to="/add-activity" className="add-activity">
           <img src="/images/activities/plus.svg" alt="plus" />
         </Link>
       )}
+      {/* <div className="my-activities__search">
+        <SearchInput
+          placeholder="Search for activities"
+          onGetInputs={(matchString) =>
+            Search.getActivities(hostUserId, matchString = hostUserId)
+          }
+          onSetInput={(input) => console.log('setInput')}
+          onDeleteInput={(input) => console.log('deleteInput')}
+          setUsers={setActivitiesSearchInputs}
+        />
+      </div> */}
       <div className="my-activities">
         {loader ? (
           <div className="my-activities__loader">
@@ -102,14 +122,14 @@ const MyActivities = () => {
                     date={activity.dateTimeCreated}
                     totalRaiting={activity.raiting}
                     isLiked={() =>
-                      havePutLike(activity.likes.users, visitorUserId)
+                      havePutLike(activity.likes.users, visitorUser.id)
                     }
                     likesNumber={activity.likes.likes}
                     personalRate={() =>
-                      havePutRate(activity.raiting.users, visitorUserId)
+                      havePutRate(activity.raiting.users, visitorUser.id)
                     }
                     hostUserId={hostUserId}
-                    visitorUserId={visitorUserId}
+                    visitorUser={visitorUser}
                     comments={activity.comments}
                   />
                 ))

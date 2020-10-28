@@ -74,11 +74,14 @@ const Search = {
     request.post("/search/setInputFollowingUsers", body),
   setInputFollowsUsers: (body) =>
     request.post("/search/setInputFollowsUsers", body),
-  deleteAllUsersInput: (input) => request.delete(`/search/allUsers/${input}`),
-  deleteFollowingUsersInput: (input) =>
-    request.delete(`/search/followingUsers/${input}`),
-  deleteFollowsUsersInput: (input) =>
-    request.delete(`/search/followsUsers/${input}`),
+  deleteAllUsersInput: (userId, input) =>
+    request.delete(`/search/allUsers/${userId}/${input}`),
+  deleteFollowingUsersInput: (userId, input) =>
+    request.delete(`/search/followingUsers/${userId}/${input}`),
+  deleteFollowsUsersInput: (userId, input) =>
+    request.delete(`/search/followsUsers/${userId}/${input}`),
+  getActivities: (userId, matchString) =>
+    request.get(`/search/activities/${userId}/${matchString}`),
 };
 
 export { Users, Activities, Follows, Search };
