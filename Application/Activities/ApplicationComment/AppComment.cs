@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Application.Activities.AppCommentLikes;
 using Application.Users.ApplicationUser;
 
 namespace ApplicationComment

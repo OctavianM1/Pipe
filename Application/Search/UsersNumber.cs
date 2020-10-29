@@ -27,22 +27,15 @@ namespace Application.Search
 
       public async Task<List<AppUser>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var users = await _context.Users.Take(request.NumberOfUsers).ToListAsync();
-
-        var appUsers = new List<AppUser>();
-        foreach (var u in users)
+        return await _context.Users.Take(request.NumberOfUsers).Select(u => new AppUser
         {
-          appUsers.Add(new AppUser
-          {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
-            CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing,
-          });
-        }
-
-        return appUsers;
+          Id = u.Id,
+          Name = u.Name,
+          Email = u.Email,
+          CountFollowers = u.CountFollowers,
+          CountFollowing = u.CountFollowing,
+          NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+        }).ToListAsync();
       }
     }
   }

@@ -8,7 +8,7 @@ namespace Persistence
   {
     public DataContext(DbContextOptions options) : base(options)
     {
-
+      
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,6 +27,11 @@ namespace Persistence
         .Property(s => s.Input)
         .IsRequired()
         .HasMaxLength(50);
+
+      builder.Entity<SearchActivities>()
+        .Property(s => s.Input)
+        .IsRequired();
+
     }
     public DbSet<User> Users { get; set; }
     public DbSet<Activity> Activities { get; set; }

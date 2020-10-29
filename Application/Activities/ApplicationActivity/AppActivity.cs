@@ -6,8 +6,8 @@ using ApplicationComment;
 
 namespace ApplicationActivity
 {
-  public class AppActivity
-  {
+  public class AppActivity 
+  { 
     public Guid Id { get; set; }
     public Guid UserHostId { get; set; }
     public string UserHostName { get; set; }
@@ -15,8 +15,8 @@ namespace ApplicationActivity
     public string Body { get; set; }
     public string Subject { get; set; }
     public string DateTimeCreated { get; set; }
-    public AppRaiting Raiting { get; set; }
-    public AppActivityLikes Likes { get; set; }
+    public AppRaiting Raiting { get; set; } 
+    public AppActivityLikes Likes { get; set; }  
     public List<AppComment> Comments { get; set; } 
   }
 }

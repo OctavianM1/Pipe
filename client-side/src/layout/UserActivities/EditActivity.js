@@ -26,7 +26,6 @@ const EditActivity = () => {
       .then((data) => {
         setLoader(false);
         setActivity(data);
-        console.log(data);
       })
       .catch(errorHandler);
   }, [userId, activityId, errorHandler]);

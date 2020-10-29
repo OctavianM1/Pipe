@@ -10,5 +10,6 @@ namespace Domain
     public Guid UserVisitorId { get; set; }
     public virtual User UserVisitor { get; set; }
     public string Input { get; set; }
+    public DateTime DateTimeAccessed { get; set; }
   }
 }

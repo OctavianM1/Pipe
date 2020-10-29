@@ -42,7 +42,15 @@ namespace Application.Search
           if (existsUser == null)
           {
             return await _context.Users.Where(u => usersIds.Contains(u.Id) && u.Name.StartsWith(request.Input))
-              .Select(u => new AppUser { Id = u.Id, Name = u.Name, Email = u.Email, CountFollowers = u.CountFollowers, CountFollowing = u.CountFollowing })
+              .Select(u => new AppUser
+              {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                CountFollowers = u.CountFollowers,
+                CountFollowing = u.CountFollowing,
+                NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+              })
               .ToListAsync();
           }
           var dbInput = new SearchFollowsUsers
@@ -60,7 +68,15 @@ namespace Application.Search
         if (succes)
         {
           return await _context.Users.Where(u => usersIds.Contains(u.Id) && u.Name.StartsWith(request.Input))
-            .Select(u => new AppUser { Id = u.Id, Name = u.Name, Email = u.Email, CountFollowers = u.CountFollowers, CountFollowing = u.CountFollowing })
+            .Select(u => new AppUser
+            {
+              Id = u.Id,
+              Name = u.Name,
+              Email = u.Email,
+              CountFollowers = u.CountFollowers,
+              CountFollowing = u.CountFollowing,
+              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+            })
             .ToListAsync();
         }
         throw new Exception("Error saving input search all users to db");

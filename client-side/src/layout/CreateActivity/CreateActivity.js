@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Activities } from "../../api/axios";
 import CloseBtn from "../../components/Buttons/CloseBtn/CloseBtn";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const CreateActivity = ({ edit, title, subject, body, activity }) => {
   const [titleLabel, setTitleLabel] = useState(edit);
@@ -26,6 +27,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
   const [successCreatedPopUp, setSuccessCreatedPopUp] = useState(false);
   const successPopUp = useRef(null);
   useOutsideAlerter(successPopUp, setSuccessCreatedPopUp);
+  const error = useApiErrorHandler();
 
   const handleBlurInput = (ev) => {
     if (ev.target.name === "title") {
@@ -91,7 +93,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
             setTitleLogger(false);
             setSubjectLogger(false);
           })
-          .catch((err) => console.log(err));
+          .catch(error);
       } else {
         Activities.create({
           userHostId: JSON.parse(window.localStorage.getItem("user")).id,
@@ -111,7 +113,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
             setTitleLogger(false);
             setSubjectLogger(false);
           })
-          .catch((err) => console.log(err));
+          .catch(error);
       }
     }
 

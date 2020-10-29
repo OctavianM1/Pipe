@@ -36,12 +36,19 @@ namespace Application.Search
         }
         else
         {
-          System.Console.WriteLine(request.Input);
           var existsUser = await _context.Users.FirstOrDefaultAsync(u => u.Name == request.Input);
           if (existsUser == null)
           {
             return await _context.Users.Where(u => u.Name.StartsWith(request.Input))
-              .Select(u => new AppUser { Id = u.Id, Name = u.Name, Email = u.Email, CountFollowers = u.CountFollowers, CountFollowing = u.CountFollowing })
+              .Select(u => new AppUser
+              {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                CountFollowers = u.CountFollowers,
+                CountFollowing = u.CountFollowing,
+                NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+              })
               .ToListAsync();
           }
           var dbInput = new SearchAllUsers

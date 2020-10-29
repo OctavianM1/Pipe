@@ -11,33 +11,28 @@ namespace Application.Search
 {
   public class MatchAllUsers
   {
-    public class Query : IRequest<List<AppUser>>
+    public class Command : IRequest<List<AppUser>>
     {
       public string MatchString { get; set; }
     }
-    public class Handler : IRequestHandler<Query, List<AppUser>>
+    public class Handler : IRequestHandler<Command, List<AppUser>>
     {
       private readonly DataContext _context;
       public Handler(DataContext context)
       {
         _context = context;
       }
-      public async Task<List<AppUser>> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<List<AppUser>> Handle(Command request, CancellationToken cancellationToken)
       {
-        var users = new List<AppUser>();
-        var usersDb = await _context.Users.Where(u => u.Name.StartsWith(request.MatchString)).ToListAsync();
-        foreach(var u in usersDb)
+        return await _context.Users.Where(u => u.Name.StartsWith(request.MatchString)).Select(u => new AppUser
         {
-          users.Add(new AppUser
-          {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
-            CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing,
-          });
-        }
-        return users;
+          Id = u.Id,
+          Name = u.Name,
+          Email = u.Email,
+          CountFollowers = u.CountFollowers,
+          CountFollowing = u.CountFollowing,
+          NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+        }).ToListAsync();
       }
     }
   }

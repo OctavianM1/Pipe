@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
 
 import SearchInput from "../../components/SearchInput/SearchInput";
@@ -19,7 +19,7 @@ const SearchUsers = () => {
   const [users, setUsers] = useState([]);
 
   const error = useApiErrorHandler();
-  useGridOnResize(grid, setGrid); 
+  useGridOnResize(grid, setGrid);
 
   const userId = JSON.parse(window.localStorage.getItem("user")).id;
 
@@ -32,18 +32,33 @@ const SearchUsers = () => {
       .catch(error);
   }, [error]);
 
-  console.log(users); 
+
+  const onGetInputs = useCallback(
+    (matchString) => Search.allUsers(userId, matchString),
+    [userId]
+  );
+
+  const onSetInput = useCallback(
+    (input) => Search.setInputAllUsers({ userId, input }),
+    [userId]
+  );
+
+  const onDeleteInput = useCallback(
+    (input) => Search.deleteAllUsersInput(userId, input),
+    [userId]
+  );
+
+  console.log(users);
+
 
   return (
     <>
       <div className="following__search">
         <SearchInput
           placeholder="Search for users"
-          onGetInputs={(matchString) =>
-            Search.allUsers(userId, matchString || userId)
-          }
-          onSetInput={(input) => Search.setInputAllUsers({ userId, input })}
-          onDeleteInput={(input) => Search.deleteAllUsersInput(userId, input)}
+          onGetInputs={onGetInputs}
+          onSetInput={onSetInput}
+          onDeleteInput={onDeleteInput}
           setUsers={setUsers}
         />
       </div>
@@ -67,6 +82,7 @@ const SearchUsers = () => {
                   name={u.name}
                   following={u.countFollowing}
                   followers={u.countFollowers}
+                  activities={u.numberOfActivities}
                   grid={grid}
                 />
               ))
@@ -82,4 +98,4 @@ const SearchUsers = () => {
   );
 };
 
-export default SearchUsers;
+export default React.memo(SearchUsers);

@@ -7,10 +7,11 @@
   &__search {
     display: block;
     max-width: 140rem;
-    text-align: center;
     margin: 5rem auto 0 auto;
 
     & form {
+      display: block;
+      margin: auto;
       width: 80%;
     }
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SearchInput from "../../components/SearchInput/SearchInput";
 
 import { Link } from "react-router-dom";
@@ -37,6 +37,21 @@ const Following = () => {
       .catch(error);
   }, [error, userId]);
 
+  const onGetInputs = useCallback(
+    (matchString) => Search.followingUsers(userId, matchString),
+    [userId]
+  );
+
+  const onSetInput = useCallback(
+    (input) => Search.setInputFollowingUsers({ userId, input }),
+    [userId]
+  );
+
+  const onDeleteInput = useCallback(
+    (input) => Search.deleteFollowingUsersInput(userId, input),
+    [userId]
+  );
+
   return (
     <>
       <Link to="/search-users" className="search-users">
@@ -46,15 +61,9 @@ const Following = () => {
         <div className="following__search">
           <SearchInput
             placeholder="Search for users"
-            onGetInputs={(matchString) =>
-              Search.followingUsers(userId, matchString || userId)
-            }
-            onSetInput={(input) =>
-              Search.setInputFollowingUsers({ userId, input })
-            }
-            onDeleteInput={(input) =>
-              Search.deleteFollowingUsersInput(userId, input)
-            }
+            onGetInputs={onGetInputs}
+            onSetInput={onSetInput}
+            onDeleteInput={onDeleteInput}
             setUsers={setFollowingUsers}
           />
         </div>
@@ -97,4 +106,4 @@ const Following = () => {
   );
 };
 
-export default Following;
+export default React.memo(Following);

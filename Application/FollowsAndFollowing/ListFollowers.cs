@@ -31,7 +31,16 @@ namespace Application.FollowsAndFollowing
           .Select(x => x.UserId)
           .ToListAsync();
         var follows = await _context.Users.Where(x => followsIds.Contains(x.Id))
-          .Select(x => new AppUser { Id = x.Id, Email = x.Email, Name = x.Name, CountFollowers = x.CountFollowers, CountFollowing = x.CountFollowing })
+          .Select(x => new AppUser
+          {
+            Id = x.Id,
+            Email = x.Email,
+            Name = x.Name,
+            CountFollowers = x.CountFollowers,
+            CountFollowing = x.CountFollowing,
+            NumberOfActivities = _context.Activities.Count(a => a.UserHostId == x.Id)
+
+          })
           .ToListAsync();
 
         if (follows != null)

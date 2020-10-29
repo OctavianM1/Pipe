@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-function useOutsideAlerter(ref, setPopUp, className) {
+function useOutsideAlerter(ref, setPopUp, className, fn) {
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -9,6 +9,7 @@ function useOutsideAlerter(ref, setPopUp, className) {
         (!className || !event.target.classList.contains(className))
       ) {
         setPopUp(false);
+        fn && fn();
       }
     }
 
@@ -16,7 +17,7 @@ function useOutsideAlerter(ref, setPopUp, className) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref, setPopUp, className]);
+  }, [ref, setPopUp, className, fn]);
 }
 
 export default useOutsideAlerter;

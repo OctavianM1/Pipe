@@ -4,6 +4,7 @@ import "./userActivities.scss";
 
 import { Activities } from "../../api/axios";
 import { Link } from "react-router-dom";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const Comment = ({
   id,
@@ -38,6 +39,8 @@ const Comment = ({
   const commentInput = useRef(null);
   const commentLikeRef = useRef(null);
 
+  const error = useApiErrorHandler();
+
   const handleOnLikeComment = () => {
     Activities.addLikeToComment({
       userId: visitorUser.id,
@@ -59,7 +62,7 @@ const Comment = ({
         }
         setIsLikedComment(!isLikedComment);
       })
-      .catch((err) => console.log(err));
+      .catch(error);
   };
 
   const onEditCommentSubmit = useCallback(
@@ -75,12 +78,12 @@ const Comment = ({
           .then(() => {
             setComment(commentValue);
           })
-          .catch((err) => console.log(err));
+          .catch(error);
       }
       setEditMode(false);
       ev.preventDefault();
     },
-    [comment, id]
+    [comment, id, error]
   );
 
   useEffect(() => {
@@ -103,7 +106,7 @@ const Comment = ({
               setComment(commentInput.current.value);
               setEditMode(false);
             })
-            .catch((err) => console.log(err));
+            .catch(error);
         }
       }
     }
@@ -111,7 +114,7 @@ const Comment = ({
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, [onEditCommentSubmit, editMode, comment, id]);
+  }, [onEditCommentSubmit, editMode, comment, id, error]);
 
   const handleHoverCommentLike = () => {
     const activityRight = activityRef.current.getBoundingClientRect().right;
@@ -234,7 +237,6 @@ const Comment = ({
           <img
             src="/images/activities/cancel.svg"
             alt="cancel"
-            onClick={() => console.log("cancel")}
             ref={cancelEdit}
           />
         </div>

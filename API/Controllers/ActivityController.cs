@@ -23,10 +23,10 @@ namespace API.Controllers
       _mediator = mediator;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<List<AppActivity>>> GetActivities(string id)
+    [HttpPost]
+    public async Task<ActionResult<List<AppActivity>>> GetActivities(List.Command command)
     {
-      return await _mediator.Send(new List.Query { Id = id, MatchString = "" });
+      return await _mediator.Send(command);
     }
 
     [HttpGet("{userId}/{activityId}")]

@@ -2,7 +2,7 @@
 
 namespace Persistence.Migrations
 {
-    public partial class Searches : Migration
+    public partial class CommentManyCommentLikes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

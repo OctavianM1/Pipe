@@ -33,116 +33,65 @@ namespace Application.Activities
 
       public async Task<AppActivity> Handle(Query request, CancellationToken cancellationToken)
       {
-        var activity = await _context.Activities.FirstOrDefaultAsync(a => a.Id == Guid.Parse(request.activityId));
-
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == Guid.Parse(request.userId));
-
-        var raitingUserIds = await _context.ActivityRaiting.Where(ar => ar.UserId == user.Id && ar.ActivityId == activity.Id).Select(ar => ar.UserId).ToListAsync();
-
-        var raitingUsers = await _context.Users.Where(u => raitingUserIds.Contains(u.Id)).ToListAsync();
-
-        var appUsersRaiting = new List<AppUserRaiting>();
-        foreach (var u in raitingUsers)
+        var guidActivityId = Guid.Parse(request.activityId);
+        return await _context.Activities.Where(a => a.Id == guidActivityId).Select(a => new AppActivity
         {
-          appUsersRaiting.Add(new AppUserRaiting
+          Id = a.Id,
+          UserHostId = a.UserHostId,
+          UserHostName = a.UserHost.Name,
+          Title = a.Title,
+          Subject = a.Subject,
+          Body = a.Body,
+          DateTimeCreated = a.DateTimeCreated,
+          Raiting = new AppRaiting
           {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
-            Rate = await _context.ActivityRaiting.Where(ar => ar.UserId == u.Id && ar.ActivityId == activity.Id).Select(ar => ar.Raiting).FirstOrDefaultAsync()
-          });
-        }
-
-        var raitingDb = await _context.ActivityRaiting.Where(ar => ar.ActivityId == activity.Id).ToListAsync();
-        float raiting = 0;
-        if (raitingDb.Count() > 0)
-        {
-          raiting = raitingDb.Average(rdb => rdb.Raiting);
-        }
-
-        var raitingApp = new AppRaiting
-        {
-          Raiting = raiting,
-          Users = appUsersRaiting
-        };
-
-        var likeUsersIds = await _context.ActivityLikes.Where(al => al.ActivityId == activity.Id).Select(al => al.UserId).ToListAsync();
-
-        var likeUsers = await _context.Users.Where(u => likeUsersIds.Contains(u.Id)).ToListAsync();
-
-        var appLikeUsers = new List<AppUser>();
-        foreach(var u in likeUsers)
-        {
-          appLikeUsers.Add(new AppUser
-          {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
-            CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing
-          });
-        }
-
-        var appActivityLikes = new AppActivityLikes
-        {
-          Likes = likeUsersIds.Count,
-          Users = appLikeUsers
-        };
-
-        var comments = new List<AppComment>();
-        var commentsDb = await _context.ActivityComments.Where(ac => ac.ActivityId == activity.Id).ToListAsync();
-        foreach(var comment in commentsDb)
-        {
-          var commentUserDb = await _context.Users.FirstOrDefaultAsync(u => u.Id == comment.UserId);
-          var commentUser = new AppUser
-          {
-            Id = commentUserDb.Id,
-            Name = commentUserDb.Name,
-            Email = commentUserDb.Email,
-            CountFollowers = commentUserDb.CountFollowers,
-            CountFollowing = commentUserDb.CountFollowing
-          };
-
-          var commentLikeUserIds = await _context.CommentLikes.Where(cl => cl.CommentId == comment.Id).Select(cl => cl.UserId).ToListAsync();
-          var commentLikeUsers = await _context.Users.Where(u => commentLikeUserIds.Contains(u.Id)).ToListAsync();
-
-          var likeCommentUsers = new List<AppUser>();
-          foreach(var u in commentLikeUsers)
-          {
-            likeCommentUsers.Add(new AppUser
+            Users = a.ActivityRaiting.Select(ar => new AppUserRaiting
             {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
-            CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing
-            });
-          }
-
-          comments.Add(new AppComment
+              Id = ar.UserId,
+              Name = ar.User.Name,
+              Email = ar.User.Email,
+              Rate = ar.Raiting
+            }).ToList(),
+            Raiting = a.ActivityRaiting.Average(ar => ar.Raiting)
+          },
+          Likes = new AppActivityLikes
           {
-            Id = comment.Id,
-            User = commentUser,
-            Comment = comment.Comment,
-            DateTimeCreated = comment.DateTimeCreated,
-            DateTimeEdited = comment.DateTimeEdited,
-            CommentLikeUsers = likeCommentUsers
-          });
-        }
-
-        return new AppActivity
-        {
-          Id = activity.Id,
-          UserHostId = user.Id,
-          UserHostName = user.Name,
-          Title = activity.Title,
-          Body = activity.Body,
-          Subject = activity.Subject,
-          DateTimeCreated = activity.DateTimeCreated,
-          Likes = appActivityLikes,
-          Comments = comments,
-          Raiting = raitingApp
-        };        
+            Likes = a.ActivityLikes.Count(),
+            Users = a.ActivityLikes.Select(al => new AppUser
+            {
+              Id = al.User.Id,
+              Name = al.User.Name,
+              Email = al.User.Email,
+              CountFollowers = al.User.CountFollowers,
+              CountFollowing = al.User.CountFollowing
+            }).ToList()
+          },
+          Comments = a.ActivityComment.Select(ac => new AppComment
+          {
+            Id = ac.Id,
+            User = new AppUser
+            {
+              Name = ac.User.Name,
+              Email = ac.User.Email,
+              Id = ac.UserId,
+              CountFollowers = ac.User.CountFollowers,
+              CountFollowing = ac.User.CountFollowing,
+              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == ac.UserId)
+            },
+            Comment = ac.Comment,
+            DateTimeCreated = ac.DateTimeCreated,
+            DateTimeEdited = ac.DateTimeEdited,
+            CommentLikeUsers = ac.CommentLikes.Select(cl => new AppUser
+            {
+              Id = cl.UserId,
+              Name = cl.User.Name,
+              Email = cl.User.Email,
+              CountFollowing = cl.User.CountFollowing,
+              CountFollowers = cl.User.CountFollowers,
+              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == cl.UserId)
+            }).ToList()
+          }).ToList()
+        }).FirstOrDefaultAsync();
       }
     }
   }

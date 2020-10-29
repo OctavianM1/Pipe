@@ -9,6 +9,7 @@ namespace Application.Users.ApplicationUser
     public string Name { get; set; }
     public int CountFollowers { get; set; }
     public int CountFollowing { get; set; }
+    public int NumberOfActivities { get; set; }
     public string Token { get; set; }
   }
 }

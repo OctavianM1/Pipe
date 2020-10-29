@@ -43,7 +43,8 @@ const Users = {
 
 const Activities = {
   create: (body) => request.post("/activity/create", body),
-  list: (id) => request.get(`/activity/${id}`),
+  list: (id, matchString) =>
+    request.post("/activity", { id, matchString: matchString || "" }),
   detail: (userId, activityId) =>
     request.get(`/activity/${userId}/${activityId}`),
   update: (body) => request.put("/activity/update", body),
@@ -64,11 +65,20 @@ const Follows = {
 const Search = {
   userNumber: (number) => request.get(`/search/usersNumber/${number}`),
   allUsers: (userId, matchString) =>
-    request.get(`/search/searchAllUsers/${userId}/${matchString}`),
+    request.post("/search/searchAllUsers", { 
+      userId,
+      matchString: matchString || "",
+    }),
   followingUsers: (userId, matchString) =>
-    request.get(`/search/searchFollowingUsers/${userId}/${matchString}`),
+    request.post(`/search/searchFollowingUsers`, {
+      userId,
+      matchString: matchString || "",
+    }),
   followsUsers: (userId, matchString) =>
-    request.get(`/search/searchFollowsUsers/${userId}/${matchString}`),
+    request.post(`/search/searchFollowsUsers`, {
+      userId,
+      matchString: matchString || "",
+    }),
   setInputAllUsers: (body) => request.post("/search/setInputAllUsers", body),
   setInputFollowingUsers: (body) =>
     request.post("/search/setInputFollowingUsers", body),
@@ -80,8 +90,16 @@ const Search = {
     request.delete(`/search/followingUsers/${userId}/${input}`),
   deleteFollowsUsersInput: (userId, input) =>
     request.delete(`/search/followsUsers/${userId}/${input}`),
-  getActivities: (userId, matchString) =>
-    request.get(`/search/activities/${userId}/${matchString}`),
+  getActivities: (userHostId, userVisitorId, matchString) =>
+    request.post("/search/activities", {
+      userHostId,
+      userVisitorId,
+      userInput: matchString || "",
+    }),
+  setInputActivities: (body) =>
+    request.post("/search/setInputActivities", body),
+  deleteInputActivities: (body) =>
+    request.post("/search/deleteInputActivities", body),
 };
 
 export { Users, Activities, Follows, Search };

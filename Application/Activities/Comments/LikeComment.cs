@@ -27,7 +27,7 @@ namespace Application.Activities.Comments
 
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
       {
-        var alreadyLiked = _context.CommentLikes.Where(cl => cl.ActivityId == request.ActivityId && cl.UserId == request.UserId && cl.CommentId == request.CommentId).FirstOrDefault();
+        var alreadyLiked = _context.CommentLikes.Where(cl => cl.ActivityId == request.ActivityId && cl.UserId == request.UserId && cl.ActivityCommentId == request.CommentId).FirstOrDefault();
         if (alreadyLiked == null)
         {
           var commentLike = new CommentLikes
@@ -35,7 +35,7 @@ namespace Application.Activities.Comments
             Id = Guid.NewGuid(),
             ActivityId = request.ActivityId,
             UserId = request.UserId,
-            CommentId = request.CommentId
+            ActivityCommentId = request.CommentId
           };
           _context.CommentLikes.Add(commentLike);
         }

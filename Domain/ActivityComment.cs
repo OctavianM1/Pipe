@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Domain
 {
@@ -12,5 +13,6 @@ namespace Domain
     public string Comment { get; set; }
     public string DateTimeCreated { get; set; }
     public string DateTimeEdited { get; set; }
+    public virtual ICollection<CommentLikes> CommentLikes { get; set; }
   }
 }

@@ -27,40 +27,40 @@ namespace API.Controllers
       return await _mediator.Send(new UsersNumber.Query { NumberOfUsers = numberOfUsers });
     }
 
-    [HttpGet("allUsersMatch/{matchString}")]
-    public async Task<ActionResult<List<AppUser>>> GetAllUsersMatch(string matchString)
+    [HttpPost("allUsersMatch")]
+    public async Task<ActionResult<List<AppUser>>> GetAllUsersMatch(MatchAllUsers.Command command)
     {
-      return await _mediator.Send(new MatchAllUsers.Query { MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
-    [HttpGet("followingUsersMatch/{matchString}")]
-    public async Task<ActionResult<List<AppUser>>> GetFollowingUsersMatch(string matchString)
+    [HttpPost("followingUsersMatch")]
+    public async Task<ActionResult<List<AppUser>>> GetFollowingUsersMatch(MatchFollowingUsers.Command command)
     {
-      return await _mediator.Send(new MatchFollowingUsers.Query { MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
-    [HttpGet("followsUsersMatch/{matchString}")]
-    public async Task<ActionResult<List<AppUser>>> GetFollowsUsersMatch(string matchString)
+    [HttpPost("followsUsersMatch")]
+    public async Task<ActionResult<List<AppUser>>> GetFollowsUsersMatch(MatchFollowsUsers.Command command)
     {
-      return await _mediator.Send(new MatchFollowsUsers.Query { MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
-    [HttpGet("searchAllUsers/{userId}/{matchString}")]
-    public async Task<ActionResult<List<Input>>> GetSearchAllUsers(string userId, string matchString)
+    [HttpPost("searchAllUsers")]
+    public async Task<ActionResult<List<Input>>> GetSearchAllUsers(AllUsers.Command command)
     {
-      return await _mediator.Send(new AllUsers.Query { UserId = userId, MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
-    [HttpGet("searchFollowingUsers/{userId}/{matchString}")]
-    public async Task<ActionResult<List<Input>>> GetSearchFollowingUsers(string userId, string matchString)
+    [HttpPost("searchFollowingUsers")]
+    public async Task<ActionResult<List<Input>>> GetSearchFollowingUsers(FollowingUsers.Command command)
     {
-      return await _mediator.Send(new FollowingUsers.Query { UserId = userId, MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
-    [HttpGet("searchFollowsUsers/{userId}/{matchString}")]
-    public async Task<ActionResult<List<Input>>> GetSearchFollowsUsers(string userId, string matchString)
+    [HttpPost("searchFollowsUsers")]
+    public async Task<ActionResult<List<Input>>> GetSearchFollowsUsers(FollowsUsers.Command command)
     {
-      return await _mediator.Send(new FollowsUsers.Query { UserId = userId, MatchString = matchString });
+      return await _mediator.Send(command);
     }
 
     [HttpPost("setInputAllUsers")]
@@ -99,10 +99,21 @@ namespace API.Controllers
       return await _mediator.Send(new DeleteFollowsUsers.Query { UserId = Guid.Parse(userId), Input = input });
     }
 
-    [HttpGet("activities/{userId}/{matchString}")]
-    public async Task<ActionResult<List<AppActivity>>> GetActivitiesOnSearch(string userId, string matchString)
+    [HttpPost("activities")]
+    public async Task<ActionResult<List<ActivityInput>>> GetActivitiesInputs(ActivitiesInputs.Command command)
     {
-      return await _mediator.Send(new List.Query { Id = userId, MatchString = matchString });
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("setInputActivities")]
+    public async Task<ActionResult<List<AppActivity>>> SetInputActivity(SetInputActivities.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+    [HttpPost("deleteInputActivities")]
+    public async Task<ActionResult<Unit>> DeleteActivitiesInput(DeleteInputActivities.Command command)
+    {
+      return await _mediator.Send(command);
     }
   }
 }

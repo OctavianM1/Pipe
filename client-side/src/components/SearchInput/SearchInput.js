@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import Loupe from "../Svgs/Loupe";
 
+import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
+
 import "./searchInput.scss";
 
 const SearchInput = ({
@@ -16,8 +18,10 @@ const SearchInput = ({
   const [activeSeachInput, setActiveSearchInput] = useState(-1);
   const [numberOfLettersInput, setNumberOfLettersInput] = useState(0);
   const inputRef = useRef(null);
+  const formRef = useRef(null);
 
   const error = useApiErrorHandler();
+
 
   useEffect(() => {
     onGetInputs().then(setSearchInputs).catch(error);
@@ -34,29 +38,35 @@ const SearchInput = ({
   };
 
   const onClickInput = (ev) => {
-    console.log(ev.target);
+    if (ev.target.className === "delete") return;
     let val = ev.target.innerHTML;
     if (val.substring(val.length - 9) === "</button>") {
-      val = val.substring(0, val.length - 23);
+      val = val.substring(0, val.length - 38);
     }
     if (val.substring(val.length - 6) === "</div>") {
       val = val.substring(5, val.length - 6);
     }
     val = val
       .substring(6, val.length - 7)
-      .split("<span>")
+      .split("<span>") 
       .join("")
       .split("</span>")
       .join("");
     onSetInput(val).then(setUsers).catch(error);
     inputRef.current.value = val;
+    setDisplayDropDown(false);
+    setActiveSearchInput(-1);
   };
 
-  const handleDeleteInput = (input) => {
-    console.log(input);
+  const handleDeleteInput = (ev, input) => {
     onDeleteInput(input)
-      .then(() => console.log("deleted"))
+      .then(() => {
+        setSearchInputs((oldInputs) =>
+          [...oldInputs].filter((i) => i.userInput !== input)
+        );
+      })
       .catch(error);
+    ev.preventDefault();
   };
 
   useEffect(() => {
@@ -74,7 +84,10 @@ const SearchInput = ({
         setActiveSearchInput(activeSeachInput + 1);
       } else if (ev.keyCode === 13) {
         // enter
+        setNumberOfLettersInput(0);
         onSetInput(inputRef.current.value).then(setUsers).catch(error);
+        setDisplayDropDown(false);
+        setActiveSearchInput(-1);
         inputRef.current.blur();
       }
       setTimeout(() => {
@@ -88,19 +101,25 @@ const SearchInput = ({
     return () => {
       document.removeEventListener("keydown", onKey);
     };
-  }, [dislpayDropDown, activeSeachInput, searchInputs, setUsers, error, onSetInput]);
+  }, [
+    dislpayDropDown,
+    activeSeachInput,
+    searchInputs,
+    setUsers,
+    error,
+    onSetInput,
+  ]);
 
   const handleOnMouseMove = (idx) => {
     setActiveSearchInput(idx);
   };
 
-  const onCloseDropDown = () => {
-    setDisplayDropDown(false);
-    setActiveSearchInput(-1);
-  };
+  useOutsideAlerter(formRef, setDisplayDropDown, null, () =>
+    setActiveSearchInput(-1)
+  );
 
   return (
-    <form className="searchInput">
+    <form className="searchInput" ref={formRef}>
       <div className="searchInput__container">
         <input
           ref={inputRef}
@@ -109,7 +128,7 @@ const SearchInput = ({
           className="searchInput__input"
           autoComplete="off"
           onFocus={() => setDisplayDropDown(true)}
-          onBlur={onCloseDropDown}
+          // onBlur={onCloseDropDown}
           onChange={(ev) => onChangeSearch(ev)}
         />
         <button className="searchInput__back">
@@ -144,7 +163,10 @@ const SearchInput = ({
                     </span>
                     <span>{i.userInput.substring(numberOfLettersInput)}</span>
                   </div>
-                  <button onClick={() => handleDeleteInput(i.userInput)}>
+                  <button
+                    className="delete"
+                    onClick={(ev) => handleDeleteInput(ev, i.userInput)}
+                  >
                     Delete
                   </button>
                 </li>
@@ -174,4 +196,4 @@ const SearchInput = ({
   );
 };
 
-export default SearchInput;
+export default React.memo(SearchInput);

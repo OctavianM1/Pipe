@@ -11,6 +11,7 @@ namespace Domain
     public Guid ActivityId { get; set; }
     public virtual Activity Activity { get; set; }
 
-    public Guid CommentId { get; set; }
+    public Guid ActivityCommentId { get; set; }
+    public virtual ActivityComment ActivityComment { get; set; }
   }
 }

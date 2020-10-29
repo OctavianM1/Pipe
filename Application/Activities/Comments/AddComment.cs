@@ -51,7 +51,8 @@ namespace Application.Activities.Comments
             Name = u.Name,
             Email = u.Email,
             CountFollowers = u.CountFollowers,
-            CountFollowing = u.CountFollowing
+            CountFollowing = u.CountFollowing,
+            NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
           }).FirstOrDefault();
           return new AppComment
           {

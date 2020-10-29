@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import FilterSide from "../../components/FilterSide/FilterSide";
 
@@ -15,7 +15,6 @@ import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { Search } from "../../api/axios";
-import User from "../../components/User/User";
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams();
@@ -23,10 +22,10 @@ const MyActivities = () => {
 
   const [activities, setActivities] = useState([]);
   const [loader, setLoader] = useState(true);
-  const [activitiesSearchInputs, setActivitiesSearchInputs] = useState([]);
+  const [displayNoActivitiesMsg, setDisplayNoActivitiesMsg] = useState(false);
 
   const errorHandler = useApiErrorHandler();
-  const { hash, pathname } = useLocation();
+  const { hash } = useLocation();
   const hashObj = useHash();
 
   const page = Number(hashObj["p"]) || 1;
@@ -64,22 +63,43 @@ const MyActivities = () => {
         const newActivities = activities.filter((a) => a.id !== activityId);
         setActivities(newActivities);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(errorHandler);
   };
 
   useEffect(() => {
     if (activities.length === 0) {
-      setLoader(true);
+      setDisplayNoActivitiesMsg(true);
+    } else {
+      displayNoActivitiesMsg && setDisplayNoActivitiesMsg(false);
     }
-  }, [pathname, activities.length]);
+  }, [activities.length, displayNoActivitiesMsg]);
 
-  useEffect(() => {
-    Search.getActivities(hostUserId, "f")
-      .then((activ) => console.log(activ))
-      .catch(console.log('asd'));
-  }, []);
+  const onGetInputs = useCallback(
+    (matchString) =>
+      Search.getActivities(hostUserId, visitorUser.id, matchString || ""),
+    [hostUserId, visitorUser]
+  );
+
+  const onSetInput = useCallback(
+    (matchString) =>
+      Search.setInputActivities({
+        userHostId: hostUserId,
+        userVisitorId: visitorUser.id,
+        userInput: matchString,
+      }),
+    [hostUserId, visitorUser]
+  );
+
+  const onDeleteInput = useCallback(
+    (matchString) =>
+      Search.deleteInputActivities({
+        userHostId: hostUserId,
+        userVisitorId: visitorUser.id,
+        userInput: matchString || "",
+      }),
+    [hostUserId, visitorUser]
+  );
+
 
   return (
     <>
@@ -88,17 +108,15 @@ const MyActivities = () => {
           <img src="/images/activities/plus.svg" alt="plus" />
         </Link>
       )}
-      {/* <div className="my-activities__search">
+      <div className="my-activities__search">
         <SearchInput
           placeholder="Search for activities"
-          onGetInputs={(matchString) =>
-            Search.getActivities(hostUserId, matchString = hostUserId)
-          }
-          onSetInput={(input) => console.log('setInput')}
-          onDeleteInput={(input) => console.log('deleteInput')}
-          setUsers={setActivitiesSearchInputs}
+          onGetInputs={onGetInputs}
+          onSetInput={onSetInput}
+          onDeleteInput={onDeleteInput}
+          setUsers={setActivities}
         />
-      </div> */}
+      </div>
       <div className="my-activities">
         {loader ? (
           <div className="my-activities__loader">
@@ -109,44 +127,48 @@ const MyActivities = () => {
             <div className="my-activities__filter-side">
               <FilterSide />
             </div>
-            <div className="my-activities__activities-side">
-              {activitiesOnCurrentPage.length > 0 ? (
-                activitiesOnCurrentPage.map((activity) => (
-                  <Activity
-                    key={activity.id}
-                    id={activity.id}
-                    title={activity.title}
-                    body={activity.body}
-                    subject={activity.subject}
-                    onRemove={() => handleRemoveActivity(activity.id)}
-                    date={activity.dateTimeCreated}
-                    totalRaiting={activity.raiting}
-                    isLiked={() =>
-                      havePutLike(activity.likes.users, visitorUser.id)
-                    }
-                    likesNumber={activity.likes.likes}
-                    personalRate={() =>
-                      havePutRate(activity.raiting.users, visitorUser.id)
-                    }
-                    hostUserId={hostUserId}
-                    visitorUser={visitorUser}
-                    comments={activity.comments}
+            {displayNoActivitiesMsg ? (
+              <h1>No activities found!</h1>
+            ) : (
+              <div className="my-activities__activities-side">
+                {activitiesOnCurrentPage.length > 0 ? (
+                  activitiesOnCurrentPage.map((activity) => (
+                    <Activity
+                      key={activity.id}
+                      id={activity.id}
+                      title={activity.title}
+                      body={activity.body}
+                      subject={activity.subject}
+                      onRemove={() => handleRemoveActivity(activity.id)}
+                      date={activity.dateTimeCreated}
+                      totalRaiting={activity.raiting}
+                      isLiked={() =>
+                        havePutLike(activity.likes.users, visitorUser.id)
+                      }
+                      likesNumber={activity.likes.likes}
+                      personalRate={() =>
+                        havePutRate(activity.raiting.users, visitorUser.id)
+                      }
+                      hostUserId={hostUserId}
+                      visitorUser={visitorUser}
+                      comments={activity.comments}
+                    />
+                  ))
+                ) : (
+                  <div className="my-activities__activities-side__not-found">
+                    No activities found!
+                  </div>
+                )}
+                <div className="my-activities__pagination">
+                  <Pagination
+                    hash={hash}
+                    hashObj={hashObj}
+                    page={page}
+                    nrOfPages={nrOfPages}
                   />
-                ))
-              ) : (
-                <div className="my-activities__activities-side__not-found">
-                  No activities found!
                 </div>
-              )}
-              <div className="my-activities__pagination">
-                <Pagination
-                  hash={hash}
-                  hashObj={hashObj}
-                  page={page}
-                  nrOfPages={nrOfPages}
-                />
               </div>
-            </div>
+            )}
           </>
         )}
       </div>
@@ -175,6 +197,8 @@ function filterSubject(activities, hashObj) {
   }
   return newActivities;
 }
+
+export default React.memo(MyActivities);
 
 function sortByRaitingStars(hashObj, activities) {
   const newDisplayedActivities = [];
@@ -264,8 +288,6 @@ function sortDateNewest(a, b) {
   const minutesB = getMinutes(b.dateTimeCreated);
   return minutesB - minutesA;
 }
-
-export default MyActivities;
 
 function getYear(date) {
   return +date.substring(6, 10);

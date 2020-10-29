@@ -12,12 +12,12 @@ namespace Application.Search
 {
   public class FollowingUsers
   {
-    public class Query : IRequest<List<Input>>
+    public class Command : IRequest<List<Input>>
     {
       public string UserId { get; set; }
       public string MatchString { get; set; }
     }
-    public class Handler : IRequestHandler<Query, List<Input>>
+    public class Handler : IRequestHandler<Command, List<Input>>
     {
       private readonly DataContext _context;
       public Handler(DataContext context)
@@ -25,7 +25,7 @@ namespace Application.Search
         _context = context;
       }
 
-      public async Task<List<Input>> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<List<Input>> Handle(Command request, CancellationToken cancellationToken)
       {
         var displayedInputs = new List<Input>();
         var id = Guid.Parse(request.UserId);

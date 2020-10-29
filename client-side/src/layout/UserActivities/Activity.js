@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 import "./userActivities.scss";
 import StarsRaiting from "../../components/StarsRaiting/StarsRaiting";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const Activity = ({
   id,
@@ -36,24 +37,26 @@ const Activity = ({
 
   const activityRef = useRef(null);
 
+  const error = useApiErrorHandler();
+
   const handleLikeButton = () => {
     Activities.like({ userId: visitorUser.id, activityId: id })
       .then(() => {
         setNumberOfLikes(likedActivity ? numberOfLikes - 1 : numberOfLikes + 1);
         setLikedActivity(!likedActivity);
       })
-      .catch((err) => console.log(err));
+      .catch(error);
   };
 
   const handleRateActivity = (rate) => {
     if (rate === rateActivity) {
       Activities.deleteRate({ userId: visitorUser.id, activityId: id })
         .then(() => setRateActivity(0))
-        .catch((err) => console.log(err));
+        .catch(error);
     } else {
       Activities.rate({ userId: visitorUser.id, activityId: id, rate: rate })
         .then(() => setRateActivity(rate))
-        .catch((err) => console.log(err));
+        .catch(error);
     }
   };
 
@@ -79,7 +82,7 @@ const Activity = ({
           setActivityComments([comment, ...activityComments]);
           commentInput.current.value = "";
         })
-        .catch((err) => console.log(err));
+        .catch(error);
     }
     ev.preventDefault();
   };
@@ -112,7 +115,7 @@ const Activity = ({
       .then(() => {
         setActivityComments([...activityComments].filter((c) => c.id !== id));
       })
-      .catch((err) => console.log(err));
+      .catch(error);
   };
 
   return (

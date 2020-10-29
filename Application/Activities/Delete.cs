@@ -26,22 +26,6 @@ namespace Application.Activities
       {
         var activityId = Guid.Parse(request.Id);
 
-        var commentLikes = await _context.CommentLikes.Where(cl => cl.ActivityId == activityId).ToListAsync();
-        _context.RemoveRange(commentLikes);
-        await _context.SaveChangesAsync();
-
-        var activityComments = await _context.ActivityComments.Where(cl => cl.ActivityId == activityId).ToListAsync();
-        _context.RemoveRange(activityComments);
-        await _context.SaveChangesAsync();
-
-        var activityRaitings = await _context.ActivityRaiting.Where(cl => cl.ActivityId == activityId).ToListAsync();
-        _context.RemoveRange(activityRaitings);
-        await _context.SaveChangesAsync();
-
-        var activityLikes = await _context.ActivityLikes.Where(cl => cl.ActivityId == activityId).ToListAsync();
-        _context.RemoveRange(activityLikes);
-        await _context.SaveChangesAsync();
-
         var activity = await _context.Activities.Where(a => a.Id == activityId).FirstOrDefaultAsync();
         _context.Activities.Remove(activity);
 
