@@ -8,8 +8,8 @@ function useOutsideAlerter(ref, setPopUp, className, fn) {
         !ref.current.contains(event.target) &&
         (!className || !event.target.classList.contains(className))
       ) {
-        setPopUp(false);
         fn && fn();
+        setPopUp(false);
       }
     }
 

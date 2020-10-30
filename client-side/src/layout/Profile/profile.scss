@@ -1,0 +1,186 @@
+.profile {
+  max-width: 140rem;
+  margin: 10rem auto;
+
+  &__input-logger {
+    color: red;
+    font-family: "Lato";
+    font-weight: 400;
+    margin-left: 1rem;
+  }
+
+  &__cancel-btn {
+    background-color: transparent;
+    color: red;
+    cursor: pointer;
+    font-family: "Lato";
+    font-size: 1.8rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__container {
+    width: 80%;
+    padding: 3rem;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+
+    &__info {
+      font-family: "Roboto";
+      color: #5759ff;
+      margin-bottom: 2rem;
+    }
+    &__public {
+      &__el {
+        font-family: "Roboto";
+        font-size: 1.8rem;
+        font-weight: bold;
+        padding: 1rem;
+        color: rgb(45, 45, 45);
+        display: flex;
+        align-items: center;
+        border-radius: 8px;
+
+        &__label {
+          width: 50%;
+        }
+
+        &__info {
+          width: 50%;
+          display: flex;
+          justify-content: space-between;
+
+          &__data {
+            color: rgb(90, 90, 90);
+          }
+
+          &__edit {
+            font-weight: 300;
+            font-family: "Lato";
+            color: blue;
+
+            & img {
+              width: 12px;
+              height: 12px;
+              margin-right: 5px;
+              display: none;
+            }
+          }
+        }
+
+        &:hover &__info {
+          &__edit {
+            text-decoration: underline;
+
+            & img {
+              display: inline-block;
+            }
+          }
+        }
+      }
+    }
+
+    &__security {
+      margin-top: 2rem;
+      padding: 2rem 1rem 1rem 1rem;
+      border-top: 1px solid #ddd;
+
+      &__el {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 8px;
+
+        &__data {
+          font-family: "Roboto";
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: rgb(45, 45, 45);
+          cursor: pointer;
+          display: flex;
+          border-radius: 8px;
+        }
+
+        &__edit {
+          font-weight: 300;
+          font-family: "Lato";
+          color: blue;
+          font-size: 1.8rem;
+          & img {
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            display: none;
+          }
+        }
+
+        &:hover &__edit {
+          text-decoration: underline;
+          & img {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+}
+
+.editable {
+  cursor: pointer;
+  &:hover {
+    background-color: rgb(241, 241, 241);
+  }
+}
+
+.normal-input {
+  padding: 0.8rem 1.5rem;
+  border-radius: 15px;
+  border: 1px solid rgb(163, 163, 163);
+  transition: border 0.4s;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    border: 1px solid black;
+  }
+}
+
+.margin-1rem-tb {
+  margin: 1rem 0;
+}
+
+.change-password-form {
+  display: flex;
+  flex-direction: column;
+  width: 32rem;
+
+  & > button {
+    margin-top: 2rem;
+  }
+
+  &__input-container {
+    display: flex;
+    align-items: center;
+
+    & > input[type="checkbox"] {
+      margin: 0 1rem;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      margin-left: auto;
+    }
+    & > label {
+      font-family: "Roboto";
+      cursor: pointer;
+    }
+  }
+}

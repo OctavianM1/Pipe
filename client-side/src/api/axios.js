@@ -41,6 +41,9 @@ const Users = {
   login: (body) => request.post("/user/login", body),
   usersActivity: (userHostId, userVisitorId) =>
     request.get(`/user/${userHostId}/${userVisitorId}`),
+  updateName: (body) => request.put("/user/changeName", body),
+  updateEmail: (body) => request.put("/user/changeEmail", body),
+  updatePassword: (body) => request.put("/user/changePassword", body),
 };
 
 const Activities = {

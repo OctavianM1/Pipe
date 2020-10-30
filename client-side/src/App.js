@@ -16,6 +16,7 @@ import useDisableScroll from "./Hooks/useDisableScroll";
 import Following from "./layout/Following/Following";
 import SearchUsers from "./layout/SearchUsers/SearchUsers";
 import Follows from "./layout/Following/Follows";
+import Profile from "./layout/Profile/Profile";
 
 function App() {
   const { openLoginModal } = useContext(Context);
@@ -30,7 +31,7 @@ function App() {
 
       <Switch>
         <Route path="/profile" exact>
-          <h1>Profile</h1>
+          <Profile />
         </Route>
         <Route path="/add-activity" exact>
           <CreateActivity />

@@ -24,7 +24,7 @@ namespace API.Controllers
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(Guid id)
+    public async Task<ActionResult<AppUser>> GetUser(Guid id)
     {
       return await _mediator.Send(new Detail.Query { Id = id });
     }
@@ -38,7 +38,7 @@ namespace API.Controllers
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]
+    [HttpPost("login")]  
     public async Task<ActionResult<AppUser>> Login(Login.Query query)
     {
       return await _mediator.Send(query);
@@ -48,6 +48,24 @@ namespace API.Controllers
     public async Task<ActionResult<AppUsersActivity>> GetUsersActivity(string userHostId, string userVisitorId)
     {
       return await _mediator.Send(new UsersActivity.Query { UserHostId = userHostId, UserVisitorId = userVisitorId });
+    }
+
+    [HttpPut("changeName")] 
+    public async Task<ActionResult<AppUser>> UpdateName(UpdateName.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPut("changeEmail")]
+    public async Task<ActionResult<AppUser>> UpdateEmail(UpdateEmail.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPut("changePassword")]
+    public async Task<ActionResult<AppUser>> UpdatePassword(UpdatePassword.Command command)
+    {
+      return await _mediator.Send(command);
     }
 
   }
