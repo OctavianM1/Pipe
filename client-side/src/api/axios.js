@@ -39,6 +39,8 @@ const Users = {
   create: (body) => request.post("/user/register", body),
   delete: (id) => request.delete(`/user/${id}`),
   login: (body) => request.post("/user/login", body),
+  usersActivity: (userHostId, userVisitorId) =>
+    request.get(`/user/${userHostId}/${userVisitorId}`),
 };
 
 const Activities = {
@@ -60,12 +62,15 @@ const Activities = {
 
 const Follows = {
   following: (id) => request.get(`/follows/following/${id}`),
+  follows: (id) => request.get(`/follows/followers/${id}`),
+  follow: (body) => request.post("/follows/follow", body),
+  unfollow: (body) => request.post("/follows/unfollow", body),
 };
 
 const Search = {
   userNumber: (number) => request.get(`/search/usersNumber/${number}`),
   allUsers: (userId, matchString) =>
-    request.post("/search/searchAllUsers", { 
+    request.post("/search/searchAllUsers", {
       userId,
       matchString: matchString || "",
     }),

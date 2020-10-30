@@ -4,7 +4,7 @@ import FilterSide from "../../components/FilterSide/FilterSide";
 
 import "./userActivities.scss";
 
-import { Activities } from "../../api/axios";
+import { Activities, Users, Search, Follows } from "../../api/axios";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import useHavePutLike from "../../Hooks/useHavePutLike";
 import useHavePutRate from "../../Hooks/useHavePutRate";
@@ -14,7 +14,7 @@ import Loader from "../../components/Loader/Loader";
 import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { Search } from "../../api/axios";
+import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams();
@@ -23,6 +23,7 @@ const MyActivities = () => {
   const [activities, setActivities] = useState([]);
   const [loader, setLoader] = useState(true);
   const [displayNoActivitiesMsg, setDisplayNoActivitiesMsg] = useState(false);
+  const [userData, setUserData] = useState({});
 
   const errorHandler = useApiErrorHandler();
   const { hash } = useLocation();
@@ -53,6 +54,12 @@ const MyActivities = () => {
       })
       .catch(errorHandler);
   }, [errorHandler, hostUserId]);
+
+  useEffect(() => {
+    Users.usersActivity(hostUserId, visitorUser.id)
+      .then(setUserData)
+      .catch(errorHandler);
+  }, [hostUserId, visitorUser.id, errorHandler]);
 
   const havePutLike = useHavePutLike();
   const havePutRate = useHavePutRate();
@@ -100,6 +107,29 @@ const MyActivities = () => {
     [hostUserId, visitorUser]
   );
 
+  const handleFollowClick = () => {
+    if (userData.isVisitorFollowingHost) {
+      Follows.unfollow({ userId: hostUserId, followUserId: visitorUser.id })
+        .then(() =>
+          setUserData({
+            ...userData,
+            isVisitorFollowingHost: false,
+            countFollows: userData.countFollows - 1,
+          })
+        )
+        .catch(errorHandler);
+    } else {
+      Follows.follow({ userId: hostUserId, followUserId: visitorUser.id })
+        .then(() =>
+          setUserData({
+            ...userData,
+            isVisitorFollowingHost: true,
+            countFollows: userData.countFollows + 1,
+          })
+        )
+        .catch(errorHandler);
+    }
+  };
 
   return (
     <>
@@ -117,58 +147,83 @@ const MyActivities = () => {
           setUsers={setActivities}
         />
       </div>
-      <div className="my-activities">
+      <div>
         {loader ? (
           <div className="my-activities__loader">
             <Loader />
           </div>
         ) : (
           <>
-            <div className="my-activities__filter-side">
-              <FilterSide />
-            </div>
-            {displayNoActivitiesMsg ? (
-              <h1>No activities found!</h1>
-            ) : (
-              <div className="my-activities__activities-side">
-                {activitiesOnCurrentPage.length > 0 ? (
-                  activitiesOnCurrentPage.map((activity) => (
-                    <Activity
-                      key={activity.id}
-                      id={activity.id}
-                      title={activity.title}
-                      body={activity.body}
-                      subject={activity.subject}
-                      onRemove={() => handleRemoveActivity(activity.id)}
-                      date={activity.dateTimeCreated}
-                      totalRaiting={activity.raiting}
-                      isLiked={() =>
-                        havePutLike(activity.likes.users, visitorUser.id)
-                      }
-                      likesNumber={activity.likes.likes}
-                      personalRate={() =>
-                        havePutRate(activity.raiting.users, visitorUser.id)
-                      }
-                      hostUserId={hostUserId}
-                      visitorUser={visitorUser}
-                      comments={activity.comments}
-                    />
-                  ))
-                ) : (
-                  <div className="my-activities__activities-side__not-found">
-                    No activities found!
-                  </div>
-                )}
-                <div className="my-activities__pagination">
-                  <Pagination
-                    hash={hash}
-                    hashObj={hashObj}
-                    page={page}
-                    nrOfPages={nrOfPages}
-                  />
+            {hostUserId !== visitorUser.id && (
+              <div className="activities-info">
+                <div>
+                  Name: <span>{userData.name}</span>
                 </div>
+                <div>
+                  Following: <span>{userData.countFollowing}</span>
+                </div>
+                <div>
+                  Follows: <span>{userData.countFollows}</span>
+                </div>
+                <div>
+                  Activities: <span>{userData.numberOfActivities}</span>
+                </div>
+                <StandardButton onClick={handleFollowClick}>
+                  {userData.isVisitorFollowingHost ? "Unfollow" : "Follow"}
+                </StandardButton>
               </div>
             )}
+            <div className="my-activities">
+              <div className="my-activities__filter-side">
+                <FilterSide />
+              </div>
+              {displayNoActivitiesMsg ? (
+                <div className="following__nobody">
+                  <div style={{ marginTop: "12.5rem" }}>
+                    No activities found!
+                  </div>
+                </div>
+              ) : (
+                <div className="my-activities__activities-side">
+                  {activitiesOnCurrentPage.length > 0 ? (
+                    activitiesOnCurrentPage.map((activity) => (
+                      <Activity
+                        key={activity.id}
+                        id={activity.id}
+                        title={activity.title}
+                        body={activity.body}
+                        subject={activity.subject}
+                        onRemove={() => handleRemoveActivity(activity.id)}
+                        date={activity.dateTimeCreated}
+                        totalRaiting={activity.raiting}
+                        isLiked={() =>
+                          havePutLike(activity.likes.users, visitorUser.id)
+                        }
+                        likesNumber={activity.likes.likes}
+                        personalRate={() =>
+                          havePutRate(activity.raiting.users, visitorUser.id)
+                        }
+                        hostUserId={hostUserId}
+                        visitorUser={visitorUser}
+                        comments={activity.comments}
+                      />
+                    ))
+                  ) : (
+                    <div className="my-activities__activities-side__not-found">
+                      No activities found!
+                    </div>
+                  )}
+                  <div className="my-activities__pagination">
+                    <Pagination
+                      hash={hash}
+                      hashObj={hashObj}
+                      page={page}
+                      nrOfPages={nrOfPages}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>

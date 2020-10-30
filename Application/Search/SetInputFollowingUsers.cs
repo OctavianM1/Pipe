@@ -38,7 +38,6 @@ namespace Application.Search
         }
         else
         {
-          System.Console.WriteLine(request.Input);
           var existsUser = await _context.Users.FirstOrDefaultAsync(u => u.Name == request.Input);
           if (existsUser == null)
           {

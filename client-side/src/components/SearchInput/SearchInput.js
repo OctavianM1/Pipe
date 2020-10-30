@@ -22,18 +22,13 @@ const SearchInput = ({
 
   const error = useApiErrorHandler();
 
-
   useEffect(() => {
     onGetInputs().then(setSearchInputs).catch(error);
   }, [onGetInputs, error]);
 
   const onChangeSearch = (ev) => {
     const val = ev.target.value;
-    if (val.trim() !== "") {
-      onGetInputs(val).then(setSearchInputs).catch(error);
-    } else {
-      onGetInputs().then(setSearchInputs).catch(error);
-    }
+    onGetInputs(val.trim()).then(setSearchInputs).catch(error);
     setNumberOfLettersInput(val.length);
   };
 
@@ -48,7 +43,7 @@ const SearchInput = ({
     }
     val = val
       .substring(6, val.length - 7)
-      .split("<span>") 
+      .split("<span>")
       .join("")
       .split("</span>")
       .join("");
@@ -128,7 +123,6 @@ const SearchInput = ({
           className="searchInput__input"
           autoComplete="off"
           onFocus={() => setDisplayDropDown(true)}
-          // onBlur={onCloseDropDown}
           onChange={(ev) => onChangeSearch(ev)}
         />
         <button className="searchInput__back">

@@ -20,4 +20,9 @@
       font-weight: 100;
     }
   }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+  }
 }

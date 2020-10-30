@@ -18,13 +18,13 @@ namespace API.Controllers
       _mediator = mediator;
     }
 
-    [HttpGet("followers/{id}")]
+    [HttpGet("followers/{id}")] 
     public async Task<ActionResult<List<AppUser>>> GetFollowers(string id)
     {
       return await _mediator.Send(new ListFollowers.Query { Id = Guid.Parse(id) });
     }
 
-    [HttpGet("following/{id}")]
+    [HttpGet("following/{id}")] 
     public async Task<ActionResult<List<AppUser>>> GetFollowing(string id)
     {
       return await _mediator.Send(new ListFollowing.Query { Id = Guid.Parse(id) });
@@ -32,6 +32,12 @@ namespace API.Controllers
 
     [HttpPost("follow")]
     public async Task<ActionResult<Unit>> Follow(Follow.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPost("unfollow")]
+    public async Task<ActionResult<Unit>> Unfollow(Unfollow.Command command)
     {
       return await _mediator.Send(command);
     }

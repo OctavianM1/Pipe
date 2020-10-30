@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Users;
 using Application.Users.ApplicationUser;
+using ApplicationUser;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ namespace API.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  
+
   public class UserController : ControllerBase
   {
     private readonly IMediator _mediator;
@@ -42,5 +43,12 @@ namespace API.Controllers
     {
       return await _mediator.Send(query);
     }
+
+    [HttpGet("{userHostId}/{userVisitorId}")]
+    public async Task<ActionResult<AppUsersActivity>> GetUsersActivity(string userHostId, string userVisitorId)
+    {
+      return await _mediator.Send(new UsersActivity.Query { UserHostId = userHostId, UserVisitorId = userVisitorId });
+    }
+
   }
 }

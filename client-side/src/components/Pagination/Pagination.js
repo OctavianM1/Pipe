@@ -1,16 +1,13 @@
 import React from "react";
-import useReplaceHash from "../../Hooks/useReplaceHash";
+import useChangePage from "../../Hooks/useChangePage";
 
 import "./pagination.scss";
-
+ 
 const Pagination = ({ hash, hashObj, page, nrOfPages }) => {
-  const replaceHash = useReplaceHash();
-  const handleChangePage = (page) => {
-    window.scroll({ top: 0 });
-    replaceHash(hash, `&p=${hashObj["p"]}`, `&p=${page}`);
-  };
+  
+  const handleChangePage = useChangePage(hashObj, hash);
 
-  const loopInPages = (pages) => {
+  const loopInPages = (pages) => { 
     const paginationNumbers = [];
     pages.forEach((i) => {
       if (i === null) {

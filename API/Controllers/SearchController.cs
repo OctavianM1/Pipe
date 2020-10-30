@@ -27,24 +27,6 @@ namespace API.Controllers
       return await _mediator.Send(new UsersNumber.Query { NumberOfUsers = numberOfUsers });
     }
 
-    [HttpPost("allUsersMatch")]
-    public async Task<ActionResult<List<AppUser>>> GetAllUsersMatch(MatchAllUsers.Command command)
-    {
-      return await _mediator.Send(command);
-    }
-
-    [HttpPost("followingUsersMatch")]
-    public async Task<ActionResult<List<AppUser>>> GetFollowingUsersMatch(MatchFollowingUsers.Command command)
-    {
-      return await _mediator.Send(command);
-    }
-
-    [HttpPost("followsUsersMatch")]
-    public async Task<ActionResult<List<AppUser>>> GetFollowsUsersMatch(MatchFollowsUsers.Command command)
-    {
-      return await _mediator.Send(command);
-    }
-
     [HttpPost("searchAllUsers")]
     public async Task<ActionResult<List<Input>>> GetSearchAllUsers(AllUsers.Command command)
     {

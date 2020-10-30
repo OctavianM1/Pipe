@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Loader from "../../components/Loader/Loader";
 
 import SearchInput from "../../components/SearchInput/SearchInput";
@@ -12,13 +12,43 @@ import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import User from "../../components/User/User";
 import { Search } from "../../api/axios";
 import useGridOnResize from "../../Hooks/userGridOnResize";
+import useHash from "../../Hooks/useHash";
+import { useLocation } from "react-router-dom";
+import Pagination from "../../components/Pagination/Pagination";
+import useChangePage from "../../Hooks/useChangePage";
 
 const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
   const [grid, setGrid] = useState(3);
   const [users, setUsers] = useState([]);
 
+  const { hash } = useLocation();
+  const hashObj = useHash();
+
+  const page = Number(hashObj["p"]) || 1;
+
+  const nrOfPages = Math.ceil(users.length / 6 / grid);
+
+  const usersOnCurrentPage = useMemo(() => {
+    const result = [];
+    for (let i = (page - 1) * 6 * grid; i < 6 * grid * page && users[i]; i++) {
+      result.push(users[i]);
+    }
+    return result;
+  }, [users, grid, page]);
+
+  console.log(usersOnCurrentPage);
+
   const error = useApiErrorHandler();
+  const handleChangePage = useChangePage(hashObj, hash);
+  const handleGridChange = (newGrid) => {
+    const nrOfNewPages = Math.ceil(users.length / 6 / newGrid);
+    if (page > nrOfNewPages) {
+      handleChangePage(nrOfNewPages); 
+    }
+    setGrid(newGrid);
+  };
+
   useGridOnResize(grid, setGrid);
 
   const userId = JSON.parse(window.localStorage.getItem("user")).id;
@@ -31,7 +61,6 @@ const SearchUsers = () => {
       })
       .catch(error);
   }, [error]);
-
 
   const onGetInputs = useCallback(
     (matchString) => Search.allUsers(userId, matchString),
@@ -47,9 +76,6 @@ const SearchUsers = () => {
     (input) => Search.deleteAllUsersInput(userId, input),
     [userId]
   );
-
-  console.log(users);
-
 
   return (
     <>
@@ -69,13 +95,22 @@ const SearchUsers = () => {
       ) : (
         <>
           <div className="following__display-grid">
-            <Grid2x2 active={grid === 2} onClick={() => setGrid(2)} />
-            <Grid3x3 active={grid === 3} onClick={() => setGrid(3)} />
-            <Grid4x4 active={grid === 4} onClick={() => setGrid(4)} />
+            <Grid2x2
+              active={grid === 2}
+              onClick={() => handleGridChange(2)}
+            />
+            <Grid3x3
+              active={grid === 3}
+              onClick={() => handleGridChange(3)}
+            />
+            <Grid4x4
+              active={grid === 4}
+              onClick={() => handleGridChange(4)}
+            />
           </div>
           <div className="following__users">
-            {users.length > 0 ? (
-              users.map((u) => (
+            {usersOnCurrentPage.length > 0 ? (
+              usersOnCurrentPage.map((u) => (
                 <User
                   key={u.id}
                   id={u.id}
@@ -91,6 +126,14 @@ const SearchUsers = () => {
                 <div>There is no users</div>
               </div>
             )}
+          </div>
+          <div className="searchUsers__pagination">
+            <Pagination
+              hash={hash}
+              hashObj={hashObj}
+              page={page}
+              nrOfPages={nrOfPages}
+            />
           </div>
         </>
       )}

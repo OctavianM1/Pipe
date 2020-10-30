@@ -26,26 +26,15 @@ namespace Application.FollowsAndFollowing
 
       public async Task<List<AppUser>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var followsIds = await _context.Follows.Where(x => x.UserId == request.Id)
-          .Select(x => x.FollowerId)
-          .ToListAsync();
-        var follows = await _context.Users.Where(x => followsIds.Contains(x.Id))
-          .Select(x => new AppUser
-          {
-            Id = x.Id,
-            Email = x.Email,
-            Name = x.Name,
-            CountFollowers = x.CountFollowers,
-            CountFollowing = x.CountFollowing,
-            NumberOfActivities = _context.Activities.Count(a => a.UserHostId == x.Id)
-          })
-          .ToListAsync();
-
-        if (follows != null)
+        return await _context.Follows.Where(f => f.FollowerId == request.Id).Select(f => new AppUser
         {
-          return follows;
-        }
-        throw new Exception("Problem saving changes follows");
+          Id = f.UserId,
+          Name = f.User.Name,
+          Email = f.User.Email,
+          CountFollowers = f.User.CountFollowers,
+          CountFollowing = f.User.CountFollowing,
+          NumberOfActivities = _context.Activities.Count(a => a.UserHostId == f.UserId)
+        }).ToListAsync();
       }
     }
   }

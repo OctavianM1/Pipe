@@ -15,6 +15,7 @@ import EditActivity from "./layout/UserActivities/EditActivity";
 import useDisableScroll from "./Hooks/useDisableScroll";
 import Following from "./layout/Following/Following";
 import SearchUsers from "./layout/SearchUsers/SearchUsers";
+import Follows from "./layout/Following/Follows";
 
 function App() {
   const { openLoginModal } = useContext(Context);
@@ -44,7 +45,7 @@ function App() {
           <Following />
         </Route>
         <Route path="/followers" exact>
-          <h1>Followers</h1>
+          <Follows />
         </Route>
         <Route path="/search-users" exact>
           <SearchUsers />

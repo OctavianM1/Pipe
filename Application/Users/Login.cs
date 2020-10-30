@@ -9,7 +9,7 @@ using Application.Users.ApplicationUser;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
+using Persistence; 
 
 namespace Application.Users
 {
