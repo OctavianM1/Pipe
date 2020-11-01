@@ -19,6 +19,9 @@ import { Search } from "../../api/axios";
 import useChangePage from "../../Hooks/useChangePage";
 import useHash from "../../Hooks/useHash";
 import Pagination from "../../components/Pagination/Pagination";
+import sortUsers from "../../utilities/sortUsers";
+import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
+import SortDropDown from "../../components/SortDropDown/SortDropDown";
 
 const Follows = () => {
   const [followsUsers, setFollowsUsers] = useState([]);
@@ -33,6 +36,10 @@ const Follows = () => {
 
   const { hash } = useLocation();
   const hashObj = useHash();
+  const sortedFollowsUsers = useMemo(() => {
+    if (!hashObj["sort"]) return [...followsUsers];
+    return sortUsers(hashObj["sort"], [...followsUsers]);
+  }, [followsUsers, hashObj]);
 
   const page = Number(hashObj["p"]) || 1;
 
@@ -42,13 +49,13 @@ const Follows = () => {
     const result = [];
     for (
       let i = (page - 1) * 6 * grid;
-      i < 6 * grid * page && followsUsers[i];
+      i < 6 * grid * page && sortedFollowsUsers[i];
       i++
     ) {
-      result.push(followsUsers[i]);
+      result.push(sortedFollowsUsers[i]);
     }
     return result;
-  }, [followsUsers, grid, page]);
+  }, [sortedFollowsUsers, grid, page]);
 
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid) => {
@@ -58,10 +65,6 @@ const Follows = () => {
     }
     setGrid(newGrid);
   };
-  
-  
-
-  console.log(followsUsers);
 
   useEffect(() => {
     fws
@@ -109,19 +112,22 @@ const Follows = () => {
           </div>
         ) : (
           <>
-            <div className="following__display-grid">
-              <Grid2x2
-                active={grid === 2}
-                onClick={() => handleGridChange(2)}
-              />
-              <Grid3x3
-                active={grid === 3}
-                onClick={() => handleGridChange(3)}
-              />
-              <Grid4x4
-                active={grid === 4}
-                onClick={() => handleGridChange(4)}
-              />
+            <div className="following__display">
+              <SortDropDown elements={getDefaultSortUsersElements} />
+              <div className="following__display-grid">
+                <Grid2x2
+                  active={grid === 2}
+                  onClick={() => handleGridChange(2)}
+                />
+                <Grid3x3
+                  active={grid === 3}
+                  onClick={() => handleGridChange(3)}
+                />
+                <Grid4x4
+                  active={grid === 4}
+                  onClick={() => handleGridChange(4)}
+                />
+              </div>
             </div>
             <div className="following__users">
               {usersOnCurrentPage.length > 0 ? (

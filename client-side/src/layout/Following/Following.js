@@ -19,6 +19,9 @@ import { Search } from "../../api/axios";
 import Pagination from "../../components/Pagination/Pagination";
 import useHash from "../../Hooks/useHash";
 import useChangePage from "../../Hooks/useChangePage";
+import SortDropDown from "../../components/SortDropDown/SortDropDown";
+import sortUsers from "../../utilities/sortUsers";
+import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
 
 const Following = () => {
   const [followingUsers, setFollowingUsers] = useState([]);
@@ -30,6 +33,11 @@ const Following = () => {
   const { hash } = useLocation();
   const hashObj = useHash();
 
+  const sortedFollowingUsers = useMemo(() => {
+    if (!hashObj["sort"]) return [...followingUsers];
+    return sortUsers(hashObj["sort"], [...followingUsers]);
+  }, [followingUsers, hashObj]);
+
   const page = Number(hashObj["p"]) || 1;
 
   const nrOfPages = Math.ceil(followingUsers.length / 6 / grid);
@@ -38,13 +46,13 @@ const Following = () => {
     const result = [];
     for (
       let i = (page - 1) * 6 * grid;
-      i < 6 * grid * page && followingUsers[i];
+      i < 6 * grid * page && sortedFollowingUsers[i];
       i++
     ) {
-      result.push(followingUsers[i]);
+      result.push(sortedFollowingUsers[i]);
     }
     return result;
-  }, [followingUsers, grid, page]);
+  }, [sortedFollowingUsers, grid, page]);
 
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid) => {
@@ -104,10 +112,22 @@ const Following = () => {
           </div>
         ) : (
           <>
-            <div className="following__display-grid">
-              <Grid2x2 active={grid === 2} onClick={() => handleGridChange(2)} />
-              <Grid3x3 active={grid === 3} onClick={() => handleGridChange(3)} />
-              <Grid4x4 active={grid === 4} onClick={() => handleGridChange(4)} />
+            <div className="following__display">
+              <SortDropDown elements={getDefaultSortUsersElements} />
+              <div className="following__display-grid">
+                <Grid2x2
+                  active={grid === 2}
+                  onClick={() => handleGridChange(2)}
+                />
+                <Grid3x3
+                  active={grid === 3}
+                  onClick={() => handleGridChange(3)}
+                />
+                <Grid4x4
+                  active={grid === 4}
+                  onClick={() => handleGridChange(4)}
+                />
+              </div>
             </div>
             <div className="following__users">
               {usersOnCurrentPage.length > 0 ? (

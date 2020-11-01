@@ -37,7 +37,7 @@ namespace Application.Users
           Name = u.Name,
           CountFollowers = u.CountFollowers,
           CountFollowing = u.CountFollowing,
-          NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+          NumberOfActivities = u.Activities.Count()
         }).FirstOrDefaultAsync(u => u.Id == request.Id);
         if (user == null)
         {

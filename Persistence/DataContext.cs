@@ -13,6 +13,12 @@ namespace Persistence
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
+
+      builder.Entity<User>()
+        .HasMany(p => p.Activities)
+        .WithOne(a => a.UserHost)
+        .HasForeignKey(a => a.UserHostId);
+
       builder.Entity<SearchAllUsers>()
         .Property(s => s.Input)
         .IsRequired()

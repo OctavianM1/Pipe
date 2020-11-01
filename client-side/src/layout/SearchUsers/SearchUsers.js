@@ -16,6 +16,9 @@ import useHash from "../../Hooks/useHash";
 import { useLocation } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import useChangePage from "../../Hooks/useChangePage";
+import SortDropDown from "../../components/SortDropDown/SortDropDown";
+import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
+import sortUsers from "../../utilities/sortUsers";
 
 const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
@@ -25,26 +28,33 @@ const SearchUsers = () => {
   const { hash } = useLocation();
   const hashObj = useHash();
 
+  const sortedUsers = useMemo(() => {
+    if (!hashObj["sort"]) return [...users];
+    return sortUsers(hashObj["sort"], [...users]);
+  }, [users, hashObj]);
+
   const page = Number(hashObj["p"]) || 1;
 
   const nrOfPages = Math.ceil(users.length / 6 / grid);
 
   const usersOnCurrentPage = useMemo(() => {
     const result = [];
-    for (let i = (page - 1) * 6 * grid; i < 6 * grid * page && users[i]; i++) {
-      result.push(users[i]);
+    for (
+      let i = (page - 1) * 6 * grid;
+      i < 6 * grid * page && sortedUsers[i];
+      i++
+    ) {
+      result.push(sortedUsers[i]);
     }
     return result;
-  }, [users, grid, page]);
-
-  console.log(usersOnCurrentPage);
+  }, [sortedUsers, grid, page]);
 
   const error = useApiErrorHandler();
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid) => {
     const nrOfNewPages = Math.ceil(users.length / 6 / newGrid);
     if (page > nrOfNewPages) {
-      handleChangePage(nrOfNewPages); 
+      handleChangePage(nrOfNewPages);
     }
     setGrid(newGrid);
   };
@@ -94,19 +104,22 @@ const SearchUsers = () => {
         </div>
       ) : (
         <>
-          <div className="following__display-grid">
-            <Grid2x2
-              active={grid === 2}
-              onClick={() => handleGridChange(2)}
-            />
-            <Grid3x3
-              active={grid === 3}
-              onClick={() => handleGridChange(3)}
-            />
-            <Grid4x4
-              active={grid === 4}
-              onClick={() => handleGridChange(4)}
-            />
+          <div className="following__display">
+            <SortDropDown elements={getDefaultSortUsersElements} />
+            <div className="following__display-grid">
+              <Grid2x2
+                active={grid === 2}
+                onClick={() => handleGridChange(2)}
+              />
+              <Grid3x3
+                active={grid === 3}
+                onClick={() => handleGridChange(3)}
+              />
+              <Grid4x4
+                active={grid === 4}
+                onClick={() => handleGridChange(4)}
+              />
+            </div>
           </div>
           <div className="following__users">
             {usersOnCurrentPage.length > 0 ? (

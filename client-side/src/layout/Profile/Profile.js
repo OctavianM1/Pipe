@@ -22,13 +22,13 @@ const Profile = () => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
 
-  const userId = JSON.parse(window.localStorage.getItem("user")).id;
+  const user = JSON.parse(window.localStorage.getItem("user"));
 
   const error = useApiErrorHandler();
 
   useEffect(() => {
-    Users.details(userId).then(setUserData).catch(error);
-  }, [error, userId]);
+    Users.details(user.id).then(setUserData).catch(error);
+  }, [error, user]);
 
   const handleSubmit = (ev, obj) => {
     ev && ev.preventDefault();
@@ -40,10 +40,17 @@ const Profile = () => {
         return;
       }
       if (newName.length > 1) {
-        Users.updateName({ userId, newName })
-          .then((user) => {
-            setUserData(user);
+        Users.updateName({ userId: user.id, newName })
+          .then((newUser) => {
+            setUserData(newUser);
             setEditName(false);
+            window.localStorage.setItem(
+              "user",
+              JSON.stringify({
+                ...user,
+                name: newName,
+              })
+            );
           })
           .catch(error);
       } else {
@@ -53,10 +60,14 @@ const Profile = () => {
       const newEmail = ev ? ev.target.email.value.trim() : obj.newEmail;
       const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
       if (re.test(newEmail)) {
-        Users.updateEmail({ userId, newEmail })
-          .then((user) => {
-            setUserData(user);
+        Users.updateEmail({ userId: user.id, newEmail })
+          .then((newUser) => {
+            setUserData(newUser);
             setEditEmail(false);
+            window.localStorage.setItem(
+              "user",
+              JSON.stringify({ ...user, email: newEmail })
+            );
           })
           .catch((err) => {
             if (err.status === 400 && err.data.errors.email) {
@@ -76,7 +87,7 @@ const Profile = () => {
         oldPasswordLogger === "" &&
         confirmNewPassword.length > 0
       ) {
-        Users.updatePassword({ userId, newPassword, oldPassword })
+        Users.updatePassword({ userId: user.id, newPassword, oldPassword })
           .then((user) => {
             setUserData(user);
             setEditPassword(false);

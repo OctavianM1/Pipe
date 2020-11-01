@@ -76,7 +76,7 @@ namespace Application.Activities
               Id = ac.UserId,
               CountFollowers = ac.User.CountFollowers,
               CountFollowing = ac.User.CountFollowing,
-              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == ac.UserId)
+              NumberOfActivities = ac.User.Activities.Count()
             },
             Comment = ac.Comment,
             DateTimeCreated = ac.DateTimeCreated,
@@ -88,7 +88,7 @@ namespace Application.Activities
               Email = cl.User.Email,
               CountFollowing = cl.User.CountFollowing,
               CountFollowers = cl.User.CountFollowers,
-              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == cl.UserId)
+              NumberOfActivities = ac.User.Activities.Count()
             }).ToList()
           }).ToList()
         }).FirstOrDefaultAsync();

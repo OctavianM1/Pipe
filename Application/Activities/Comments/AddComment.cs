@@ -52,7 +52,7 @@ namespace Application.Activities.Comments
             Email = u.Email,
             CountFollowers = u.CountFollowers,
             CountFollowing = u.CountFollowing,
-            NumberOfActivities = _context.Activities.Count(a => a.UserHostId == u.Id)
+            NumberOfActivities = u.Activities.Count()
           }).FirstOrDefault();
           return new AppComment
           {

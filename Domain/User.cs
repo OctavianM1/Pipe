@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Domain
 {
@@ -10,5 +11,6 @@ namespace Domain
         public string Name { get; set; }
         public int CountFollowers { get; set; }
         public int CountFollowing { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
     }
 }

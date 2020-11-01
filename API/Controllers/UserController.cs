@@ -41,7 +41,7 @@ namespace API.Controllers
     [HttpPost("login")]  
     public async Task<ActionResult<AppUser>> Login(Login.Query query)
     {
-      return await _mediator.Send(query);
+      return await _mediator.Send(query); 
     }
 
     [HttpGet("{userHostId}/{userVisitorId}")]

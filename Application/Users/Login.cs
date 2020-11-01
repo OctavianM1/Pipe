@@ -9,7 +9,7 @@ using Application.Users.ApplicationUser;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Persistence; 
+using Persistence;
 
 namespace Application.Users
 {
@@ -33,7 +33,7 @@ namespace Application.Users
 
       public async Task<AppUser> Handle(Query request, CancellationToken cancellationToken)
       {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
+        var user = await _context.Users.Include(u => u.Activities).FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
         if (user == null)
         {
           throw new RestException(System.Net.HttpStatusCode.BadRequest, new { email = "Invalid email" });
@@ -59,7 +59,7 @@ namespace Application.Users
           CountFollowers = user.CountFollowers,
           CountFollowing = user.CountFollowing,
           Token = _jwtGenerator.CreateToken(user),
-          NumberOfActivities = _context.Activities.Count(a => a.UserHostId == user.Id)
+          NumberOfActivities = user.Activities.Count()
         };
       }
     }

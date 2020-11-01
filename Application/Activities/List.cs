@@ -34,12 +34,13 @@ namespace Application.Activities
 
       public async Task<List<AppActivity>> Handle(Command request, CancellationToken cancellationToken)
       {
-        string str = request.MatchString;
+        string str = request.MatchString ?? "";
         if (str.Equals(request.Id))
         {
           str = "";
         }
         var guidId = Guid.Parse(request.Id);
+
         return await _context.Activities.Where(x => x.UserHostId == guidId && (x.Title.Contains(str) || x.Body.Contains(str)))
         .Select(a => new AppActivity
         {
@@ -71,7 +72,7 @@ namespace Application.Activities
               Email = al.User.Email,
               CountFollowers = al.User.CountFollowers,
               CountFollowing = al.User.CountFollowing,
-              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == guidId)
+              NumberOfActivities = al.User.Activities.Count()
             }).ToList()
           },
           Comments = a.ActivityComment.Select(ac => new AppComment
@@ -88,7 +89,7 @@ namespace Application.Activities
               Email = cl.User.Email,
               CountFollowing = cl.User.CountFollowing,
               CountFollowers = cl.User.CountFollowers,
-              NumberOfActivities = _context.Activities.Count(a => a.UserHostId == guidId)
+              NumberOfActivities = cl.User.Activities.Count()
             }).ToList()
           }).ToList()
         })

@@ -14,7 +14,7 @@ const User = ({ id, name, following, followers, grid, activities }) => {
           Following: <span>{following}</span>
         </div>
         <div>
-          Follows: <span>{followers}</span>
+          Followers: <span>{followers}</span>
         </div>
         <div>
           Activities: <span>{activities}</span>
