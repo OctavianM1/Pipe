@@ -38,10 +38,38 @@ namespace API.Controllers
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]  
+    [HttpPost("login")]
     public async Task<ActionResult<AppUser>> Login(Login.Query query)
     {
-      return await _mediator.Send(query); 
+      return await _mediator.Send(query);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("confirmEmail/{email}")]
+    public async Task<ActionResult<Unit>> ConfirmEmail(string email)
+    {
+      return await _mediator.Send(new ConfirmEmail.Query { Email = email });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("sendConfirmationEmail/{email}")]
+    public async Task<ActionResult<string>> SendConfirmationEmail(string email)
+    {
+      return await _mediator.Send(new SendConfirmationEmail.Query { Email = email });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("sendRecoveryPassword/{email}")]
+    public async Task<ActionResult<string>> SendRecoveryPasswrod(string email)
+    {
+      return await _mediator.Send(new SendRecoveryPassword.Query { Email = email });
+    }
+
+    [AllowAnonymous]
+    [HttpPut("recoveryPassword")]
+    public async Task<ActionResult<Unit>> RestoryPassword(RestorePassword.Command command)
+    {
+      return await _mediator.Send(command);
     }
 
     [HttpGet("{userHostId}/{userVisitorId}")]
@@ -50,7 +78,7 @@ namespace API.Controllers
       return await _mediator.Send(new UsersActivity.Query { UserHostId = userHostId, UserVisitorId = userVisitorId });
     }
 
-    [HttpPut("changeName")] 
+    [HttpPut("changeName")]
     public async Task<ActionResult<AppUser>> UpdateName(UpdateName.Command command)
     {
       return await _mediator.Send(command);

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using API.Middleware;
 using Application.Interfaces;
 using Application.Users;
+using Application.Users.ApplicationUser;
+using Infrastructure.Email;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,6 +39,7 @@ namespace API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+
       services.AddDbContext<DataContext>(opt =>
       {
         opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
@@ -57,6 +60,7 @@ namespace API
       });
 
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key"));
+
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(opt =>
         {
@@ -70,11 +74,14 @@ namespace API
         });
 
       services.AddScoped<IJwtGenerator, JwtGenerator>();
+      services.AddScoped<IEmailSender, EmailSender>();
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+
       app.UseMiddleware<ErrorHandlingMiddleware>();
       if (env.IsDevelopment())
       {

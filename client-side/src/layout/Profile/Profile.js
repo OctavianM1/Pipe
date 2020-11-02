@@ -161,7 +161,6 @@ const Profile = () => {
   useOutsideAlerter(emailInput, setEditEmail, "profile__cancel-btn", () => {
     handleSubmit(null, { newEmail: emailInput.current.value, type: "email" });
   });
-  // console.log(userData);
 
   return (
     <div className="profile">

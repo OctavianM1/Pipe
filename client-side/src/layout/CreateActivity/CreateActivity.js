@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 
 import "./createActivity.scss";
 
@@ -10,18 +10,18 @@ import { Activities } from "../../api/axios";
 import CloseBtn from "../../components/Buttons/CloseBtn/CloseBtn";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
+import UpLabelInput from "../../components/UpLabelInput/UpLabelInput";
 
 const CreateActivity = ({ edit, title, subject, body, activity }) => {
-  const [titleLabel, setTitleLabel] = useState(edit);
-  const [subjectLabel, setSubjectLabel] = useState(edit);
-  const [bodyLabel, setBodyLabel] = useState(edit);
+  const [inputs, dispatchInputs] = useReducer(inputsReducer, {
+    titleLabel: edit,
+    subjectLabel: edit,
+    bodyLabel: edit,
+    titleLogger: false,
+    subjectLogger: false,
+    bodyLogger: false,
+  });
 
-  const [titleLogger, setTitleLogger] = useState(false);
-  const [subjectLogger, setSubjectLogger] = useState(false);
-  const [bodyLogger, setBodyLogger] = useState(false);
-
-  const titleInput = useRef(null);
-  const subjectInput = useRef(null);
   const bodyInput = useRef(null);
 
   const [successCreatedPopUp, setSuccessCreatedPopUp] = useState(false);
@@ -32,32 +32,32 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
   const handleBlurInput = (ev) => {
     if (ev.target.name === "title") {
       if (ev.target.value.trim()) {
-        setTitleLabel(true);
+        dispatchInputs({ type: "active title label" });
       } else {
-        setTitleLabel(false);
+        dispatchInputs({ type: "inactive title label" });
       }
     } else if (ev.target.name === "subject") {
       if (ev.target.value.trim()) {
-        setSubjectLabel(true);
+        dispatchInputs({ type: "active subject label" });
       } else {
-        setSubjectLabel(false);
+        dispatchInputs({ type: "inactive subject label" });
       }
     } else if (ev.target.name === "body") {
       if (ev.target.value.trim()) {
-        setBodyLabel(true);
+        dispatchInputs({ type: "active body label" });
       } else {
-        setBodyLabel(false);
+        dispatchInputs({ type: "inactive body label" });
       }
     }
   };
 
   const handleFocusInput = (ev) => {
     if (ev.target.name === "title") {
-      setTitleLabel(true);
+      dispatchInputs({ type: "active title label" });
     } else if (ev.target.name === "subject") {
-      setSubjectLabel(true);
+      dispatchInputs({ type: "active subject label" });
     } else if (ev.target.name === "body") {
-      setBodyLabel(true);
+      dispatchInputs({ type: "active body label" });
     }
   };
 
@@ -65,15 +65,21 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
     let errors = false;
     if (ev.target.title.value.length < 5) {
       errors = true;
-      setTitleLogger(true);
+      dispatchInputs({ type: "active title logger" });
+    } else {
+      dispatchInputs({ type: "inactive title logger" });
     }
     if (ev.target.subject.value.length < 2) {
       errors = true;
-      setSubjectLogger(true);
+      dispatchInputs({ type: "active subject logger" });
+    } else {
+      dispatchInputs({ type: "inactive subject logger" });
     }
     if (ev.target.body.value.length < 15) {
       errors = true;
-      setBodyLogger(true);
+      dispatchInputs({ type: "active body logger" });
+    } else {
+      dispatchInputs({ type: "inactive body logger" });
     }
 
     if (!errors) {
@@ -89,9 +95,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
         })
           .then(() => {
             setSuccessCreatedPopUp(true);
-            setBodyLogger(false);
-            setTitleLogger(false);
-            setSubjectLogger(false);
+            dispatchInputs({ type: "submitted edited" });
           })
           .catch(error);
       } else {
@@ -103,15 +107,8 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
         })
           .then(() => {
             setSuccessCreatedPopUp(true);
-            titleInput.current.value = "";
-            subjectInput.current.value = "";
+            dispatchInputs({ type: "submitted" });
             bodyInput.current.value = "";
-            setTitleLabel(false);
-            setSubjectLabel(false);
-            setBodyLabel(false);
-            setBodyLogger(false);
-            setTitleLogger(false);
-            setSubjectLogger(false);
           })
           .catch(error);
       }
@@ -120,7 +117,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
     ev.preventDefault();
   };
 
-  return (
+  return ( 
     <>
       {successCreatedPopUp && (
         <div className="succes-submit-pop-up">
@@ -143,54 +140,28 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
           className="create-activity__container"
           onSubmit={handleSubmitForm}
         >
-          <div>
-            <input
-              ref={titleInput}
-              type="text"
-              name="title"
-              className="create-activity__container__title"
-              onBlur={handleBlurInput}
-              onFocus={handleFocusInput}
-              defaultValue={edit ? title : ""}
-            />
-            <span
-              className={
-                titleLabel ? "input-label input-label-active" : "input-label"
-              }
-              onClick={() => titleInput.current.focus()}
-            >
-              Title
-            </span>
-            {titleLogger && (
-              <span className="logger">
-                Title cannot be shorter then 5 characters
-              </span>
-            )}
-          </div>
-          <div>
-            <input
-              ref={subjectInput}
-              type="text"
-              name="subject"
-              className="create-activity__container__subject"
-              onBlur={handleBlurInput}
-              onFocus={handleFocusInput}
-              defaultValue={edit ? subject : ""}
-            />
-            <span
-              className={
-                subjectLabel ? "input-label input-label-active" : "input-label"
-              }
-              onClick={() => subjectInput.current.focus()}
-            >
-              Subject
-            </span>
-            {subjectLogger && (
-              <span className="logger">
-                Subject cannot be shorter then 2 characters
-              </span>
-            )}
-          </div>
+          <UpLabelInput
+            handleBlurInput={handleBlurInput}
+            handleFocusInput={handleFocusInput}
+            edit
+            val={title}
+            label={inputs.titleLabel}
+            labelName="Title"
+            logger={inputs.titleLogger}
+            name="title"
+            loggerText="Title cannot be shorter then 5 characters"
+          />
+          <UpLabelInput
+            handleBlurInput={handleBlurInput}
+            handleFocusInput={handleFocusInput}
+            edit
+            val={subject}
+            label={inputs.subjectLabel}
+            labelName="Subject"
+            logger={inputs.subjectLogger}
+            name="subject"
+            loggerText="Subject cannot be shorter then 2 characters"
+          />
           <div>
             <textarea
               ref={bodyInput}
@@ -203,7 +174,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
             />
             <span
               className={
-                bodyLabel
+                inputs.bodyLabel
                   ? "textarea-label textarea-label-active"
                   : "textarea-label"
               }
@@ -211,7 +182,7 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
             >
               Body
             </span>
-            {bodyLogger && (
+            {inputs.bodyLogger && (
               <span className="logger">
                 Body cannot be shorter then 15 characters
               </span>
@@ -225,5 +196,55 @@ const CreateActivity = ({ edit, title, subject, body, activity }) => {
     </>
   );
 };
+
+function inputsReducer(state, action) {
+  switch (action.type) {
+    case "active title label":
+      return { ...state, titleLabel: true };
+    case "inactive title label":
+      return { ...state, titleLabel: false };
+    case "active subject label":
+      return { ...state, subjectLabel: true };
+    case "inactive subject label":
+      return { ...state, subjectLabel: false };
+    case "active body label":
+      return { ...state, bodyLabel: true };
+    case "inactive body label":
+      return { ...state, bodyLabel: false };
+    case "active title logger":
+      return { ...state, titleLogger: true };
+    case "inactive title logger":
+      return { ...state, titleLogger: false };
+    case "active subject logger":
+      return { ...state, subjectLogger: true };
+    case "inactive subject logger":
+      return { ...state, subjectLogger: false };
+    case "active body logger":
+      return { ...state, bodyLogger: true };
+    case "inactive body logger":
+      return { ...state, bodyLogger: false };
+    case "submitted edited":
+      return {
+        titleLabel: true,
+        subjectLabel: true,
+        bodyLabel: true,
+        titleLogger: false,
+        subjectLogger: false,
+        bodyLogger: false,
+      };
+    case "submitted":
+      return {
+        titleLabel: false,
+        subjectLabel: false,
+        bodyLabel: false,
+        titleLogger: false,
+        subjectLogger: false,
+        bodyLogger: false,
+      };
+
+    default:
+      throw new Error(`Problem action reducer inputs:: ${action.type}`);
+  }
+}
 
 export default CreateActivity;

@@ -22,7 +22,7 @@ const EditActivity = () => {
   }
 
   useEffect(() => {
-    Activities.detail(userId, activityId)
+    Activities.detail(activityId)
       .then((data) => {
         setLoader(false);
         setActivity(data);

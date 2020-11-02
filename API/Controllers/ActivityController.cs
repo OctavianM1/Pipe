@@ -29,10 +29,10 @@ namespace API.Controllers
       return await _mediator.Send(command);
     }
 
-    [HttpGet("{userId}/{activityId}")]
-    public async Task<ActionResult<AppActivity>> GetActivity(string userId, string activityId)
+    [HttpGet("getActivity/{activityId}")]
+    public async Task<ActionResult<AppActivity>> GetActivity(string activityId)
     {
-      return await _mediator.Send(new Detail.Query { userId = userId, activityId = activityId });
+      return await _mediator.Send(new Detail.Query { activityId = activityId });
     }
 
     [HttpGet("following/{id}")]

@@ -19,7 +19,6 @@ namespace Application.Activities
   {
     public class Query : IRequest<AppActivity>
     {
-      public string userId { get; set; }
       public string activityId { get; set; }
     }
 
@@ -29,7 +28,7 @@ namespace Application.Activities
       public Handler(DataContext context)
       {
         _context = context;
-      }
+      } 
 
       public async Task<AppActivity> Handle(Query request, CancellationToken cancellationToken)
       {
@@ -45,7 +44,8 @@ namespace Application.Activities
           DateTimeCreated = a.DateTimeCreated,
           Raiting = new AppRaiting
           {
-            Users = a.ActivityRaiting.Select(ar => new AppUserRaiting
+            Users = a.ActivityRaiting
+            .Select(ar => new AppUserRaiting
             {
               Id = ar.UserId,
               Name = ar.User.Name,
@@ -81,18 +81,18 @@ namespace Application.Activities
             Comment = ac.Comment,
             DateTimeCreated = ac.DateTimeCreated,
             DateTimeEdited = ac.DateTimeEdited,
-            CommentLikeUsers = ac.CommentLikes.Select(cl => new AppUser
-            {
-              Id = cl.UserId,
-              Name = cl.User.Name,
-              Email = cl.User.Email,
-              CountFollowing = cl.User.CountFollowing,
-              CountFollowers = cl.User.CountFollowers,
-              NumberOfActivities = ac.User.Activities.Count()
-            }).ToList()
+            // CommentLikeUsers = ac.CommentLikes.Select(cl => new AppUser
+            // {
+            //   Id = cl.UserId,
+            //   Name = cl.User.Name,
+            //   Email = cl.User.Email,
+            //   CountFollowing = cl.User.CountFollowing,
+            //   CountFollowers = cl.User.CountFollowers,
+            //   NumberOfActivities = ac.User.Activities.Count()
+            // }).ToList()
           }).ToList()
         }).FirstOrDefaultAsync();
       }
     }
   }
-}
+} 

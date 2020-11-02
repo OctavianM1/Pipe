@@ -1,0 +1,17 @@
+.input-label {
+  position: absolute;
+  top: 50%;
+  left: 2%;
+  transform: translateY(-50%);
+  font-size: 1.7rem;
+  transition: 0.5s ease;
+}
+
+.input-label-active {
+  font-size: 1.55rem;
+  top: 0;
+  left: 2px;
+  color: #5759ff;
+  transform: translateY(-100%);
+  font-weight: bold;
+}

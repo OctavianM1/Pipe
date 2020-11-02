@@ -17,6 +17,8 @@ import Following from "./layout/Following/Following";
 import SearchUsers from "./layout/SearchUsers/SearchUsers";
 import Follows from "./layout/Following/Follows";
 import Profile from "./layout/Profile/Profile";
+import ConfirmEmail from "./layout/ConfirmEmail/ConfirmEmail";
+import RestorePassword from "./layout/RestorePassword/RestorePassword";
 
 function App() {
   const { openLoginModal } = useContext(Context);
@@ -50,6 +52,12 @@ function App() {
         </Route>
         <Route path="/search-users" exact>
           <SearchUsers />
+        </Route>
+        <Route path="/confirmEmail/:token">
+          <ConfirmEmail />
+        </Route>
+        <Route path='/restorePassword/:token'>
+          <RestorePassword />
         </Route>
         <Route path="/unauthorized" exact>
           <NonAuthenticated />

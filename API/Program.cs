@@ -25,12 +25,12 @@ namespace API
         {
           var context = services.GetRequiredService<DataContext>();
           context.Database.Migrate();
-          
+
         }
         catch (Exception ex)
         {
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occured during migration");
+          var logger = services.GetRequiredService<ILogger<Program>>();
+          logger.LogError(ex, "An error occured during migration");
         }
       }
 

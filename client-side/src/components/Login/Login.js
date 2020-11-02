@@ -1,93 +1,116 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useReducer, useRef, useState } from "react";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import "./login.scss";
 
 import { Users } from "../../api/axios";
 import { Context } from "../../context";
 import CloseBtn from "../Buttons/CloseBtn/CloseBtn";
+import handleBlurPassword from "../../utilities/handleBlurPassword";
 
 const Login = ({ openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
+  const [loggers, dispatchLoggers] = useReducer(loggerReducer, {
+    nameRegisterLogger: "",
+    emailRegisterLogger: "",
+    passwordRegisterLogger: "",
+    createdAccountLogger: "",
+    emailLoginLogger: "",
+    passwordLoginLogger: "",
+  });
 
   const { isOpenLoginModal } = useContext(Context);
 
   const wrapper = useRef(null);
   useOutsideAlerter(wrapper, isOpenLoginModal);
 
-  const [nameRegisterLogger, setNameRegisterLogger] = useState("");
-  const [emailRegisterLogger, setEmailRegisterLogger] = useState("");
-  const [passwordRegisterLogger, setPasswordRegisterLogger] = useState("");
-
-  const [createdAccountText, setCreatedAccountText] = useState("");
-
-  const [emailLoginLogger, setEmailLoginLogger] = useState("");
-  const [passwordLoginLogger, setPasswordLoginLogger] = useState("");
+  const [registerButtonActive, setRegisterButtonActive] = useState(true);
 
   const handleLoginSubmit = (event) => {
     const email = event.target.email.value;
     const password = event.target.password.value;
     Users.login({ email, password })
       .then((data) => {
-        setEmailLoginLogger("");
-        setPasswordLoginLogger("");
+        dispatchLoggers({ type: "remove all" });
         window.localStorage.setItem("user", JSON.stringify(data));
         isOpenLoginModal(false);
       })
       .catch((err) => {
         const errors = err.data.errors;
         if (errors.email) {
-          setEmailLoginLogger(errors.email);
+          dispatchLoggers({ type: "email login", msg: errors.email });
         }
         if (errors.password) {
-          setPasswordLoginLogger(errors.password);
+          dispatchLoggers({ type: "password login", msg: errors.password });
         }
       });
     event.preventDefault();
   };
 
   const handleRegisterSubmit = (event) => {
+    event.preventDefault();
+    if (!registerButtonActive) return;
     const name = event.target.name.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
     if (
-      nameRegisterLogger === "" &&
-      emailRegisterLogger === "" &&
-      passwordRegisterLogger === "" &&
+      loggers.nameRegisterLogger === "" &&
+      loggers.emailRegisterLogger === "" &&
+      loggers.passwordRegisterLogger === "" &&
       name.trim() !== "" &&
       email.trim() !== "" &&
       password.trim() !== ""
     ) {
       const user = { name, email, password };
+      setRegisterButtonActive(false);
       Users.create(user)
         .then(() => {
-          setCreatedAccountText("You have successfully registered");
+          dispatchLoggers({
+            type: "create account",
+            msg: `A confrimation email was sent to ${email}&Please confirm your email`,
+          });
           setSignUp(false);
+          setRegisterButtonActive(true);
         })
-        .catch((err) => { 
+        .catch((err) => {
           if (err.status === 400 && err.data.errors.email) {
-            setEmailRegisterLogger(err.data.errors.email);
+            dispatchLoggers({
+              type: "email register",
+              msg: err.data.errors.email,
+            });
           }
+          setRegisterButtonActive(true);
         });
     } else {
       if (name.trim().length === 0) {
-        setNameRegisterLogger("Name cannot be empty");
+        dispatchLoggers({ type: "name register", msg: "Name cannot be empty" });
       }
       if (email.trim().length === 0) {
-        setEmailRegisterLogger("Email cannot be empty");
+        dispatchLoggers({
+          type: "email register",
+          msg: "Email cannot be empty",
+        });
       }
       if (password.trim().length === 0) {
-        setPasswordRegisterLogger("Password cannot be empty");
+        dispatchLoggers({
+          type: "password register",
+          msg: "Password cannot be empty",
+        });
       }
     }
-    event.preventDefault();
   };
 
   const handleBlurNameRegister = (event) => {
     const name = event.target.value;
     if (name.trim().length < 2 && name.length > 0) {
-      setNameRegisterLogger("Name cannot be less then 2 characters");
+      dispatchLoggers({
+        type: "name register",
+        msg: "Name cannot be less then 2 characters",
+      });
     } else {
-      setNameRegisterLogger("");
+      dispatchLoggers({
+        type: "name register",
+        msg: "",
+      });
     }
   };
 
@@ -95,36 +118,33 @@ const Login = ({ openRegisterModal }) => {
     const email = event.target.value;
     const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     if (!re.test(email) && email.length > 0) {
-      setEmailRegisterLogger("Email is invalid");
+      dispatchLoggers({
+        type: "email register",
+        msg: "Email is invalid",
+      });
     } else {
-      setEmailRegisterLogger("");
+      dispatchLoggers({
+        type: "email register",
+        msg: "",
+      });
     }
   };
 
-  const handleBlurPasswordRegister = (event) => {
-    const password = event.target.value;
-    let log = [];
-    if (password.length < 8) {
-      log.push("8 charachters");
-    }
-    if (!/[a-zA-Z]+/g.test(password)) {
-      log.push("a lowercase character or a uppercase character");
-    }
-    if (!/[\d\W]/g.test(password)) {
-      log.push("a digit or a non alphanumeric charachter");
-    }
-    if (log.length !== 0 && log.length !== 3) {
-      // log.length !== 3 -> 3 tests
-      setPasswordRegisterLogger("Your password must contain " + log.join(", "));
-    } else {
-      setPasswordRegisterLogger("");
-    }
+  const sendPasswordRecovery = (ev) => {
+    const email = ev.target.parentElement.email.value.trim();
+    onSendEmail(email, dispatchLoggers, Users.sendRecoveryPassword);
+  };
+
+  const sendConfirmationEmail = (ev) => {
+    const email = ev.target.parentElement.email.value.trim();
+    onSendEmail(email, dispatchLoggers, Users.sendConfirmationEmail);
   };
 
   let loginClasses = ["login-container"];
   if (signUp) {
     loginClasses.push("login-right-panel-active");
   }
+
   return (
     <div className="login">
       <div
@@ -168,7 +188,9 @@ const Login = ({ openRegisterModal }) => {
                 placeholder="Name"
                 onBlur={(ev) => handleBlurNameRegister(ev)}
               />
-              <span className="login__logger">{nameRegisterLogger}</span>
+              <span className="login__logger">
+                {loggers.nameRegisterLogger}
+              </span>
               <input
                 className="login-input"
                 name="email"
@@ -176,26 +198,39 @@ const Login = ({ openRegisterModal }) => {
                 placeholder="Email"
                 onBlur={(ev) => handleBlurEmailRegister(ev)}
               />
-              <span className="login__logger">{emailRegisterLogger}</span>
+              <span className="login__logger">
+                {loggers.emailRegisterLogger}
+              </span>
               <input
                 className="login-input"
                 name="password"
                 type="password"
                 placeholder="Password"
-                onBlur={(ev) => handleBlurPasswordRegister(ev)}
+                onBlur={(ev) =>
+                  handleBlurPassword(ev, dispatchLoggers, "password register")
+                }
               />
-              <span className="login__logger">{passwordRegisterLogger}</span>
-              <input className="login-button" type="submit" value="Sign Up" />
+              <span className="login__logger">
+                {loggers.passwordRegisterLogger}
+              </span>
+              <input
+                className={
+                  registerButtonActive
+                    ? "login-button"
+                    : "login-button login-button-disable"
+                }
+                type="submit"
+                value="Sign Up"
+              />
             </form>
           </div>
           <div className="login-form-container login-sign-in-container">
-            <form
-              className="login-form"
-              onSubmit={(ev) => handleLoginSubmit(ev)}
-            >
+            <form className="login-form" onSubmit={handleLoginSubmit}>
               <h1 className="login-h1">Sign in</h1>
               <span className="login-create-account-text">
-                {createdAccountText}
+                {loggers.createdAccountLogger.split("&")[0]}
+                <br></br>
+                {loggers.createdAccountLogger.split("&")[1]}
               </span>
               <div className="login-social-container">
                 <a href="/" className="login-social">
@@ -215,17 +250,30 @@ const Login = ({ openRegisterModal }) => {
                 type="email"
                 placeholder="Email"
               />
-              <span className="login__logger">{emailLoginLogger}</span>
+              <span className="login__logger">{loggers.emailLoginLogger}</span>
               <input
                 className="login-input"
                 type="password"
                 name="password"
                 placeholder="Password"
               />
-              <span className="login__logger">{passwordLoginLogger}</span>
-              <a className="login-a" href="/">
-                Forgot your password?
-              </a>
+              <span className="login__logger">
+                {loggers.passwordLoginLogger}
+              </span>
+              <button
+                type="button"
+                onClick={sendPasswordRecovery}
+                className="humble-button"
+              >
+                Send password recovery
+              </button>
+              <button
+                type="button"
+                onClick={sendConfirmationEmail}
+                className="humble-button"
+              >
+                Send confirmation email
+              </button>
               <input
                 type="submit"
                 className="login-button"
@@ -268,4 +316,67 @@ const Login = ({ openRegisterModal }) => {
     </div>
   );
 };
+
+function onSendEmail(email, dispatchLoggers, methodToSendEmail) {
+  if (email.length === 0) {
+    dispatchLoggers({ type: "email login", msg: "Email cannot be empty" });
+    return;
+  }
+  const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  if (!re.test(email)) {
+    dispatchLoggers({ type: "email login", msg: "Invalid Email" });
+    return;
+  }
+  methodToSendEmail(email)
+    .then((msg) => {
+      dispatchLoggers({ type: "create account", msg });
+    })
+    .catch((err) => {
+      console.log(err);
+      if ((err.status === 404 || err.status === 400) && err.data.errors.email) {
+        dispatchLoggers({ type: "email login", msg: err.data.errors.email });
+      }
+    });
+}
+
+function loggerReducer(state, action) {
+  switch (action.type) {
+    case "name register":
+      return { ...state, nameRegisterLogger: action.msg || "" };
+    case "email register":
+      return { ...state, emailRegisterLogger: action.msg || "" };
+    case "password register":
+      return { ...state, passwordRegisterLogger: action.msg || "" };
+    case "create account":
+      return {
+        ...state,
+        createdAccountLogger: action.msg || "",
+        emailLoginLogger: "",
+      };
+    case "email login":
+      return {
+        ...state,
+        emailLoginLogger: action.msg || "",
+        createdAccountLogger: "",
+      };
+    case "password login":
+      return {
+        ...state,
+        passwordLoginLogger: action.msg || "",
+        createdAccountLogger: "",
+      };
+    case "remove all":
+      return {
+        nameRegisterLogger: "",
+        emailRegisterLogger: "",
+        passwordRegisterLogger: "",
+        createdAccountLogger: "",
+        emailLoginLogger: "",
+        passwordLoginLogger: "",
+      };
+    default:
+      throw Error("Invalid action on logger reducer");
+  }
+}
+
 export default Login;

@@ -12,6 +12,7 @@
       display: block;
       margin: 2rem auto;
       font-family: "Roboto";
+      margin-top: 4rem;
 
       & input,
       & textarea {
@@ -19,33 +20,14 @@
         padding: 2rem;
         border-radius: 7px;
         border: 1px solid #ddd;
-        margin-top: 1rem;
 
         &:focus {
-          outline: none;
+          outline: none; 
         }
       }
 
       & textarea {
         resize: vertical;
-      }
-
-      & .input-label {
-        position: absolute;
-        top: 4rem;
-        left: 2%;
-        transform: translateY(-50%);
-        font-size: 1.7rem;
-        transition: 0.5s ease;
-      }
-
-      & .input-label-active {
-        font-size: 1.55rem;
-        top: 0;
-        left: 2px;
-        color: #5759ff;
-        transform: translateY(-50%);
-        font-weight: bold;
       }
 
       & .textarea-label {
@@ -61,7 +43,7 @@
         top: 0;
         left: 2px;
         color: #5759ff;
-        transform: translateY(-50%) scale(0.9);
+        transform: translateY(-100%) scale(0.9);
         font-weight: bold;
       }
     }
@@ -78,6 +60,7 @@
 }
 
 .logger {
+  display: block;
   font-family: "Roboto";
   color: red;
   margin-left: 7px;

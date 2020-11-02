@@ -1,79 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
 using Application.Interfaces;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Users
 {
-  public class Create
+  public class SendConfirmationEmail
   {
-    public class Command : IRequest
+    public class Query : IRequest<string>
     {
-      public Guid Id { get; set; }
-      public string Password { get; set; }
       public string Email { get; set; }
-      public string Name { get; set; }
-      public string Origin { get; set; }
     }
-
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Query, string>
     {
       private readonly DataContext _context;
-      private readonly IEmailSender _sender;
       private readonly IJwtGenerator _jwtGenerator;
-
+      private readonly IEmailSender _sender;
       public Handler(DataContext context, IEmailSender sender, IJwtGenerator jwtGenerator)
       {
-        _jwtGenerator = jwtGenerator;
         _sender = sender;
+        _jwtGenerator = jwtGenerator;
         _context = context;
       }
 
-      public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+      public async Task<string> Handle(Query request, CancellationToken cancellationToken)
       {
-        if (string.IsNullOrEmpty(request.Email)
-          || string.IsNullOrEmpty(request.Password)
-          || string.IsNullOrEmpty(request.Name))
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        if (user == null)
         {
-          var errors = new Dictionary<string, string>();
-          if (string.IsNullOrEmpty(request.Email)) errors["email"] = "Invalid email";
-          if (string.IsNullOrEmpty(request.Password)) errors["password"] = "Invalid password";
-          if (string.IsNullOrEmpty(request.Name)) errors["name"] = "Invalid name";
-          throw new RestException(HttpStatusCode.BadRequest, new { errors });
+          throw new RestException(System.Net.HttpStatusCode.NotFound, new { email = $"{request.Email} do not exists" });
         }
 
-        var existEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-        if (existEmail != null)
+        if (user.IsEmailConfirmed == true)
         {
-          throw new RestException(HttpStatusCode.BadRequest, new { email = "Email already exists" });
+          throw new RestException(System.Net.HttpStatusCode.BadRequest, new { email = $"{request.Email} is already confirmed" });
         }
-
-        var rfc2898DeriveBytes = new Rfc2898DeriveBytes(request.Password, 32)
-        {
-          IterationCount = 10000
-        };
-        byte[] hash = rfc2898DeriveBytes.GetBytes(20);
-        byte[] salt = rfc2898DeriveBytes.Salt;
-        string hashedPassword = Convert.ToBase64String(salt) + "|" + Convert.ToBase64String(hash);
-        var user = new User
-        {
-          Id = request.Id,
-          Email = request.Email,
-          Password = hashedPassword,
-          Name = request.Name,
-          CountFollowers = 0,
-          CountFollowing = 0
-        };
-        _context.Users.Add(user);
-        var success = await _context.SaveChangesAsync() > 0;
 
         var token = _jwtGenerator.CreateToken(user);
 
@@ -328,13 +292,7 @@ namespace Application.Users
 </table>
           ");
 
-
-        if (success)
-        {
-          return Unit.Value;
-        }
-
-        throw new Exception("Problem saving changes");
+        return $"A confirmation email was sent to {request.Email}";
       }
     }
   }

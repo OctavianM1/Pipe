@@ -1,95 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
 using Application.Interfaces;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Users
 {
-  public class Create
+  public class SendRecoveryPassword
   {
-    public class Command : IRequest
+    public class Query : IRequest<string>
     {
-      public Guid Id { get; set; }
-      public string Password { get; set; }
       public string Email { get; set; }
-      public string Name { get; set; }
-      public string Origin { get; set; }
     }
-
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Query, string>
     {
       private readonly DataContext _context;
-      private readonly IEmailSender _sender;
       private readonly IJwtGenerator _jwtGenerator;
-
+      private readonly IEmailSender _sender;
       public Handler(DataContext context, IEmailSender sender, IJwtGenerator jwtGenerator)
       {
-        _jwtGenerator = jwtGenerator;
         _sender = sender;
+        _jwtGenerator = jwtGenerator;
         _context = context;
       }
 
-      public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+      public async Task<string> Handle(Query request, CancellationToken cancellationToken)
       {
-        if (string.IsNullOrEmpty(request.Email)
-          || string.IsNullOrEmpty(request.Password)
-          || string.IsNullOrEmpty(request.Name))
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        if (user == null)
         {
-          var errors = new Dictionary<string, string>();
-          if (string.IsNullOrEmpty(request.Email)) errors["email"] = "Invalid email";
-          if (string.IsNullOrEmpty(request.Password)) errors["password"] = "Invalid password";
-          if (string.IsNullOrEmpty(request.Name)) errors["name"] = "Invalid name";
-          throw new RestException(HttpStatusCode.BadRequest, new { errors });
+          throw new RestException(System.Net.HttpStatusCode.NotFound, new { email = $"{request.Email} do not exists" });
         }
-
-        var existEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-        if (existEmail != null)
-        {
-          throw new RestException(HttpStatusCode.BadRequest, new { email = "Email already exists" });
-        }
-
-        var rfc2898DeriveBytes = new Rfc2898DeriveBytes(request.Password, 32)
-        {
-          IterationCount = 10000
-        };
-        byte[] hash = rfc2898DeriveBytes.GetBytes(20);
-        byte[] salt = rfc2898DeriveBytes.Salt;
-        string hashedPassword = Convert.ToBase64String(salt) + "|" + Convert.ToBase64String(hash);
-        var user = new User
-        {
-          Id = request.Id,
-          Email = request.Email,
-          Password = hashedPassword,
-          Name = request.Name,
-          CountFollowers = 0,
-          CountFollowing = 0
-        };
-        _context.Users.Add(user);
-        var success = await _context.SaveChangesAsync() > 0;
 
         var token = _jwtGenerator.CreateToken(user);
 
         // await _sender.SendEmailAsync(
         //   request.Email,
-        //   "Email verification",
+        //   "Password recovery",
         //   $@"
         //   <div style=""width: 100%; display: block; margin: 50px auto; text-align: center;"">
         //     <h1>Hello, <span style=""color: blue;"">{user.Name}</span></h1>
-        //     <h3>Please, confirm your email on <a href=""http://localhost:3000/confirmEmail/{token}"" style=""color: blue;"" >link</a></h3>
+        //     <h3>Please, restore your password on <a href=""http://localhost:3000/restorePassword/{token}"" style=""color: blue;"" >link</a></h3>
         //   </div>          
         //   ");
 
         await _sender.SendEmailAsync(
           request.Email,
-          "Email verification",
+          "Restore password",
           $@"
 
 <table bgcolor=""#f1f4f8"" cellpadding=""0"" cellspacing=""0"" class=""nl-container"" role=""presentation"" style=""table-layout: fixed; vertical-align: top; min-width: 320px; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f4f8; width: 100%;"" valign=""top"" width=""100%"">
@@ -195,16 +154,16 @@ namespace Application.Users
 </table>
 <div style=""color:#555555;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;line-height:1.2;padding-top:20px;padding-right:40px;padding-bottom:15px;padding-left:40px;"">
 <div style=""line-height: 1.2; font-size: 12px; color: #555555; font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; mso-line-height-alt: 14px;"">
-<p style=""font-size: 46px; line-height: 1.2; text-align: center; word-break: break-word; mso-line-height-alt: 55px; margin: 0;""><span style=""font-size: 46px; color: #003188;""><strong>We Appreciate your feedback!</strong></span></p>
+<p style=""font-size: 46px; line-height: 1.2; text-align: center; word-break: break-word; mso-line-height-alt: 55px; margin: 0;""><span style=""font-size: 46px; color: #003188;""><strong>Password recovery!</strong></span></p>
 </div>
 </div>
 <div style=""color:#555555;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;line-height:1.8;padding-top:20px;padding-right:40px;padding-bottom:20px;padding-left:40px;"">
 <div style=""line-height: 1.8; font-size: 12px; color: #555555; font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; mso-line-height-alt: 22px;"">
-<p style=""line-height: 1.8; word-break: break-word; font-size: 16px; mso-line-height-alt: 29px; margin: 0;""><span style=""font-size: 16px;"">         We received a request to send email confirmaiton to <span style=""background-color: #ffffff; color: #0000ff;"">{request.Email}. </span>If this is correct, please confirm by clicking the button below. If you don’t know why you got this email, please tell us straight away so we can fix this for you.</span></p>
+<p style=""line-height: 1.8; word-break: break-word; font-size: 16px; mso-line-height-alt: 29px; margin: 0;""><span style=""font-size: 16px;"">         We received a request to send password confirmation to <span style=""background-color: #ffffff; color: #0000ff;"">{request.Email}. </span>If this is correct, please restore password by clicking the button below. If you don’t know why you got this email, please tell us straight away so we can fix this for you.</span></p>
 </div>
 </div>
 <div align=""center"" class=""button-container"" style=""padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;"">
-<a href=""http://localhost:3000/confirmEmail/{token}"" style=""text-decoration:none;display:inline-block;color:#ffffff;background-color:#3AAEE0;border-radius:4px;-webkit-border-radius:4px;-moz-border-radius:4px;width:auto; width:auto;;border-top:1px solid #3AAEE0;border-right:1px solid #3AAEE0;border-bottom:1px solid #3AAEE0;border-left:1px solid #3AAEE0;padding-top:5px;padding-bottom:5px;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;""><span style=""padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;""><span style=""font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"">Confirm</span></span></a>
+<a href=""http://localhost:3000/restorePassword/{token}"" style=""text-decoration:none;display:inline-block;color:#ffffff;background-color:#3AAEE0;border-radius:4px;-webkit-border-radius:4px;-moz-border-radius:4px;width:auto; width:auto;;border-top:1px solid #3AAEE0;border-right:1px solid #3AAEE0;border-bottom:1px solid #3AAEE0;border-left:1px solid #3AAEE0;padding-top:5px;padding-bottom:5px;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;""><span style=""padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;""><span style=""font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"">Restore</span></span></a>
 </div>
 <div style=""color:#555555;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;line-height:1.5;padding-top:20px;padding-right:40px;padding-bottom:10px;padding-left:40px;"">
 <div style=""line-height: 1.5; font-size: 12px; font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; color: #555555; mso-line-height-alt: 18px;"">
@@ -328,13 +287,7 @@ namespace Application.Users
 </table>
           ");
 
-
-        if (success)
-        {
-          return Unit.Value;
-        }
-
-        throw new Exception("Problem saving changes");
+        return $"A restore password email was sent to {request.Email}";
       }
     }
   }

@@ -12,5 +12,6 @@ namespace Domain
         public int CountFollowers { get; set; }
         public int CountFollowing { get; set; }
         public virtual ICollection<Activity> Activities { get; set; }
+        public bool IsEmailConfirmed { get; set; }
     }
 }

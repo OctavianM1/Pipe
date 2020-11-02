@@ -44,14 +44,20 @@ const Users = {
   updateName: (body) => request.put("/user/changeName", body),
   updateEmail: (body) => request.put("/user/changeEmail", body),
   updatePassword: (body) => request.put("/user/changePassword", body),
+  confirmEmail: (email) => request.get(`/user/confirmEmail/${email}`),
+  sendRecoveryPassword: (email) =>
+    request.get(`/user/sendRecoveryPassword/${email}`),
+  sendConfirmationEmail: (email) =>
+    request.get(`/user/sendConfirmationEmail/${email}`),
+  recoveryPassword: (body) => request.put('user/recoveryPassword', body)
 };
 
 const Activities = {
   create: (body) => request.post("/activity/create", body),
   list: (id, matchString) =>
     request.post("/activity", { id, matchString: matchString || "" }),
-  detail: (userId, activityId) =>
-    request.get(`/activity/${userId}/${activityId}`),
+  detail: ( activityId) =>
+    request.get(`/activity/getActivity/${activityId}`),
   update: (body) => request.put("/activity/update", body),
   like: (body) => request.post("/activity/like", body),
   rate: (body) => request.post("/activity/rate", body),

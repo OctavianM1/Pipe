@@ -4,7 +4,7 @@ import { Context } from "../context";
 export default function useScrollUpAndOpenLogin() {
   const { isOpenLoginModal } = useContext(Context);
   return () => {
-    const scrollY = window.scrollY;
+    const scrollY = window.scrollY; 
     window.scroll({
       top: 0,
       behavior: "smooth",
