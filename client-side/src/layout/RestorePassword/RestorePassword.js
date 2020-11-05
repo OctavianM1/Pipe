@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 
@@ -64,6 +64,13 @@ const RestorePassword = () => {
       confirmedPasswordLabel: false,
     }
   );
+
+  const history = useHistory();
+
+  const user = JSON.parse(window.localStorage.getItem("user"));
+  if (user && user.id) {
+    history.push("/");
+  }
 
   const [validToken, setValidToken] = useState(false);
 

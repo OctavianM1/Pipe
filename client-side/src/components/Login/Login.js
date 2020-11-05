@@ -16,6 +16,7 @@ const Login = ({ openRegisterModal }) => {
     createdAccountLogger: "",
     emailLoginLogger: "",
     passwordLoginLogger: "",
+    loader: false,
   });
 
   const { isOpenLoginModal } = useContext(Context);
@@ -131,13 +132,17 @@ const Login = ({ openRegisterModal }) => {
   };
 
   const sendPasswordRecovery = (ev) => {
-    const email = ev.target.parentElement.email.value.trim();
-    onSendEmail(email, dispatchLoggers, Users.sendRecoveryPassword);
+    if (!loggers.loader) {
+      const email = ev.target.parentElement.email.value.trim();
+      onSendEmail(email, dispatchLoggers, Users.sendRecoveryPassword);
+    }
   };
 
   const sendConfirmationEmail = (ev) => {
-    const email = ev.target.parentElement.email.value.trim();
-    onSendEmail(email, dispatchLoggers, Users.sendConfirmationEmail);
+    if (!loggers.loader) {
+      const email = ev.target.parentElement.email.value.trim();
+      onSendEmail(email, dispatchLoggers, Users.sendConfirmationEmail);
+    }
   };
 
   let loginClasses = ["login-container"];
@@ -225,6 +230,11 @@ const Login = ({ openRegisterModal }) => {
             </form>
           </div>
           <div className="login-form-container login-sign-in-container">
+            {loggers.loader && (
+              <div className="login-form-container__loader">
+                <h2>Sending email...</h2>
+              </div>
+            )}
             <form className="login-form" onSubmit={handleLoginSubmit}>
               <h1 className="login-h1">Sign in</h1>
               <span className="login-create-account-text">
@@ -263,6 +273,7 @@ const Login = ({ openRegisterModal }) => {
               <button
                 type="button"
                 onClick={sendPasswordRecovery}
+                id="hum1"
                 className="humble-button"
               >
                 Send password recovery
@@ -270,6 +281,7 @@ const Login = ({ openRegisterModal }) => {
               <button
                 type="button"
                 onClick={sendConfirmationEmail}
+                id="hum2"
                 className="humble-button"
               >
                 Send confirmation email
@@ -327,6 +339,7 @@ function onSendEmail(email, dispatchLoggers, methodToSendEmail) {
     dispatchLoggers({ type: "email login", msg: "Invalid Email" });
     return;
   }
+  dispatchLoggers({ type: "active loader" });
   methodToSendEmail(email)
     .then((msg) => {
       dispatchLoggers({ type: "create account", msg });
@@ -352,12 +365,14 @@ function loggerReducer(state, action) {
         ...state,
         createdAccountLogger: action.msg || "",
         emailLoginLogger: "",
+        loader: false,
       };
     case "email login":
       return {
         ...state,
         emailLoginLogger: action.msg || "",
         createdAccountLogger: "",
+        loader: false,
       };
     case "password login":
       return {
@@ -374,6 +389,8 @@ function loggerReducer(state, action) {
         emailLoginLogger: "",
         passwordLoginLogger: "",
       };
+    case "active loader":
+      return { ...state, loader: true };
     default:
       throw Error("Invalid action on logger reducer");
   }

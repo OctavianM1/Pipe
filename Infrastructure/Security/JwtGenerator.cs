@@ -31,6 +31,7 @@ namespace Infrastructure.Security
       var tokenHandler = new JwtSecurityTokenHandler();
 
       var token = tokenHandler.CreateToken(tokenDescriptor);
+      
 
       return tokenHandler.WriteToken(token);
     }

@@ -22,13 +22,12 @@ const Profile = () => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
 
-  const user = JSON.parse(window.localStorage.getItem("user"));
-
+  
   const error = useApiErrorHandler();
-
+  const user = JSON.parse(window.localStorage.getItem("user"));
   useEffect(() => {
     Users.details(user.id).then(setUserData).catch(error);
-  }, [error, user]);
+  }, [error, user.id]);
 
   const handleSubmit = (ev, obj) => {
     ev && ev.preventDefault();

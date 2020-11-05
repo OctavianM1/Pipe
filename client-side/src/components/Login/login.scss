@@ -370,7 +370,7 @@
     padding: 2rem;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
     transform: scale(1);
-    transition: .3s ease;
+    transition: 0.3s ease;
 
     &:hover {
       transform: scale(1.1);
@@ -423,7 +423,6 @@
       @media screen and (max-width: 1000px) {
         bottom: 21%;
         left: 23%;
-        
       }
       @media screen and (max-width: 550px) {
         width: 22px;
@@ -460,5 +459,49 @@
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.login-form-container__loader {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-105%, -50%);
+  color: rgb(0, 182, 0);
+  font-family: "Roboto";
+  animation: sendEmail2 2.5s infinite;
+}
+
+.login-form-container__loader + .login-form {
+  opacity: 0.3 !important;
+  cursor: not-allowed;
+}
+
+.login-form-container__loader + .login-form #hum1,
+.login-form-container__loader + .login-form #hum2 {
+  cursor: not-allowed !important;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+@keyframes sendEmail {
+  from {
+    transform: translate(-105%, -50%);
+  }
+  to {
+    transform: translate(250%, -50%);
+  }
+}
+
+@keyframes sendEmail2 {
+  0% {
+    transform: translate(0%, -50%);
+  }
+  50% {
+    transform: translate(150%, -50%);
+  }
+  100% {
+    transform: translate(0%, -50%);
   }
 }

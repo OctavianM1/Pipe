@@ -97,7 +97,7 @@ const Activity = ({
         isLiked = true;
       }
     });
-    
+
     return isLiked;
   };
 
@@ -133,7 +133,10 @@ const Activity = ({
             />
           </div>
         )}
-        <div ref={activityRef} className="my-activities__activities-side__activity">
+        <div
+          ref={activityRef}
+          className="my-activities__activities-side__activity"
+        >
           <div className="my-activities__activities-side__activity__total-raiting__container">
             <div
               className="my-activities__activities-side__activity__total-raiting"
