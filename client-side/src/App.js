@@ -21,8 +21,14 @@ import ConfirmEmail from "./layout/ConfirmEmail/ConfirmEmail";
 import RestorePassword from "./layout/RestorePassword/RestorePassword";
 
 function App() {
-  const { openLoginModal } = useContext(Context);
+  const { openLoginModal, networkError, setNetworkError } = useContext(Context);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
+
+  if (networkError) {
+    setTimeout(() => {
+      setNetworkError(false);
+    }, 1000 * 60); // 1 min
+  }
 
   useDisableScroll([openLoginModal]);
 
@@ -31,6 +37,16 @@ function App() {
       {openLoginModal && <Login openRegisterModal={openRegisterModal} />}
       <Header isOpenRegisterModal={isOpenRegisterModal} />
 
+      {networkError && (
+        <div
+          style={{ backgroundColor: "rgba(223, 51, 51, 0.9)" }}
+          className="network-error"
+        >
+          <h3>Network error</h3>
+          <p>Somethig is temporarily wrong with your network connection.</p>
+          <p>Please make sure you are connected to the internet.</p>
+        </div>
+      )}
       <Switch>
         <Route path="/profile" exact>
           <Profile />
@@ -56,7 +72,7 @@ function App() {
         <Route path="/confirmEmail/:token">
           <ConfirmEmail />
         </Route>
-        <Route path='/restorePassword/:token'>
+        <Route path="/restorePassword/:token">
           <RestorePassword />
         </Route>
         <Route path="/unauthorized" exact>

@@ -14,7 +14,7 @@ import StandardButton from "../../components/Buttons/StandardBtn/StandardButton"
 import Loupe from "../../components/Svgs/Loupe";
 import Loader from "../../components/Loader/Loader";
 import User from "../../components/User/User";
-import useGridOnResize from "../../Hooks/userGridOnResize";
+import useGridOnResize from "../../Hooks/useGridOnResize";
 import { Search } from "../../api/axios";
 import useChangePage from "../../Hooks/useChangePage";
 import useHash from "../../Hooks/useHash";

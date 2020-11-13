@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useHash from "../../Hooks/useHash";
 import StarsRaiting from "../StarsRaiting/StarsRaiting";
@@ -18,6 +18,8 @@ const FilterSide = () => {
   const [numberRaitingStars, setNumberRaitingStars] = useState(
     hashObj["raiting-stars"] ? +hashObj["raiting-stars"] : 0
   );
+
+  const specificSubjectInput = useRef(null);
 
   useEffect(() => {
     if (!hashPath) {
@@ -64,6 +66,23 @@ const FilterSide = () => {
       replaceHash(hashPath, `&p=${hashObj["p"]}`, "&p=1");
       replaceHash(hashPath, `&${ev.target.value}=true`, "");
     }
+  };
+
+  const handleFilterSpecificSubject = (ev) => {
+    if (ev.target.value) {
+      replaceHash(
+        hashPath,
+        `&subj=${hashObj["subj"]}`,
+        `&subj=${ev.target.value}`
+      );
+    } else {
+      replaceHash(hashPath, `&subj=${hashObj["subj"]}`, "");
+    }
+  };
+
+  const removeFilterSpecificSubject = (ev) => {
+    ev.target.parentElement.firstChild.value = "";
+    replaceHash(hashPath, `&subj=${hashObj["subj"]}`, "");
   };
 
   return (
@@ -218,6 +237,23 @@ const FilterSide = () => {
                 onChange={changeSubjectFilter}
               />
               <label htmlFor="sport">Sport</label>
+            </div>
+            <div className="specific-subject">
+              <input
+                ref={specificSubjectInput}
+                type="text"
+                placeholder="Specific subject filter"
+                onChange={handleFilterSpecificSubject}
+              />
+              {specificSubjectInput &&
+                specificSubjectInput.current &&
+                specificSubjectInput.current.value && (
+                  <img
+                    onClick={removeFilterSpecificSubject}
+                    src="/images/activities/cancel.svg"
+                    alt="cancel"
+                  />
+                )}
             </div>
           </div>
         </div>

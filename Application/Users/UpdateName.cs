@@ -44,7 +44,7 @@ namespace Application.Users
             Email = user.Email,
             CountFollowers = user.CountFollowers,
             CountFollowing = user.CountFollowing,
-            NumberOfActivities = user.Activities.Count()
+            NumberOfActivities = user.Activities.Count(),
           };
         }
         throw new Exception("Problem to update email");

@@ -11,7 +11,7 @@ import "./searchUsers.scss";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import User from "../../components/User/User";
 import { Search } from "../../api/axios";
-import useGridOnResize from "../../Hooks/userGridOnResize";
+import useGridOnResize from "../../Hooks/useGridOnResize";
 import useHash from "../../Hooks/useHash";
 import { useLocation } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";

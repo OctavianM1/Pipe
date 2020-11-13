@@ -5,7 +5,7 @@ import "./ourFeatures.scss";
 const OurFeatures = () => {
   return (
     <div className="our-features">
-      <Header1>
+      <Header1> 
         See what we're made of<span>.</span>
       </Header1>
       <div className="our-features-grid">

@@ -232,7 +232,7 @@ const MyActivities = () => {
 };
 
 function filterSubject(activities, hashObj) {
-  if (!hashObj["art"] && !hashObj["sport"]) {
+  if (!hashObj["art"] && !hashObj["sport"] && !hashObj["subj"]) {
     return activities;
   }
   const newActivities = [];
@@ -246,6 +246,14 @@ function filterSubject(activities, hashObj) {
   if (hashObj["sport"] === "true") {
     for (let i = 0; i < activities.length; i++) {
       if (activities[i].subject.toLowerCase().includes("sport")) {
+        newActivities.push(activities[i]);
+      }
+    }
+  }
+  if (hashObj["subj"]) {
+    const val = hashObj["subj"];
+    for (let i = 0; i < activities.length; i++) {
+      if (activities[i].subject.toLowerCase().includes(val)) {
         newActivities.push(activities[i]);
       }
     }

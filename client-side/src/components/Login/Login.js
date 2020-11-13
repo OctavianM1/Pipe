@@ -6,6 +6,7 @@ import { Users } from "../../api/axios";
 import { Context } from "../../context";
 import CloseBtn from "../Buttons/CloseBtn/CloseBtn";
 import handleBlurPassword from "../../utilities/handleBlurPassword";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const Login = ({ openRegisterModal }) => {
   const [signUp, setSignUp] = useState(openRegisterModal);
@@ -26,6 +27,8 @@ const Login = ({ openRegisterModal }) => {
 
   const [registerButtonActive, setRegisterButtonActive] = useState(true);
 
+  const error = useApiErrorHandler();
+
   const handleLoginSubmit = (event) => {
     const email = event.target.email.value;
     const password = event.target.password.value;
@@ -36,13 +39,15 @@ const Login = ({ openRegisterModal }) => {
         isOpenLoginModal(false);
       })
       .catch((err) => {
-        const errors = err.data.errors;
-        if (errors.email) {
-          dispatchLoggers({ type: "email login", msg: errors.email });
-        }
-        if (errors.password) {
-          dispatchLoggers({ type: "password login", msg: errors.password });
-        }
+        error(err, () => {
+          const errors = err.data.errors;
+          if (errors.email) {
+            dispatchLoggers({ type: "email login", msg: errors.email });
+          }
+          if (errors.password) {
+            dispatchLoggers({ type: "password login", msg: errors.password });
+          }
+        });
       });
     event.preventDefault();
   };
@@ -371,6 +376,7 @@ function loggerReducer(state, action) {
       return {
         ...state,
         emailLoginLogger: action.msg || "",
+        passwordLoginLogger: "",
         createdAccountLogger: "",
         loader: false,
       };
@@ -378,6 +384,7 @@ function loggerReducer(state, action) {
       return {
         ...state,
         passwordLoginLogger: action.msg || "",
+        emailLoginLogger: "",
         createdAccountLogger: "",
       };
     case "remove all":

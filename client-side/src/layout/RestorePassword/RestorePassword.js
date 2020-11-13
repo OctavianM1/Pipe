@@ -9,50 +9,6 @@ import handleBlurPassword from "../../utilities/handleBlurPassword";
 import { Users } from "../../api/axios";
 import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
 
-function restoreLoggersReducer(state, action) {
-  switch (action.type) {
-    case "active password label":
-      return { ...state, passwordLabel: true };
-    case "inactive password label":
-      return { ...state, passwordLabel: false };
-    case "active confirmed password label":
-      return {
-        ...state,
-        confirmedPasswordLabel: true,
-        confirmedPasswordLogger: "",
-      };
-    case "inactive confirmed password label":
-      return { ...state, confirmedPasswordLabel: false };
-    case "new password":
-      return { ...state, passwordLogger: action.msg };
-    case "incorrect confirm password":
-      return {
-        ...state,
-        confirmedPasswordLabel: true,
-        confirmedPasswordLogger: "The confirmed password is incorrect",
-      };
-    case "empty password":
-      return { ...state, passwordLogger: "Password cannot be empty" };
-    case "empty confirmed password":
-      return {
-        ...state,
-        confirmedPasswordLogger: "You need to confirm password!",
-      };
-    case "doesn't match":
-      return { ...state, confirmedPasswordLogger: "asd" };
-    case "success recovered":
-      return {
-        successRecovered: true,
-        passwordLogger: "",
-        passwordLabel: false,
-        confirmedPasswordLogger: "",
-        confirmedPasswordLabel: false,
-      };
-    default:
-      throw Error(`Error action type: ${action.type}`);
-  }
-}
-
 const RestorePassword = () => {
   const [restoreLoggers, dispatchRestoreLoggers] = useReducer(
     restoreLoggersReducer,
@@ -96,10 +52,6 @@ const RestorePassword = () => {
     const pass = passInput.value.trim();
     const confirmedPassInput = ev.target.confirmNewPassword[0];
     const confirmedPass = confirmedPassInput.value.trim();
-    console.log(passInput);
-    console.log(pass);
-    console.log(confirmedPassInput);
-    console.log(confirmedPass);
     if (pass.length === 0) {
       dispatchRestoreLoggers({ type: "empty password" });
     }
@@ -232,5 +184,49 @@ const RestorePassword = () => {
     </div>
   );
 };
+
+function restoreLoggersReducer(state, action) {
+  switch (action.type) {
+    case "active password label":
+      return { ...state, passwordLabel: true };
+    case "inactive password label":
+      return { ...state, passwordLabel: false };
+    case "active confirmed password label":
+      return {
+        ...state,
+        confirmedPasswordLabel: true,
+        confirmedPasswordLogger: "",
+      };
+    case "inactive confirmed password label":
+      return { ...state, confirmedPasswordLabel: false };
+    case "new password":
+      return { ...state, passwordLogger: action.msg };
+    case "incorrect confirm password":
+      return {
+        ...state,
+        confirmedPasswordLabel: true,
+        confirmedPasswordLogger: "The confirmed password is incorrect",
+      };
+    case "empty password":
+      return { ...state, passwordLogger: "Password cannot be empty" };
+    case "empty confirmed password":
+      return {
+        ...state,
+        confirmedPasswordLogger: "You need to confirm password!",
+      };
+    case "doesn't match":
+      return { ...state, confirmedPasswordLogger: "asd" };
+    case "success recovered":
+      return {
+        successRecovered: true,
+        passwordLogger: "",
+        passwordLabel: false,
+        confirmedPasswordLogger: "",
+        confirmedPasswordLabel: false,
+      };
+    default:
+      throw Error(`Error action type: ${action.type}`);
+  }
+}
 
 export default RestorePassword;

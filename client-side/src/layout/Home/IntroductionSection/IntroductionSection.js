@@ -23,7 +23,7 @@ const IntroductionSection = ({ isOpenRegisterModal }) => {
   return (
     <section className="introduction-section">
       <div className="introduction-section-container">
-        {user && user.id ? (
+        {user && user.id ? ( 
           <Header1>Welcome back to Pipe!</Header1>
         ) : (
           <Header1>Welcome to Pipe!</Header1>

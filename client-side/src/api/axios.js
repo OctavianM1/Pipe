@@ -4,7 +4,6 @@ axios.defaults.baseURL = "http://localhost:5000/api";
 
 axios.interceptors.response.use(undefined, (error) => {
   if (error.message === "Network Error" && !error.response) {
-    console.log("Network Error");
     throw error.message;
   }
   if (error.response.status === 401) {
@@ -49,15 +48,16 @@ const Users = {
     request.get(`/user/sendRecoveryPassword/${email}`),
   sendConfirmationEmail: (email) =>
     request.get(`/user/sendConfirmationEmail/${email}`),
-  recoveryPassword: (body) => request.put('user/recoveryPassword', body)
+  recoveryPassword: (body) => request.put("user/recoveryPassword", body),
+  subscribeToSendEmails: (body) => request.post('user/subscribe', body),
+  isSubscribed: (email) => request.get(`user/isSubscribed/${email}`)
 };
 
 const Activities = {
   create: (body) => request.post("/activity/create", body),
   list: (id, matchString) =>
     request.post("/activity", { id, matchString: matchString || "" }),
-  detail: ( activityId) =>
-    request.get(`/activity/getActivity/${activityId}`),
+  detail: (activityId) => request.get(`/activity/getActivity/${activityId}`),
   update: (body) => request.put("/activity/update", body),
   like: (body) => request.post("/activity/like", body),
   rate: (body) => request.post("/activity/rate", body),

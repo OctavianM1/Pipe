@@ -10,6 +10,7 @@ namespace Application.Users.ApplicationUser
     public int CountFollowers { get; set; }
     public int CountFollowing { get; set; }
     public int? NumberOfActivities { get; set; }
+    public bool IsSubscribedToEmails { get; set; }
     public string Token { get; set; }
   }
 }

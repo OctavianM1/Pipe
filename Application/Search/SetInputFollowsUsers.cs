@@ -49,7 +49,7 @@ namespace Application.Search
                 Email = u.Email,
                 CountFollowers = u.CountFollowers,
                 CountFollowing = u.CountFollowing,
-                NumberOfActivities = u.Activities.Count()
+                NumberOfActivities = u.Activities.Count(),
               })
               .ToListAsync();
           }
@@ -75,7 +75,7 @@ namespace Application.Search
               Email = u.Email,
               CountFollowers = u.CountFollowers,
               CountFollowing = u.CountFollowing,
-              NumberOfActivities = u.Activities.Count()
+              NumberOfActivities = u.Activities.Count(),
             })
             .ToListAsync();
         }

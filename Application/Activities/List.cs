@@ -72,13 +72,20 @@ namespace Application.Activities
               Email = al.User.Email,
               CountFollowers = al.User.CountFollowers,
               CountFollowing = al.User.CountFollowing,
-              NumberOfActivities = al.User.Activities.Count()
+              NumberOfActivities = al.User.Activities.Count(),
             }).ToList()
           },
           Comments = a.ActivityComment.Select(ac => new AppComment
           {
             Id = ac.Id,
-            User = new AppUser { Name = ac.User.Name, Email = ac.User.Email, Id = ac.UserId, CountFollowers = ac.User.CountFollowers, CountFollowing = ac.User.CountFollowing },
+            User = new AppUser
+            {
+              Name = ac.User.Name,
+              Email = ac.User.Email,
+              Id = ac.UserId,
+              CountFollowers = ac.User.CountFollowers,
+              CountFollowing = ac.User.CountFollowing
+            },
             Comment = ac.Comment,
             DateTimeCreated = ac.DateTimeCreated,
             DateTimeEdited = ac.DateTimeEdited,
@@ -89,7 +96,7 @@ namespace Application.Activities
               Email = cl.User.Email,
               CountFollowing = cl.User.CountFollowing,
               CountFollowers = cl.User.CountFollowers,
-              NumberOfActivities = cl.User.Activities.Count()
+              NumberOfActivities = cl.User.Activities.Count(),
             }).ToList()
           }).ToList()
         })

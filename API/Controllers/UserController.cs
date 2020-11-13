@@ -72,6 +72,20 @@ namespace API.Controllers
       return await _mediator.Send(command);
     }
 
+    [AllowAnonymous]
+    [HttpPost("subscribe")]
+    public async Task<ActionResult<Unit>> SubscribeToGetEmails(Subscribe.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("isSubscribed/{email}")]
+    public async Task<ActionResult<bool>> IsSubscribedToGetEmail(string email)
+    {
+      return await _mediator.Send(new IsSubscribed.Query { Email = email });
+    }
+
     [HttpGet("{userHostId}/{userVisitorId}")]
     public async Task<ActionResult<AppUsersActivity>> GetUsersActivity(string userHostId, string userVisitorId)
     {

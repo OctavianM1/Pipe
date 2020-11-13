@@ -33,7 +33,7 @@ namespace Application.FollowsAndFollowing
           Email = f.User.Email,
           CountFollowers = f.User.CountFollowers,
           CountFollowing = f.User.CountFollowing,
-          NumberOfActivities = f.User.Activities.Count()
+          NumberOfActivities = f.User.Activities.Count(),
         }).ToListAsync();
       }
     }

@@ -64,7 +64,7 @@ namespace Application.Users
           CountFollowers = user.CountFollowers,
           CountFollowing = user.CountFollowing,
           Token = _jwtGenerator.CreateToken(user),
-          NumberOfActivities = user.Activities.Count()
+          NumberOfActivities = user.Activities.Count(),
         };
       }
     }

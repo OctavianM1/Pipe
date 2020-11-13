@@ -1,15 +1,25 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { Context } from "../context";
 
 export default function useApiErrorHandler() {
   const history = useHistory();
-  const errorHandler = useCallback((error) => {
-    if (error.status === 401) {
-      history.push("/unauthorized");
-    } else if (error.status === 500) {
-      history.push('/server-error');
-    }
-  }, [history]);
+  const { setNetworkError } = useContext(Context);
+
+  const errorHandler = useCallback(
+    (error, cb) => {
+      if (error === "Network Error") {
+        setNetworkError(true);
+      } else if (error.status === 400) {
+        cb();
+      } else if (error.status === 401) {
+        history.push("/unauthorized");
+      } else if (error.status === 500) {
+        history.push("/server-error");
+      }
+    },
+    [history, setNetworkError]
+  );
 
   return errorHandler;
 }

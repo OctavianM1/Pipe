@@ -8,7 +8,7 @@ namespace Persistence
   {
     public DataContext(DbContextOptions options) : base(options)
     {
-      
+
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -50,5 +50,6 @@ namespace Persistence
     public DbSet<SearchFollowingUsers> SearchFollowingUsers { get; set; }
     public DbSet<SearchFollowsUsers> SearchFollowsUsers { get; set; }
     public DbSet<SearchActivities> SearchActivities { get; set; }
+    public DbSet<SubscriberOnEmailNews> SubscriberOnEmailNews { get; set; }
   }
 }
