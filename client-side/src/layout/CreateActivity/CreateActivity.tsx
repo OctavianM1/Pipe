@@ -107,7 +107,7 @@ const CreateActivity = ({
       const body = target.body.value;
       if (edit) {
         Activities.update({
-          activityId: activityId,
+          activityId: activityId!,
           title: title,
           subject: subject,
           body: body,
