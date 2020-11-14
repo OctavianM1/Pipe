@@ -1,6 +1,7 @@
 import React from "react";
+import { GridProps } from "./Grid2x2";
 
-const Grid3x3 = ({ active, onClick }) => {
+const Grid3x3 = ({ active, onClick }: GridProps) => {
   return (
     <svg
       version="1.1"
@@ -11,7 +12,6 @@ const Grid3x3 = ({ active, onClick }) => {
       viewBox="0 0 360.49 360.49"
       style={active ? { fill: "#5759ff" } : {}}
       onClick={onClick}
-
     >
       <path
         d="M96.653,0H13.061C7.29,0,2.612,4.678,2.612,10.449v83.592c0,5.771,4.678,10.449,10.449,10.449h83.592

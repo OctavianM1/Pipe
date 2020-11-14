@@ -1,6 +1,7 @@
 import React from "react";
+import { GridProps } from "./Grid2x2";
 
-const Grid4x4 = ({ active, onClick }) => {
+const Grid4x4 = ({ active, onClick }: GridProps) => {
   return (
     <svg
       version="1.1"

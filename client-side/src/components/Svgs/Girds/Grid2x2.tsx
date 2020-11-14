@@ -1,6 +1,11 @@
 import React from "react";
 
-const Grid2x2 = ({ active, onClick }) => {
+export interface GridProps {
+  active: boolean;
+  onClick: (event: any) => void;
+}
+
+const Grid2x2 = ({ active, onClick }: GridProps) => {
   return (
     <svg
       version="1.1"
