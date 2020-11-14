@@ -454,7 +454,7 @@
 
 .humble-button {
   cursor: pointer;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.75rem; 
   background-color: transparent;
 
   &:hover {
@@ -499,7 +499,7 @@
     transform: translate(0%, -50%);
   }
   50% {
-    transform: translate(150%, -50%);
+    transform: translate(120%, -50%);
   }
   100% {
     transform: translate(0%, -50%);

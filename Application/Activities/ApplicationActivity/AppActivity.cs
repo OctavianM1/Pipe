@@ -19,4 +19,4 @@ namespace ApplicationActivity
     public AppActivityLikes Likes { get; set; }  
     public List<AppComment> Comments { get; set; } 
   }
-}
+}   

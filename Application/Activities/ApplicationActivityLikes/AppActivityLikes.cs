@@ -8,4 +8,4 @@ namespace ApplicationActivityLikes
     public int Likes { get; set; } 
     public List<AppUser> Users { get; set; }
   }
-}
+} 

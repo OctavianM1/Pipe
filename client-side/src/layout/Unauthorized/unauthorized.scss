@@ -2,7 +2,6 @@
   margin-bottom: 10rem;
 
   &__container {
-    background-image: url("/images/not-found/unauthorized-background.jpg");
     background-size: cover;
     height: 80rem;
     position: relative;
@@ -98,7 +97,6 @@
             transform: scale(1.5);
             box-shadow: 0 2px 4px 7px rgba(0, 0, 0, 0.3);
           }
-
         }
 
         &__auth {
