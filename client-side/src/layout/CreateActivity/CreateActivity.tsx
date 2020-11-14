@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from "react";
+import React, { FocusEvent, FormEvent, useReducer, useRef, useState } from "react";
 import "./createActivity.scss";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import { Link } from "react-router-dom";
@@ -40,9 +40,7 @@ const CreateActivity = ({
   const error = useApiErrorHandler();
 
   const handleBlurInput = (
-    ev:
-      | React.FocusEvent<HTMLInputElement>
-      | React.FocusEvent<HTMLTextAreaElement>
+    ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
   ) => {
     if (ev.target.name === "title") {
       if (ev.target.value.trim()) {
@@ -66,9 +64,7 @@ const CreateActivity = ({
   };
 
   const handleFocusInput = (
-    ev:
-      | React.FocusEvent<HTMLInputElement>
-      | React.FocusEvent<HTMLTextAreaElement>
+    ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
   ) => {
     if (ev.target.name === "title") {
       dispatchInputs({ type: "active title label" });
@@ -79,7 +75,7 @@ const CreateActivity = ({
     }
   };
 
-  const handleSubmitForm = (ev: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = (ev: FormEvent<HTMLFormElement>) => {
     let errors = false;
     const target = ev.target as any;
     if (target.title.value.length < 5) {

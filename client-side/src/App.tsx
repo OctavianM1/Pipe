@@ -1,10 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, Dispatch, SetStateAction } from "react";
 import "./App.scss";
 import Header from "./layout/Header/Header";
 import Home from "./layout/Home/Home";
 import Login from "./components/Login/Login";
 import Footer from "./layout/Footer/Footer";
-
 import { Route, Switch } from "react-router-dom";
 import NotFound from "./layout/NotFound/NotFound";
 import { Context } from "./context";
@@ -28,7 +27,7 @@ function App() {
   }: {
     openLoginModal: boolean;
     networkError: boolean;
-    setNetworkError: React.Dispatch<React.SetStateAction<boolean>>;
+    setNetworkError: Dispatch<SetStateAction<boolean>>;
   } = useContext(Context);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
 

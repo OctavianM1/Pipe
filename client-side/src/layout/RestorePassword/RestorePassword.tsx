@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { FormEvent, useReducer, useState, FocusEvent } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import "./restorePassword.scss";
@@ -47,7 +47,7 @@ const RestorePassword = () => {
 
   const openLogin = useScrollUpAndOpenLogin();
 
-  const submitRestorePassword = (ev: React.FormEvent<HTMLFormElement>) => {
+  const submitRestorePassword = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     const evTarget = ev.target as any;
     const passInput = evTarget.newPassword[0];
@@ -76,7 +76,7 @@ const RestorePassword = () => {
     }
   };
 
-  const handleBlurInput = (ev: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlurInput = (ev: FocusEvent<HTMLInputElement>) => {
     const evTarget = ev.target as any;
     const target = evTarget.name;
     const val = evTarget.value.trim();
@@ -101,7 +101,7 @@ const RestorePassword = () => {
     }
   };
 
-  const handleFocusInput = (ev: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocusInput = (ev: FocusEvent<HTMLInputElement>) => {
     const target = ev.target.name;
     if (target === "newPassword") {
       dispatchRestoreLoggers({ type: "active password label" });

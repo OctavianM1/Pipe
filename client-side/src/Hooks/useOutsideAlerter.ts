@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
 
 function useOutsideAlerter(
-  ref: React.RefObject<HTMLElement>,
-  setPopUp: React.Dispatch<React.SetStateAction<boolean>>,
+  ref: RefObject<HTMLElement>,
+  setPopUp: Dispatch<SetStateAction<boolean>>,
   className?: string | null,
   fn?: () => void
 ) {

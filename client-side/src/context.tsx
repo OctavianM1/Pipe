@@ -1,19 +1,22 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useMemo,
+  useState,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+} from "react";
 
 interface ContextData {
   openLoginModal: boolean;
-  isOpenLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenLoginModal: Dispatch<SetStateAction<boolean>>;
   networkError: boolean;
-  setNetworkError: React.Dispatch<React.SetStateAction<boolean>>;
+  setNetworkError: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Context = createContext<ContextData>(null!);
 
-export default function ContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ContextProvider({ children }: { children: ReactNode }) {
   const [openLoginModal, isOpenLoginModal] = useState(false);
   const [networkError, setNetworkError] = useState(false);
   return (

@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 export default function useGridOnResize(
   grid: number,
-  setGrid: React.Dispatch<React.SetStateAction<number>>
+  setGrid: Dispatch<SetStateAction<number>>
 ) {
   useEffect(() => {
     function onResize() {

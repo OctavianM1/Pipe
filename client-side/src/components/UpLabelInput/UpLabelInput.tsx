@@ -1,13 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef, FocusEvent } from "react";
 
 import "./upLabelInput.scss";
 
 interface UpLabelInputProps {
   handleBlurInput:
-    | ((event: React.FocusEvent<HTMLInputElement>) => void)
+    | ((event: FocusEvent<HTMLInputElement>) => void)
     | undefined;
   handleFocusInput:
-    | ((event: React.FocusEvent<HTMLInputElement>) => void)
+    | ((event: FocusEvent<HTMLInputElement>) => void)
     | undefined;
   edit: boolean;
   val: string | undefined;

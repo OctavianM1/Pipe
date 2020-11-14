@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { RefObject, useCallback, useEffect, useRef, useState } from "react";
 
 import "./userActivities.scss";
 
@@ -22,7 +22,7 @@ interface CommentProps {
   onDeleteComment: () => void;
   dateTimeCreated: string;
   dateTimeEdited: string;
-  activityRef: React.RefObject<HTMLDivElement>;
+  activityRef: RefObject<HTMLDivElement>;
 }
 
 const Comment = ({

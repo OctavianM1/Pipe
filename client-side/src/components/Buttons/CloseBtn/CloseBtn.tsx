@@ -1,9 +1,8 @@
-import React from "react";
-
+import React, {MouseEventHandler} from "react";
 import "./closeBtn.scss";
 
 interface CloseBtnProps {
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
 const CloseBtn = ({ onClick }: CloseBtnProps) => {

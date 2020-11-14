@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, Dispatch, SetStateAction } from "react";
 import "./Header.scss";
 import "../../components/Buttons/BottomEffect/bottomEffect.scss";
 import "../../components/Buttons/StandardBtn/standardButton.scss";
@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const Header = ({
   isOpenRegisterModal,
 }: {
-  isOpenRegisterModal: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenRegisterModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [dropDown, setDropDown] = useState(false);
 

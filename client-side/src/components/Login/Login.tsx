@@ -1,4 +1,12 @@
-import React, { useContext, useReducer, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useContext,
+  useReducer,
+  useRef,
+  useState,
+  FocusEvent,
+  Dispatch,
+} from "react";
 import "./login.scss";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import { Users } from "../../api/axios";
@@ -29,7 +37,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
 
   const error = useApiErrorHandler();
 
-  const handleLoginSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
     const evTarget = event.target as any;
     const email = evTarget.email.value;
     const password = evTarget.password.value;
@@ -53,7 +61,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
     event.preventDefault();
   };
 
-  const handleRegisterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const evTarget = event.target as any;
     if (!registerButtonActive) return;
@@ -107,9 +115,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
     }
   };
 
-  const handleBlurNameRegister = (
-    event: React.FocusEvent<HTMLInputElement>
-  ) => {
+  const handleBlurNameRegister = (event: FocusEvent<HTMLInputElement>) => {
     const name = event.target.value;
     if (name.trim().length < 2 && name.length > 0) {
       dispatchLoggers({
@@ -125,7 +131,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
   };
 
   const handleBlurEmailRegister = (
-    event: React.FocusEvent<HTMLInputElement>
+    event: FocusEvent<HTMLInputElement>
   ) => {
     const email = event.target.value;
     const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -345,7 +351,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
 
 function onSendEmail(
   email: string,
-  dispatchLoggers: React.Dispatch<{
+  dispatchLoggers: Dispatch<{
     type: string;
     msg?: string | undefined;
   }>,

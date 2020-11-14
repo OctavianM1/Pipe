@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import "./pagination.scss";
 import useChangePage from "../../Hooks/useChangePage";
 
@@ -13,7 +13,7 @@ const Pagination = ({ hash, hashObj, page, nrOfPages }: PaginationProps) => {
   const handleChangePage = useChangePage(hashObj, hash);
 
   const loopInPages = (pages: (number | null)[]) => {
-    const paginationNumbers: React.ReactNode[] = [];
+    const paginationNumbers: ReactNode[] = [];
     pages.forEach((i) => {
       if (i === null) {
         paginationNumbers.push(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Users } from "../../api/axios";
 import Logo from "../../components/Logo/Logo";
 
@@ -35,7 +35,7 @@ const Footer = () => {
     }
   }, [subscribedToEmail]);
 
-  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
     const target = ev.target as any;
     const email = target.email.value;
     Users.subscribeToSendEmails({ email })

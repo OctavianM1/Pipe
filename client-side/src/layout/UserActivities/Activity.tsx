@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 import Star from "../../components/Svgs/Star";
 
 import { Activities } from "../../api/axios";
@@ -91,7 +91,7 @@ const Activity = ({
     );
   }
 
-  const handleSubmitComment = (ev: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitComment = (ev: FormEvent<HTMLFormElement>) => {
     const target = ev.target as any;
     const comment = target.commentBody.value;
     if (comment.trim() !== "") {

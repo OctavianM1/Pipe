@@ -1,9 +1,9 @@
-import React from "react";
+import React, {ReactNode, MouseEventHandler} from "react";
 import "./standardButton.scss";
 
 interface StandardButtonProps {
-  children: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  children: ReactNode;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   type?: "button" | "submit" | "reset" | undefined;
   classNames?: string[];
 }

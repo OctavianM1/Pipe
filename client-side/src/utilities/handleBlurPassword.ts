@@ -1,5 +1,7 @@
+import { FocusEvent } from "react";
+
 export default function handleBlurPassword(
-  event: React.FocusEvent<HTMLInputElement>,
+  event: FocusEvent<HTMLInputElement>,
   dispatch: ({ type, msg }: { type: string; msg: string }) => void,
   actionType: string
 ) {

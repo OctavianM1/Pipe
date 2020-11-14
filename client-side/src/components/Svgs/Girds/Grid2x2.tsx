@@ -2,7 +2,7 @@ import React from "react";
 
 export interface GridProps {
   active: boolean;
-  onClick: (event: any) => void;
+  onClick: (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => void;
 }
 
 const Grid2x2 = ({ active, onClick }: GridProps) => {

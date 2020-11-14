@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Dispatch, SetStateAction, useContext } from "react";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 
 import { Link, useLocation } from "react-router-dom";
@@ -11,7 +11,7 @@ const HeaderLis = ({
   isOpenRegisterModal,
 }: {
   closeDropDown: () => void;
-  isOpenRegisterModal: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenRegisterModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { pathname } = useLocation();
 

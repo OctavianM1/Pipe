@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+  FocusEvent,
+} from "react";
 import "./profile.scss";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import { Users } from "../../api/axios";
@@ -27,7 +33,7 @@ const Profile = () => {
   }, [error, user.id]);
 
   const handleSubmit = (
-    ev: React.FormEvent<HTMLFormElement> | null,
+    ev: FormEvent<HTMLFormElement> | null,
     obj?: { type: string; newName?: string; newEmail?: string }
   ) => {
     ev?.preventDefault();
@@ -101,7 +107,7 @@ const Profile = () => {
     }
   };
 
-  const handleBlurPassword = (ev: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlurPassword = (ev: FocusEvent<HTMLInputElement>) => {
     const evTarget = ev.target as any;
     const form = ev && evTarget.parentElement.parentElement;
     const newPassword = form.newPassword.value.trim();

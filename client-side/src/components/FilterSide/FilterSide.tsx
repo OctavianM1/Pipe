@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useHash from "../../Hooks/useHash";
 import StarsRaiting from "../StarsRaiting/StarsRaiting";
 import useReplaceHash from "../../Hooks/useReplaceHash";
 import useAddHashOnChecked from "../../Hooks/useAddHashOnChecked";
-
 import "./filterSide.scss";
 
 const FilterSide = () => {
@@ -31,7 +30,7 @@ const FilterSide = () => {
   const addHashOnChecked = useAddHashOnChecked();
 
   const changeSortFilter = (
-    ev: React.ChangeEvent<HTMLInputElement>,
+    ev: ChangeEvent<HTMLInputElement>,
     string: string
   ) => {
     let newHashPath = replaceHash(hashPath, `&p=${hashObj["p"]}`, "&p=1");
@@ -60,7 +59,7 @@ const FilterSide = () => {
     setNumberRaitingStars(nrStars);
   };
 
-  const changeSubjectFilter = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const changeSubjectFilter = (ev: ChangeEvent<HTMLInputElement>) => {
     addHashOnChecked(hashPath, ev.target, replaceHash);
   };
 
@@ -74,9 +73,7 @@ const FilterSide = () => {
     }
   };
 
-  const handleFilterSpecificSubject = (
-    ev: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFilterSpecificSubject = (ev: ChangeEvent<HTMLInputElement>) => {
     if (ev.target.value) {
       replaceHash(
         hashPath,

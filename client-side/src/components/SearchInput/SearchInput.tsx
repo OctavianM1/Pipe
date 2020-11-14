@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import "./searchInput.scss";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import Loupe from "../Svgs/Loupe";
@@ -15,8 +15,8 @@ interface SearchInputProps {
   onSetInput: (input: string | undefined) => Promise<any>;
   onDeleteInput: (input: string) => Promise<any>;
   setUsers:
-    | React.Dispatch<React.SetStateAction<ServerUser[]>>
-    | React.Dispatch<React.SetStateAction<ServerActivity[]>>;
+    | Dispatch<SetStateAction<ServerUser[]>>
+    | Dispatch<SetStateAction<ServerActivity[]>>;
 }
 
 const SearchInput = ({
