@@ -21,7 +21,7 @@ const User = ({
 }: UserProps) => {
   return (
     <Link to={`/activities/${id}`} className={`user grid-${grid}x${grid}`}>
-      <img src="/images/activities/anonym.jpg" alt="anonym" />
+      <img src="/images/userPhotos/anonym.jpg" alt="anonym" />
       <div>
         <div>
           Name: <span>{name}</span>

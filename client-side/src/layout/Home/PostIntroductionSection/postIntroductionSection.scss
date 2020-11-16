@@ -10,6 +10,9 @@
   @media screen and (max-width: 550px) {
     padding: 7rem 2.5rem;
   }
+  transform: scale(1);
+  opacity: 1;
+  transition: 0.5s cubic-bezier(0.23, 0.16, 0.57, 1.57);
 }
 
 .post-grid {

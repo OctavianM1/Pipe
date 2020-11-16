@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./following.scss";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { Link, useLocation } from "react-router-dom";

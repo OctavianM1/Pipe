@@ -275,7 +275,7 @@ const Activity = ({
               className="my-activities__activities-side__activity__add-comment"
               onSubmit={handleSubmitComment}
             >
-              <img src="/images/activities/anonym.jpg" alt="anonym user" />
+              <img src="/images/userPhotos/anonym.jpg" alt="anonym user" />
               <input
                 ref={commentInput}
                 type="text"

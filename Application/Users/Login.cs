@@ -65,6 +65,7 @@ namespace Application.Users
           CountFollowing = user.CountFollowing,
           Token = _jwtGenerator.CreateToken(user),
           NumberOfActivities = user.Activities.Count(),
+          CoverImageExtension = user.CoverImageExtension
         };
       }
     }

@@ -35,6 +35,7 @@ namespace Application.Search
           CountFollowers = u.CountFollowers,
           CountFollowing = u.CountFollowing,
           NumberOfActivities = u.Activities.Count(),
+          CoverImageExtension = u.CoverImageExtension
         }).ToListAsync();
       }
     }

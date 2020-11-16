@@ -48,6 +48,10 @@
 }
 
 .element-container {
+  transform: translateY(0);
+  opacity: 1;
+  transition: 1s;
+
   &__upside {
     display: flex;
     align-items: center;

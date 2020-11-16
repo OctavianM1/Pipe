@@ -34,6 +34,7 @@ namespace Application.FollowsAndFollowing
           CountFollowers = f.Follower.CountFollowers,
           CountFollowing = f.Follower.CountFollowing,
           NumberOfActivities = f.Follower.Activities.Count(),
+          CoverImageExtension = f.Follower.CoverImageExtension
         }).ToListAsync();
       }
     }

@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
+import ActivitiesFacade from "./ActivitiesFacade/ActivitiesFacade";
 import "./home.scss";
 
 import IntroductionSection from "./IntroductionSection/IntroductionSection";
@@ -13,6 +14,7 @@ const Home = ({
   return (
     <div className="home">
       <IntroductionSection isOpenRegisterModal={isOpenRegisterModal} />
+      <ActivitiesFacade />
       <OurFeatures />
       <PostIntroductionSection />
     </div>

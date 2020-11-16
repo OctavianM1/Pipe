@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./following.scss";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import { Link, match, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import Grid4x4 from "../../components/Svgs/Girds/Grid4x4";
 import Grid3x3 from "../../components/Svgs/Girds/Grid3x3";

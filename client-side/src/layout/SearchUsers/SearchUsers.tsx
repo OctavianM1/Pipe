@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./searchUsers.scss";
 import Loader from "../../components/Loader/Loader";
 import SearchInput from "../../components/SearchInput/SearchInput";

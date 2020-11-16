@@ -7,6 +7,7 @@ export interface ServerUser {
   countFollowing: number;
   numberOfActivities: number;
   isSubscribedToEmails: boolean;
+  coverImageExtension: string;
   token: string | null;
 }
 

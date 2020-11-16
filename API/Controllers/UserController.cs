@@ -1,12 +1,14 @@
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Application;
 using Application.Users;
 using Application.Users.ApplicationUser;
 using ApplicationUser;
-using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -109,6 +111,5 @@ namespace API.Controllers
     {
       return await _mediator.Send(command);
     }
-
   }
 }

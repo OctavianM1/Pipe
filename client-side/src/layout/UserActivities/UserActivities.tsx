@@ -161,7 +161,7 @@ const MyActivities = () => {
           </div>
         ) : (
           <>
-            {hostUserId !== visitorUser.id && (
+            {hostUserId !== visitorUser.id && userData && (
               <div className="activities-info">
                 <div>
                   Name: <span>{userData.name}</span>

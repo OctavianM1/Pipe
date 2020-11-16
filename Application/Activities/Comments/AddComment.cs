@@ -53,6 +53,7 @@ namespace Application.Activities.Comments
             CountFollowers = u.CountFollowers,
             CountFollowing = u.CountFollowing,
             NumberOfActivities = u.Activities.Count(),
+            CoverImageExtension = u.CoverImageExtension
           }).FirstOrDefault();
           return new AppComment
           {

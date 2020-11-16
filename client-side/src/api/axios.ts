@@ -60,7 +60,7 @@ const Users = {
     request.put("user/recoveryPassword", body),
   subscribeToSendEmails: (body: { email: string }) =>
     request.post("user/subscribe", body),
-  isSubscribed: (email: string) => request.get(`user/isSubscribed/${email}`),
+  isSubscribed: (email: string) => request.get(`/user/isSubscribed/${email}`),
 };
 
 const Activities = {
@@ -165,4 +165,8 @@ const Search = {
   }) => request.post("/search/deleteInputActivities", body),
 };
 
-export { Users, Activities, Follows, Search };
+const UploadFile = {
+  userCoverImage: (body: FormData) => request.post("/uploadFile/userCoverImage", body),
+};
+
+export { Users, Activities, Follows, Search, UploadFile };

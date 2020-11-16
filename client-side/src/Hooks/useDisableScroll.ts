@@ -5,7 +5,7 @@ const wheelEvent =
 
 const wheelOpt = { passive: false };
 
-export default function useDisableScroll(options = [false]) {
+export default function useDisableScroll(options: boolean[] = [false]) {
   function preventDefault(e: any) {
     if (e.key !== "ArrowDown" && e.key !== undefined) {
       return;

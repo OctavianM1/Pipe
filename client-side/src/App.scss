@@ -94,3 +94,21 @@ button {
     transform: translateX(0);
   }
 }
+
+.cursor-poiner {
+  cursor: pointer;
+}
+
+.hidden {
+  &__bottom {
+    transform: translateY(500px) !important;
+    opacity: 0 !important;
+    transition: 1s;
+  }
+
+  &__small {
+    transform: scale(0.5) !important;
+    opacity: 0 !important;
+    transition: 1s;
+  }
+}

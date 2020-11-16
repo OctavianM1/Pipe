@@ -1,0 +1,100 @@
+.activities-facade {
+  max-width: 150rem;
+  margin: 10rem auto;
+  display: flex;
+  overflow: hidden;
+
+  @media screen and (max-width: 900px) {
+    flex-direction: column;
+  }
+
+  &__facade {
+    width: 52%;
+    transform: perspective(320px) rotateY(5deg);
+    max-height: 53.3rem;
+    overflow: hidden;
+    flex-basis: 50%;
+    margin: 0 auto;
+    transition: transform 1s;
+
+    @media screen and (max-width: 1400px) {
+      max-height: 45rem;
+    }
+
+    & > img {
+      width: 100%;
+
+      &:last-child {
+        margin-top: -4px;
+        margin-left: 1px;
+        transform: scale(1.003);
+      }
+    }
+
+    &__hidden {
+      transform: translateX(-140%);
+      overflow: hidden;
+    }
+  }
+
+  &__text {
+    font-family: "Roboto";
+    color: #0077d5;
+    flex-basis: 48%;
+    padding: 8rem 0 0 2rem;
+    transition: 1s;
+    overflow: hidden;
+
+    @media screen and (max-width: 1400px) {
+      padding: 5rem 0 0 2rem;
+    }
+    @media screen and (max-width: 900px) {
+      text-align: center;
+      margin: 4rem 15rem;
+    }
+    & > h1 {
+      font-size: 6rem;
+      margin-bottom: 4rem;
+      @media screen and (max-width: 1400px) {
+        font-size: 5.5rem;
+      }
+      @media screen and (max-width: 1300px) {
+        font-size: 4.8rem;
+      }
+      @media screen and (max-width: 1100px) {
+        font-size: 4.5rem;
+      }
+    }
+
+    & > h2 {
+      font-size: 2.7rem;
+      margin-bottom: 9rem;
+      @media screen and (max-width: 1400px) {
+        font-size: 2.4rem;
+        margin-bottom: 6rem;
+      }
+      @media screen and (max-width: 1300px) {
+        font-size: 2rem;
+      }
+      @media screen and (max-width: 1100px) {
+        font-size: 1.9rem;
+      }
+    }
+
+    & > p {
+      font-size: 2rem;
+      line-height: 29px;
+      @media screen and (max-width: 1300px) {
+        font-size: 1.8rem;
+      }
+      @media screen and (max-width: 1100px) {
+        font-size: 1.7rem;
+      }
+    }
+
+    &__hidden {
+      transform: translateX(140%);
+      overflow: hidden;
+    }
+  }
+}

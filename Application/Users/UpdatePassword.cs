@@ -69,6 +69,7 @@ namespace Application.Users
             CountFollowers = user.CountFollowers,
             CountFollowing = user.CountFollowing,
             NumberOfActivities = user.Activities.Count(),
+            CoverImageExtension = user.CoverImageExtension
           };
         }
         throw new Exception("Problem to update email");

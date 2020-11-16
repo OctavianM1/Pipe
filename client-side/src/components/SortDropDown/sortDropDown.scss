@@ -61,6 +61,7 @@
         overflow: hidden;
         border-radius: 10px;
         box-shadow: 0 2.5px 8px rgba(0, 0, 0, 0.329);
+        z-index: 200;
         transition: visibility 0.3s, opacity 0.5s, max-height 0.5s;
 
         & > div {

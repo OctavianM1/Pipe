@@ -151,7 +151,7 @@ const Comment = ({
   return (
     <div className="comment__container">
       <div className="my-activities__activities-side__activity__comments__comment">
-        <img src="/images/activities/anonym.jpg" alt="anonym user" />
+        <img src="/images/userPhotos/anonym.jpg" alt="anonym user" />
         <div
           onMouseEnter={() => setDisplayCommentDate(true)}
           onMouseLeave={() => setDisplayCommentDate(false)}

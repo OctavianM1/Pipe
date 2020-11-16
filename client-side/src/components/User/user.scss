@@ -19,6 +19,13 @@
   border-radius: 10px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
   margin: 1rem 1% 1rem 1%;
+  transform: scale(1);
+  transition: 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 6px black;
+  }
 
   & img {
     width: 7rem;

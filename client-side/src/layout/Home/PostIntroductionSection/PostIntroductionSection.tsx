@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import "./postIntroductionSection.scss";
 import Logo from "../../../components/Logo/Logo";
+import useDisplayComponent from "../../../Hooks/useDisplayComponent";
 
 const PostIntroductionSection: React.FC = () => {
+  const [displaySection, setDisplaySection] = useState(false);
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useDisplayComponent(
+    sectionRef,
+    displaySection,
+    setDisplaySection,
+    "small->normal"
+  );
+
   return (
     <div
+      ref={sectionRef}
       style={{
         backgroundImage:
           'linear-gradient(rgba(255, 255, 255, 0.5),rgba(0, 0, 0, 0.5)),url("/images/home/background-image-2.jpg")',
       }}
-      className="post-section"
+      className={`post-section ${displaySection ? "" : "hidden__small"}`}
     >
       <div className="post-grid">
         <div className="logo-container">

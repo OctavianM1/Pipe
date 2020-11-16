@@ -73,6 +73,7 @@ namespace Application.Activities
               CountFollowers = al.User.CountFollowers,
               CountFollowing = al.User.CountFollowing,
               NumberOfActivities = al.User.Activities.Count(),
+              CoverImageExtension = al.User.CoverImageExtension
             }).ToList()
           },
           Comments = a.ActivityComment.Select(ac => new AppComment
@@ -84,7 +85,8 @@ namespace Application.Activities
               Email = ac.User.Email,
               Id = ac.UserId,
               CountFollowers = ac.User.CountFollowers,
-              CountFollowing = ac.User.CountFollowing
+              CountFollowing = ac.User.CountFollowing,
+              CoverImageExtension = ac.User.CoverImageExtension
             },
             Comment = ac.Comment,
             DateTimeCreated = ac.DateTimeCreated,
@@ -97,6 +99,7 @@ namespace Application.Activities
               CountFollowing = cl.User.CountFollowing,
               CountFollowers = cl.User.CountFollowers,
               NumberOfActivities = cl.User.Activities.Count(),
+              CoverImageExtension = cl.User.CoverImageExtension
             }).ToList()
           }).ToList()
         })
