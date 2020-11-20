@@ -114,10 +114,8 @@ const RestorePassword = () => {
     ev: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     const evTarget = ev.target as any;
-    evTarget.parentElement.firstChild.firstChild.firstChild.type =
-      evTarget.parentElement.firstChild.firstChild.type === "text"
-        ? "password"
-        : "text";
+    const input = evTarget.parentElement.firstChild.firstChild.firstChild;
+    input.type = input.type === "text" ? "password" : "text";
   };
 
   return (

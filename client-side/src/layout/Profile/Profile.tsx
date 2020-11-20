@@ -7,6 +7,7 @@ import CoverPhoto from "./CoverPhoto";
 import NameInput from "./NameInput";
 import EmailInput from "./EmailInput";
 import EditPassword from "./EditPassword";
+import Loader from "../../components/Loader/Loader";
 
 const Profile = () => {
   const [userData, setUserData] = useState<ServerUser>(null!);
@@ -23,8 +24,8 @@ const Profile = () => {
 
   return (
     <div className="profile">
-      <div className="profile__container">
-        {userData && (
+      {userData ? (
+        <div className="profile__container">
           <>
             <div className="profile__container__public">
               <h2 className="profile__container__info">Public information</h2>
@@ -75,8 +76,12 @@ const Profile = () => {
               <EditPassword user={user} setUserData={setUserData} />
             </div>
           </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="profile__loader">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 };

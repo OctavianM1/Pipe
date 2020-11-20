@@ -14,5 +14,7 @@ namespace Domain
     public string DateTimeCreated { get; set; }
     public string DateTimeEdited { get; set; }
     public virtual ICollection<CommentLikes> CommentLikes { get; set; }
+    public int NumberOfResponses { get; set; }
+    public virtual ICollection<CommentResponse> CommentResponses { get; set; }
   }
 }

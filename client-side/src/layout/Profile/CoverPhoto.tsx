@@ -1,8 +1,9 @@
 import React, {
   ChangeEvent,
+  Dispatch,
   FormEvent,
-  SyntheticEvent,
   useEffect,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -11,16 +12,63 @@ import { ServerUser } from "../../api/serverDataInterfaces";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import useDisableScroll from "../../Hooks/useDisableScroll";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
+import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
+
+function onResizeProfile(
+  dispatchEdit: Dispatch<{
+    type: string;
+  }>
+) {
+  const windowWidth = window.innerWidth;
+  if (windowWidth < 1125 && windowWidth > 825) {
+    dispatchEdit({ type: "small label" });
+  } else {
+    dispatchEdit({ type: "large label" });
+  }
+}
+
+interface editState {
+  editMode: boolean;
+  labelClassStyle: string;
+}
+
+function editReducer(state: editState, action: { type: string }) {
+  switch (action.type) {
+    case "closeEdit":
+      return {
+        editMode: false,
+        labelClassStyle: "profile__container__public__el__label",
+      };
+    case "small label":
+      return {
+        editMode: true,
+        labelClassStyle: "profile__container__public__el__label-small",
+      };
+    case "large label":
+      return {
+        editMode: true,
+        labelClassStyle: "profile__container__public__el__label-large",
+      };
+    default:
+      throw new Error("Invalid action type");
+  }
+}
 
 const CoverPhoto = ({ user }: { user: ServerUser }) => {
   const [coverPhotoSrc, setCoverPhotoSrc] = useState(
-    "/images/userPhotos/anonym.jpg"
+    user.coverImageExtension
+      ? `/images/userPhotos/${user.id}.${user.coverImageExtension}`
+      : "/images/userPhotos/anonym.jpg"
   );
-  const [editCoverPhoto, setEditCoverPhoto] = useState(false);
   const [inputCoverPhotoLogger, setInputCoverPhotoLogger] = useState("");
   const [file, setFile] = useState<string | Blob>("");
   const [fileExtension, setFileExtension] = useState("");
   const [biggerPhoto, setBiggerPhoto] = useState(false);
+  const [chooseFileName, setChooseFileName] = useState("Change avatar");
+  const [edit, dispatchEdit] = useReducer(editReducer, {
+    editMode: false,
+    labelClassStyle: "profile__container__public__el__label",
+  });
 
   const biggerPhotoContainer = useRef<HTMLImageElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -33,18 +81,6 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
   }
   useDisableScroll([biggerPhoto]);
   useOutsideAlerter(biggerPhotoContainer, setBiggerPhoto);
-
-  useEffect(() => {
-    if (user) {
-      let src: string;
-      if (user.coverImageExtension) {
-        src = `/images/userPhotos/${user.id}.${user.coverImageExtension}`;
-      } else {
-        src = "/images/userPhotos/anonym.jpg";
-      }
-      setCoverPhotoSrc(src);
-    }
-  }, [user]);
 
   const saveFile = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -59,6 +95,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
       fileExtension === "jpeg" ||
       fileExtension === "pneg"
     ) {
+      setChooseFileName(evTarget.files[0].name);
       setFile(evTarget.files[0]);
       setFileExtension(evTarget.files[0].name.split(".")[1]);
       setInputCoverPhotoLogger("");
@@ -84,32 +121,31 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
       formData.append("userId", user.id);
       UploadFile.userCoverImage(formData)
         .then(() => {
-          setEditCoverPhoto(false);
+          window.localStorage.setItem(
+            "user",
+            JSON.stringify({ ...user, coverImageExtension: fileExtension })
+          );
+          dispatchEdit({ type: "closeEdit" });
         })
         .catch((err) => console.log(err));
     }
   };
 
-  const handleProfileCoverPhotoError = (
-    ev: SyntheticEvent<HTMLImageElement, Event>
-  ) => {
-    setCoverPhotoSrc("/images/userPhotos/anonym.jpg");
-    ev.preventDefault();
-  };
+  const profileImgError = useProfileCoverPhotoError(setCoverPhotoSrc);
 
   const handleEditCoverPhoto = (
     ev: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    if (!editCoverPhoto) {
-      setEditCoverPhoto(true);
+    if (!edit.editMode) {
+      onResizeProfile(dispatchEdit);
     }
   };
 
   const cancelEditCoverPhoto = (
     ev: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    setEditCoverPhoto(false);
     setInputCoverPhotoLogger("");
+    dispatchEdit({ type: "closeEdit" });
   };
 
   const makeBigCoverPhoto = (
@@ -118,6 +154,21 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     setBiggerPhoto(true);
     ev.stopPropagation();
   };
+
+  useEffect(() => {
+    if (edit.editMode) {
+      window.addEventListener(
+        "resize",
+        onResizeProfile.bind(this, dispatchEdit)
+      );
+    }
+    return () => {
+      window.removeEventListener(
+        "resize",
+        onResizeProfile.bind(this, dispatchEdit)
+      );
+    };
+  }, [edit.editMode]);
 
   return (
     <>
@@ -128,27 +179,41 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
             className="profile__show-big-image__container"
             src={coverPhotoSrc}
             alt="Big cover"
-          ></img>
+          />
         </div>
       )}
       <div
         className={
-          editCoverPhoto
+          edit.editMode
             ? "profile__container__public__el"
             : "profile__container__public__el editable"
         }
         onClick={handleEditCoverPhoto}
       >
-        <div className="profile__container__public__el__label">Photo</div>
+        <div className={edit.labelClassStyle}>Photo</div>
         <div className="profile__container__public__el__info">
-          {editCoverPhoto ? (
+          {edit.editMode ? (
             <form
               id="uploadCoverImage"
               onSubmit={uploadFile}
               encType="multipart/form-data"
             >
               <div>
-                <input ref={fileInput} type="file" onChange={saveFile} />
+                <label
+                  htmlFor="uploadFileInput"
+                  className="profile__container__public__el__info__cahnge-avatar"
+                >
+                  <img src="/images/profile/upload.svg" alt="Upload" />
+                  <span>{chooseFileName}</span>
+                </label>
+                <input
+                  id="uploadFileInput"
+                  name="uploadFileInput"
+                  ref={fileInput}
+                  type="file"
+                  onChange={saveFile}
+                  style={{ display: "none" }}
+                />
                 <div className="profile__cover-photo-logger">
                   {inputCoverPhotoLogger}
                 </div>
@@ -175,7 +240,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
                 <img
                   onClick={makeBigCoverPhoto}
                   src={coverPhotoSrc}
-                  onError={handleProfileCoverPhotoError}
+                  onError={profileImgError}
                   alt="Cover"
                 />
               </div>

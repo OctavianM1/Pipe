@@ -63,6 +63,9 @@ namespace Persistence.Migrations
                     b.Property<string>("DateTimeEdited")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int>("NumberOfResponses")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
@@ -144,6 +147,51 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CommentLikes");
+                });
+
+            modelBuilder.Entity("Domain.CommentResponse", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<Guid>("ParentActivityCommentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentActivityCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentResponse");
+                });
+
+            modelBuilder.Entity("Domain.CommentResponseLikes", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CommentResponseId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentResponseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentResponseLikes");
                 });
 
             modelBuilder.Entity("Domain.Follows", b =>
@@ -378,6 +426,36 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Activity", "Activity")
                         .WithMany()
                         .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.CommentResponse", b =>
+                {
+                    b.HasOne("Domain.ActivityComment", "ActivityComment")
+                        .WithMany("CommentResponses")
+                        .HasForeignKey("ParentActivityCommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.CommentResponseLikes", b =>
+                {
+                    b.HasOne("Domain.CommentResponse", "CommentResponse")
+                        .WithMany("CommentResponseLikes")
+                        .HasForeignKey("CommentResponseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

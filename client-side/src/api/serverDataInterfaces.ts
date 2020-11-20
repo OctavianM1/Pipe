@@ -5,9 +5,9 @@ export interface ServerUser {
   name: string;
   countFollowers: number;
   countFollowing: number;
-  numberOfActivities: number;
+  numberOfActivities: number | null;
   isSubscribedToEmails: boolean;
-  coverImageExtension: string;
+  coverImageExtension: string | null;
   token: string | null;
 }
 
@@ -32,6 +32,15 @@ export interface ServerActivityComment {
   dateTimeCreated: string;
   dateTimeEdited: string;
   commentLikeUsers: ServerUser[];
+  numberOfResponses: number;
+}
+
+export interface ServerActivityCommentResponse {
+  id: string;
+  commentResponseLikes: ServerUser[];
+  comment: string;
+  parentActivityCommentId: string;
+  user: ServerUser;
 }
 
 export interface ServerActivityLikes {
@@ -49,6 +58,7 @@ export interface ServerActivityUserRaiting {
   email: string;
   name: string;
   rate: number;
+  coverImageExtension: string | null;
 }
 
 // Visitor following host

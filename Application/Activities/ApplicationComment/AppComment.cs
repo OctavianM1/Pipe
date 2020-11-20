@@ -12,5 +12,6 @@ namespace ApplicationComment
     public string DateTimeCreated { get; set; }
     public string DateTimeEdited { get; set; }
     public List<AppUser> CommentLikeUsers { get; set; }
+    public int NumberOfResponses { get; set; }
   }
 }

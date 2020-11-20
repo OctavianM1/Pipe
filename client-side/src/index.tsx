@@ -2,15 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
+import ScrollToTopTransaction from "./components/ScrollToTopTransaction/ScrollToTopTransaction";
 import ContextProvider from "./context";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <ContextProvider>
-        <App />
-      </ContextProvider>
+      <ScrollToTopTransaction>
+        <ContextProvider>
+          <App />
+        </ContextProvider>
+      </ScrollToTopTransaction>
     </Router>
   </React.StrictMode>,
   document.getElementById("root")
@@ -20,4 +23,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-

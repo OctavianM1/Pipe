@@ -1,19 +1,25 @@
-import React, { FormEvent, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
+import "./userActivities.scss";
 import Star from "../../components/Svgs/Star";
-
 import { Activities } from "../../api/axios";
 import Comment from "./Comment";
-
 import { Link } from "react-router-dom";
-
-import "./userActivities.scss";
 import StarsRaiting from "../../components/StarsRaiting/StarsRaiting";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import {
   ServerUser,
   ServerActivityComment,
   ServerActivityRaiting,
+  ServerActivityUserRaiting,
 } from "../../api/serverDataInterfaces";
+import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
+import UserRaiting from "./UserRaiting";
 
 interface ActivityProps {
   id: string;
@@ -53,6 +59,15 @@ const Activity = ({
   const [rateActivity, setRateActivity] = useState(personalRate);
   const [activityComments, setActivityComments] = useState(comments);
   const [displayedCommentNumber, setDisplayedCommentsNumber] = useState(2);
+  const [coverPhotoSrc, setCoverPhotoSrc] = useState(
+    visitorUser.coverImageExtension
+      ? `/images/userPhotos/${visitorUser.id}.${visitorUser.coverImageExtension}`
+      : "/images/userPhotos/anonym.jpg"
+  );
+  const [totalRaitingState, dispatchTotalRaiting] = useReducer(
+    totalRaitingReducer,
+    totalRaiting
+  );
 
   const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
 
@@ -69,24 +84,42 @@ const Activity = ({
       .catch(error);
   };
 
-  const handleRateActivity = (rate: number) => {
-    if (rate === rateActivity) {
-      Activities.deleteRate({ userId: visitorUser.id, activityId: id })
-        .then(() => setRateActivity(0))
-        .catch(error);
-    } else {
-      Activities.rate({ userId: visitorUser.id, activityId: id, rate: rate })
-        .then(() => setRateActivity(rate))
-        .catch(error);
-    }
-  };
+  const handleRateActivity = useCallback(
+    (rate: number) => {
+      if (rate === rateActivity) {
+        Activities.deleteRate({ userId: visitorUser.id, activityId: id })
+          .then(() => {
+            setRateActivity(0);
+            dispatchTotalRaiting({
+              type: "delete rate",
+              visitorUser: visitorUser,
+              rate: rate,
+            });
+          })
+          .catch(error);
+      } else {
+        Activities.rate({ userId: visitorUser.id, activityId: id, rate: rate })
+          .then(() => {
+            setRateActivity(rate);
+            dispatchTotalRaiting({
+              type: "update total rate",
+              visitorUser: visitorUser,
+              rate: rate,
+              rateActivity: rateActivity,
+            });
+          })
+          .catch(error);
+      }
+    },
+    [error, visitorUser, id, rateActivity]
+  );
 
   let totalStars = [];
   for (let i = 1; i <= 5; i++) {
     totalStars.push(
       <Star
         key={i}
-        color={Math.round(totalRaiting.raiting) >= i ? "#fff220" : "black"}
+        color={Math.round(totalRaitingState.raiting) >= i ? "#fff220" : "black"}
       />
     );
   }
@@ -142,6 +175,8 @@ const Activity = ({
       .catch(error);
   };
 
+  const profileImgError = useProfileCoverPhotoError(setCoverPhotoSrc);
+
   return (
     <>
       <div style={{ position: "relative" }}>
@@ -170,7 +205,7 @@ const Activity = ({
             >
               <div
                 className={
-                  isHoveringTotalRaiting && totalRaiting.raiting !== 0
+                  isHoveringTotalRaiting && totalRaitingState.raiting !== 0
                     ? "my-activities__activities-side__activity__total-raiting__users my-activities__activities-side__activity__total-raiting__users-active"
                     : "my-activities__activities-side__activity__total-raiting__users"
                 }
@@ -178,17 +213,8 @@ const Activity = ({
                 <div className="my-activities__activities-side__activity__total-raiting__users__arrow">
                   &nbsp;
                 </div>
-                {totalRaiting.users.map((u) => (
-                  <Link
-                    className="my-activities__activities-side__activity__total-raiting__users__user"
-                    to={`/activities/${u.id}`}
-                    key={u.id}
-                  >
-                    <h3>
-                      {u.name}: <span>{u.rate}</span>
-                    </h3>
-                    <Star color="yellow" />
-                  </Link>
+                {totalRaitingState.users.map((u) => (
+                  <UserRaiting key={u.id} user={u} />
                 ))}
               </div>
               <h3>Total raiting:</h3>
@@ -239,18 +265,11 @@ const Activity = ({
             {displayedComments.map((c) => (
               <Comment
                 key={c.id}
-                hostUserId={c.user.id}
-                userName={c.user.name}
-                commentBody={c.comment}
-                commentLikes={c.commentLikeUsers.length}
-                id={c.id}
+                commentData={c}
                 visitorUser={visitorUser}
                 activityId={id}
                 isLiked={handleIsLikedComment(c.commentLikeUsers)}
-                commentLikeUsers={c.commentLikeUsers}
                 onDeleteComment={() => handleDeleteComment(c.id)}
-                dateTimeCreated={c.dateTimeCreated}
-                dateTimeEdited={c.dateTimeEdited}
                 activityRef={activityRef}
               />
             ))}
@@ -275,7 +294,11 @@ const Activity = ({
               className="my-activities__activities-side__activity__add-comment"
               onSubmit={handleSubmitComment}
             >
-              <img src="/images/userPhotos/anonym.jpg" alt="anonym user" />
+              <img
+                onError={profileImgError}
+                src={coverPhotoSrc}
+                alt="anonym user"
+              />
               <input
                 ref={commentInput}
                 type="text"
@@ -289,5 +312,68 @@ const Activity = ({
     </>
   );
 };
+
+function totalRaitingReducer(
+  state: ServerActivityRaiting,
+  action: {
+    type: string;
+    rate: number;
+    visitorUser: ServerUser;
+    rateActivity?: number;
+  }
+) {
+  const uLength = state.users.length;
+
+  switch (action.type) {
+    case "delete rate":
+      const newRaiting = Math.round(
+        (state.raiting * uLength - action.rate) / (uLength - 1)
+      );
+      return {
+        raiting: newRaiting || 0,
+        users: state.users.filter((u) => u.id !== action.visitorUser.id),
+      };
+
+    case "update total rate":
+      let userExist = false;
+      for (const u of state.users) {
+        if (u.id === action.visitorUser.id) {
+          userExist = true;
+          break;
+        }
+      }
+      const newRaitingUser: ServerActivityUserRaiting = {
+        id: action.visitorUser.id,
+        email: action.visitorUser.email,
+        coverImageExtension: action.visitorUser.coverImageExtension,
+        name: action.visitorUser.name,
+        rate: action.rate,
+      };
+      if (!userExist) {
+        const newRaiting =
+          Math.round(state.raiting * uLength + action.rate) / (uLength + 1);
+
+        return {
+          raiting: newRaiting,
+          users: [...state.users, newRaitingUser],
+        };
+      } else {
+        const newRaiting = Math.round(
+          (state.raiting * uLength - action.rateActivity! + action.rate) /
+            uLength
+        );
+        return {
+          raiting: newRaiting,
+          users: [
+            ...state.users.filter((u) => u.id !== action.visitorUser.id),
+            newRaitingUser,
+          ],
+        };
+      }
+
+    default:
+      throw new Error("Invalid action type on total raiting reducer");
+  }
+}
 
 export default Activity;

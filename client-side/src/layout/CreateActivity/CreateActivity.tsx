@@ -1,4 +1,10 @@
-import React, { FocusEvent, FormEvent, useReducer, useRef, useState } from "react";
+import React, {
+  FocusEvent,
+  FormEvent,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import "./createActivity.scss";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import { Link } from "react-router-dom";
@@ -7,6 +13,7 @@ import CloseBtn from "../../components/Buttons/CloseBtn/CloseBtn";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import UpLabelInput from "../../components/UpLabelInput/UpLabelInput";
+import FancyHeader from "../../components/Headers/FancyHeader";
 
 interface CreateActivityProps {
   edit: boolean;
@@ -154,6 +161,11 @@ const CreateActivity = ({
       )}
 
       <div className="create-activity">
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <FancyHeader>
+            {edit ? "Edit activity" : "Create an activity"}
+          </FancyHeader>
+        </div>
         <form
           className="create-activity__container"
           onSubmit={handleSubmitForm}

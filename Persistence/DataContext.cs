@@ -38,6 +38,17 @@ namespace Persistence
         .Property(s => s.Input)
         .IsRequired();
 
+      builder.Entity<CommentResponse>()
+        .HasOne(c => c.ActivityComment)
+        .WithMany(ac => ac.CommentResponses)
+        .HasForeignKey(c => c.ParentActivityCommentId);
+
+      builder.Entity<CommentResponse>()
+        .HasMany(c => c.CommentResponseLikes)
+        .WithOne(cr => cr.CommentResponse)
+        .HasForeignKey(c => c.CommentResponseId);
+
+
     }
     public DbSet<User> Users { get; set; }
     public DbSet<Activity> Activities { get; set; }
@@ -51,5 +62,7 @@ namespace Persistence
     public DbSet<SearchFollowsUsers> SearchFollowsUsers { get; set; }
     public DbSet<SearchActivities> SearchActivities { get; set; }
     public DbSet<SubscriberOnEmailNews> SubscriberOnEmailNews { get; set; }
+    public DbSet<CommentResponse> CommentResponse { get; set; }
+    public DbSet<CommentResponseLikes> CommentResponseLikes { get; set; }
   }
 }

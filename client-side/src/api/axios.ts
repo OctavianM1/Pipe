@@ -101,6 +101,23 @@ const Activities = {
     request.delete(`activity/delete-comment/${id}`),
   updateComment: (body: { id: string; commentBody: string }) =>
     request.put("/activity/update-comment", body),
+  addCommentResponse: (body: {
+    parentActivityCommentId: string;
+    userId: string;
+    comment: string;
+  }) => request.put("/activity/add-comment-response", body),
+  getCommentResponses: (commentId: string) =>
+    request.get(`/activity/comment-responses/${commentId}`),
+  addLikeCommentResponse: (body: {
+    userId: string;
+    commentResponseId: string;
+  }) => request.put("/activity/comment-response-add-like", body),
+  deleteCommentResponse: (responseCommentId: string) =>
+    request.delete(`/activity/delete-response-comment/${responseCommentId}`),
+  updateCommentResponse: (body: {
+    responseCommentId: string;
+    newCommentBody: string;
+  }) => request.post("/activity/upldate-comment-response", body),
 };
 
 const Follows = {
@@ -166,7 +183,8 @@ const Search = {
 };
 
 const UploadFile = {
-  userCoverImage: (body: FormData) => request.post("/uploadFile/userCoverImage", body),
+  userCoverImage: (body: FormData) =>
+    request.post("/uploadFile/userCoverImage", body),
 };
 
 export { Users, Activities, Follows, Search, UploadFile };

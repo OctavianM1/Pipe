@@ -50,7 +50,7 @@
 .element-container {
   transform: translateY(0);
   opacity: 1;
-  transition: 1s;
+  transition: 1s cubic-bezier(.23,.16,.6,1.22);
 
   &__upside {
     display: flex;

@@ -85,9 +85,6 @@ const SearchInput = ({
 
   useEffect(() => {
     function onKey(ev: KeyboardEvent) {
-      console.log(ev.key);
-
-      console.log(ev.keyCode);
       if (ev.key === "ArrowUp" && activeSeachInput > 0) {
         if (inputRef.current) {
           inputRef.current.value = searchInputs[activeSeachInput - 1].userInput;

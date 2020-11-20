@@ -8,6 +8,6 @@ namespace ApplicationUser
     public string Email { get; set; }
     public string Name { get; set; }
     public float Rate { get; set; }
-
+    public string CoverImageExtension { get; set; }
   }
 }

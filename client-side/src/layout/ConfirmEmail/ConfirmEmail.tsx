@@ -28,7 +28,6 @@ const ConfirmEmail = () => {
   let decodedToken: any;
   try {
     decodedToken = jwt_decode(token);
-    console.log(decodedToken);
   } catch {
     dispatchEmailConfirmation({ type: "wrong" });
   }

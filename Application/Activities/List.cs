@@ -58,7 +58,8 @@ namespace Application.Activities
               Id = ar.UserId,
               Name = ar.User.Name,
               Email = ar.User.Email,
-              Rate = ar.Raiting
+              Rate = ar.Raiting,
+              CoverImageExtension = ar.User.CoverImageExtension
             }).ToList(),
             Raiting = a.ActivityRaiting.Average(ar => ar.Raiting)
           },
@@ -100,7 +101,8 @@ namespace Application.Activities
               CountFollowers = cl.User.CountFollowers,
               NumberOfActivities = cl.User.Activities.Count(),
               CoverImageExtension = cl.User.CoverImageExtension
-            }).ToList()
+            }).ToList(),
+            NumberOfResponses = ac.CommentResponses.Count()
           }).ToList()
         })
         .ToListAsync();

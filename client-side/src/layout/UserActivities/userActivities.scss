@@ -134,17 +134,17 @@
             border-radius: 3px;
             align-items: center;
 
-            & h3 {
+            & > h3 {
               position: relative;
               top: 2px;
             }
 
-            & span {
+            & > span {
               margin-left: 0.5rem;
             }
 
             &:hover {
-              background-color: #ddd;
+              background-color: rgb(236, 236, 236);
             }
           }
         }
@@ -193,7 +193,7 @@
         justify-content: space-between;
 
         &__like {
-          color: #5758ff;
+          color: #0077d5;
         }
 
         & > button {
@@ -229,7 +229,7 @@
             width: 50%;
             height: 50%;
             border-radius: 7px;
-            background-color: #ddd;
+            background-color: rgb(231, 231, 231);
             z-index: -1;
             opacity: 0;
             transition: 0.2s ease;
@@ -263,7 +263,6 @@
         &__comment {
           display: flex;
           margin-top: 1rem;
-          padding-bottom: 2rem;
 
           &__display-date {
             position: absolute;
@@ -318,6 +317,7 @@
             height: 4rem;
             border-radius: 50%;
             margin-right: 2rem;
+            object-fit: cover;
           }
 
           & > div {
@@ -326,47 +326,17 @@
             display: inline-block;
             padding: 1rem;
             border-radius: 15px;
+            min-width: 170px;
 
-            & .comment-likes {
+            & > .comment-likes {
               position: absolute;
-              bottom: -1rem;
-              right: -3.5rem;
+              bottom: -1.4rem;
+              right: 0.5rem;
               display: flex;
               align-items: center;
               background-color: rgb(253, 253, 253);
               border-radius: 20px;
-              padding: 0.6rem;
-              box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-
-              & img {
-                width: 2rem;
-                height: 2rem;
-              }
-
-              & span {
-                margin-left: 5px;
-                font-size: 1.8rem;
-              }
-            }
-
-            & button {
-              position: absolute;
-              bottom: -20px;
-              left: 3%;
-              cursor: pointer;
-              background-color: transparent;
-              font-size: 1.55rem;
-              font-family: "Lato";
-              font-weight: 600;
-              color: rgb(48, 48, 48);
-
-              &:hover {
-                text-decoration: underline;
-              }
-            }
-
-            & .button-active {
-              color: #5759ff !important;
+              box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.3);
             }
           }
 
@@ -377,7 +347,7 @@
             transition: 0.3s;
 
             & a:hover {
-              color: #5759ff;
+              color: #0077d5;
             }
           }
 
@@ -391,6 +361,7 @@
 
       &__add-comment {
         display: flex;
+        align-items: center;
         margin-top: 2rem;
 
         & input {
@@ -410,6 +381,7 @@
           height: 4rem;
           border-radius: 50%;
           margin-right: 2rem;
+          object-fit: cover;
         }
       }
 
@@ -445,32 +417,14 @@
   }
 }
 
-.add-activity {
-  position: fixed;
-  bottom: 5%;
-  right: 3%;
-  z-index: 100;
-
-  & img {
-    width: 5.5rem;
-    height: 5.5rem;
-    transform: scale(1);
-    transition: 0.3s ease;
-
-    &:hover {
-      transform: scale(1.15);
-    }
-
-    &:active {
-      transform: scale(1);
-    }
-  }
-}
-
 .comment {
   &__container {
     display: flex;
     align-items: center;
+
+    &__full-width {
+      width: 100%;
+    }
   }
 
   &__edit {
@@ -489,6 +443,7 @@
       border: none;
       padding: 0.8rem 1.3rem;
       background-color: transparent;
+      width: 100%;
       transition: 0.3s;
 
       &__border {
@@ -529,6 +484,33 @@
       &:active {
         transform: scale(1);
       }
+    }
+  }
+
+  &__number-of-responses {
+    margin: 3px 0 0 6%;
+    display: inline-block;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: 0.2s;
+
+    &:hover {
+      border-bottom: 1px solid black;
+    }
+
+    & > img {
+      top: 2px;
+      position: relative;
+      width: 2rem;
+      height: 2rem;
+      margin-right: 1.2rem;
+    }
+
+    & > span {
+      font-family: "Roboto";
+      font-weight: 500;
+      color: rgb(78, 78, 78);
+      letter-spacing: 0.5px;
     }
   }
 }
@@ -608,21 +590,38 @@
 .user-liker {
   display: flex;
   align-self: center;
-  padding: 1rem 0.5rem;
   border-radius: 3px;
   align-items: center;
 
-  & h3 {
-    position: relative;
-    top: 2px;
-  }
+  &__container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 5rem;
 
-  & span {
-    margin-left: 0.5rem;
+    &__image {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      margin: 0 1rem;
+      object-fit: cover;
+    }
+
+    &__name {
+      font-size: 1.8rem;
+      color: #0077d5;
+      font-weight: bold;
+      margin-right: 1rem;
+    }
+
+    &__like {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 
   &:hover {
-    background-color: #ddd;
+    background-color: rgb(231, 231, 231);
   }
 }
 
@@ -661,5 +660,148 @@
 
   & > button {
     font-size: 2rem;
+  }
+}
+
+.comment-likes__container {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+
+  &__img-container {
+    position: relative;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background-color: rgb(0, 132, 255);
+
+    & > img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1rem;
+      height: 1rem;
+      object-fit: cover;
+    }
+  }
+
+  & > span {
+    margin-left: 4px;
+    font-size: 1.4rem;
+  }
+}
+
+.c__buttons {
+  display: flex;
+  align-items: center;
+  margin: 2px 0 0 6.5rem;
+
+  & > button:hover {
+    text-decoration: underline;
+  }
+
+  & > button {
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 1.55rem;
+    font-family: "Lato";
+    font-weight: 600;
+  }
+
+  &__button-like {
+    color: rgb(48, 48, 48);
+
+    &-active {
+      color: #0077d5 !important;
+    }
+  }
+
+  &__button-respond {
+    color: rgb(54, 54, 54);
+  }
+}
+
+#button-remove-respond-comment {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  transform: scale(1);
+  transition: 0.2s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+  &:active {
+    transform: scale(1);
+  }
+}
+
+.bottom-right-icon {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
+  z-index: 100;
+
+  & > img {
+    width: 5.5rem;
+    height: 5.5rem;
+    transform: scale(1);
+    transition: 0.3s ease;
+    z-index: 150;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+
+    &:active {
+      transform: scale(1);
+    }
+  }
+
+  & > span {
+    position: absolute;
+    top: 0;
+    right: 70%;
+    width: 12rem;
+    padding: 1rem 2rem;
+    text-align: center;
+    background-color: rgba(49, 42, 42, 0.822);
+    color: rgb(228, 228, 228);
+    font-family: "Roboto";
+    border-radius: 20px;
+    opacity: 0;
+    z-index: -1;
+    visibility: hidden;
+    transition: 0.4s;
+
+    & > .bottom-right-icon-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      left: calc(100% - 6px);
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(
+        45deg,
+        transparent 0%,
+        transparent 50%,
+        rgba(49, 42, 42, 0.822) 50%,
+        rgba(49, 42, 42, 0.822) 100%
+      );
+    }
+  }
+
+  & > img:hover + span {
+    visibility: visible;
+    opacity: 0.8;
+    right: 140%;
+  }
+
+  & > svg:hover + span {
+    visibility: visible;
+    opacity: 0.8;
+    right: 140%;
   }
 }

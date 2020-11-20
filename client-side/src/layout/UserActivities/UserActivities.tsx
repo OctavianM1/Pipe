@@ -141,8 +141,12 @@ const MyActivities = () => {
   return (
     <>
       {visitorUser && hostUserId === visitorUser.id && (
-        <Link to="/add-activity" className="add-activity">
+        <Link to="/add-activity" className="bottom-right-icon">
           <img src="/images/activities/plus.svg" alt="plus" />
+          <span>
+            Create an activity
+            <span className="bottom-right-icon-arrow">&nbsp;</span>
+          </span>
         </Link>
       )}
       <div className="my-activities__search">

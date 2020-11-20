@@ -88,8 +88,12 @@ const Follows = () => {
 
   return (
     <>
-      <Link to="/search-users" className="search-users">
+      <Link to="/search-users" className="search-users bottom-right-icon">
         <Loupe />
+        <span>
+          Search in all users
+          <span className="bottom-right-icon-arrow">&nbsp;</span>
+        </span>
       </Link>
       <div className="following">
         <div className="following__search">
@@ -133,7 +137,7 @@ const Follows = () => {
                     name={u.name}
                     following={u.countFollowing}
                     followers={u.countFollowers}
-                    activities={u.numberOfActivities}
+                    activities={u.numberOfActivities || 0}
                     grid={grid}
                   />
                 ))

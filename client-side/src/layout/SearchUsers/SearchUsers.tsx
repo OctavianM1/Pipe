@@ -97,7 +97,7 @@ const SearchUsers = () => {
         <div className="searchUsers__loader">
           <Loader />
         </div>
-      ) : ( 
+      ) : (
         <>
           <div className="following__display">
             <SortDropDown elements={getDefaultSortUsersElements} />
@@ -125,7 +125,7 @@ const SearchUsers = () => {
                   name={u.name}
                   following={u.countFollowing}
                   followers={u.countFollowers}
-                  activities={u.numberOfActivities}
+                  activities={u.numberOfActivities || 0}
                   grid={grid}
                 />
               ))

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Application.Activities;
 using Application.Activities.Comments;
 using Application.Activities.Rate;
+using Application.Users.ApplicationUser;
 using ApplicationActivity;
 using ApplicationComment;
 using Domain;
@@ -97,6 +98,36 @@ namespace API.Controllers
 
     [HttpPost("like-comment")]
     public async Task<ActionResult<Unit>> LikeComment(LikeComment.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpPut("add-comment-response")]
+    public async Task<ActionResult<List<AppCommentResponse>>> ResponseToComment(AddCommentResponse.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpGet("comment-responses/{commentId}")]
+    public async Task<ActionResult<List<AppCommentResponse>>> GetCommentResponses(string commentId)
+    {
+      return await _mediator.Send(new GetResponsesOnComment.Query { commentId = Guid.Parse(commentId) });
+    }
+
+    [HttpPut("comment-response-add-like")]
+    public async Task<ActionResult<AppUser>> AddLikeToCommentResponse(AddCommentResponseLike.Command command)
+    {
+      return await _mediator.Send(command);
+    }
+
+    [HttpDelete("delete-response-comment/{responseCommentId}")]
+    public async Task<ActionResult<Unit>> OnDeleteResponseComment(string responseCommentId)
+    {
+      return await _mediator.Send(new DeleteResponseComment.Query { ResponseCommentId = Guid.Parse(responseCommentId) });
+    }
+
+    [HttpPost("upldate-comment-response")]
+    public async Task<ActionResult<string>> OnUpdateResponseComment(UpdateResponseComment.Command command)
     {
       return await _mediator.Send(command);
     }

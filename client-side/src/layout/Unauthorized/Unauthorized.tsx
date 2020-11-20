@@ -10,9 +10,13 @@ import "./unauthorized.scss";
 
 const Unauthorized = () => {
   const history = useHistory();
-  const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();
+  const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();  
 
   const userId = JSON.parse(window.localStorage.getItem("user") || "{}")["id"];
+
+  if (userId) {
+    history.goBack();
+  }
 
   return (
     <div className="unauthorized">

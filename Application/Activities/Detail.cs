@@ -50,7 +50,8 @@ namespace Application.Activities
               Id = ar.UserId,
               Name = ar.User.Name,
               Email = ar.User.Email,
-              Rate = ar.Raiting
+              Rate = ar.Raiting,
+              CoverImageExtension = ar.User.CoverImageExtension
             }).ToList(),
             Raiting = a.ActivityRaiting.Average(ar => ar.Raiting)
           },

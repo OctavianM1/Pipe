@@ -35,7 +35,7 @@ const NameInput = ({
       ev?.preventDefault();
       const evTarget = ev?.target as any;
       const newName = ev ? evTarget.name.value.trim() : obj?.newName;
-      if (newName === user.name) {
+      if (newName === userData.name) {
         setEditName(false);
         return;
       }
@@ -44,7 +44,6 @@ const NameInput = ({
           .then((newUser: ServerUser) => {
             setUserData(newUser);
             setEditName(false);
-            console.log(newUser);
             window.localStorage.setItem(
               "user",
               JSON.stringify({
@@ -58,7 +57,7 @@ const NameInput = ({
         setNameLogger("Name must be at least 2 characters");
       }
     },
-    [error, user, setUserData]
+    [error, user, setUserData, userData.name]
   );
 
   const handleEditName = (

@@ -2,9 +2,13 @@ import { ServerUser } from "../api/serverDataInterfaces";
 
 export default function sortUsers(sortBy: string, users: ServerUser[]) {
   if (sortBy === "activities-asc") {
-    return users.sort((a, b) => a.numberOfActivities - b.numberOfActivities);
+    return users.sort(
+      (a, b) => (a.numberOfActivities || 0) - (b.numberOfActivities || 0)
+    );
   } else if (sortBy === "activities-desc") {
-    return users.sort((a, b) => b.numberOfActivities - a.numberOfActivities);
+    return users.sort(
+      (a, b) => (b.numberOfActivities || 0) - (a.numberOfActivities || 0)
+    );
   } else if (sortBy === "following-asc") {
     return users.sort((a, b) => a.countFollowing - b.countFollowing);
   } else if (sortBy === "following-desc") {

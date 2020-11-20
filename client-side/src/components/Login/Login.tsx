@@ -130,9 +130,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
     }
   };
 
-  const handleBlurEmailRegister = (
-    event: FocusEvent<HTMLInputElement>
-  ) => {
+  const handleBlurEmailRegister = (event: FocusEvent<HTMLInputElement>) => {
     const email = event.target.value;
     const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     if (!re.test(email) && email.length > 0) {
@@ -306,11 +304,7 @@ const Login = ({ openRegisterModal }: { openRegisterModal: boolean }) => {
               >
                 Send confirmation email
               </button>
-              <input
-                type="submit"
-                className="login-button"
-                value="Sign In"
-              ></input>
+              <input type="submit" className="login-button" value="Sign In" />
             </form>
           </div>
           <div className="login-overlay-container">
