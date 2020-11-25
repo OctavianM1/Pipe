@@ -21,8 +21,8 @@ namespace Application.Users
     public class Handler : IRequestHandler<Command>
     {
       private readonly DataContext _context;
-      private readonly IEmailSender _sender;
-      public Handler(DataContext context, IEmailSender sender)
+      private readonly IEmailSenderService _sender;
+      public Handler(DataContext context, IEmailSenderService sender)
       {
         this._sender = sender;
         _context = context;

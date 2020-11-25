@@ -21,7 +21,7 @@ const Profile = () => {
   useEffect(() => {
     Users.details(user.id).then(setUserData).catch(error);
   }, [error, user.id]);
-
+ 
   return (
     <div className="profile">
       {userData ? (

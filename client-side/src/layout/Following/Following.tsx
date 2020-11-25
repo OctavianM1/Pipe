@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./following.scss";
+import "../../components/CSSTransitions/cssTransitions.scss";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import { Link, useLocation } from "react-router-dom";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
@@ -20,6 +21,7 @@ import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import sortUsers from "../../utilities/sortUsers";
 import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
+import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 
 const Following = () => {
   const [followingUsers, setFollowingUsers] = useState<ServerUser[]>([]);
@@ -40,17 +42,11 @@ const Following = () => {
 
   const nrOfPages = Math.ceil(followingUsers.length / 6 / grid);
 
-  const usersOnCurrentPage = useMemo(() => {
-    const result = [];
-    for (
-      let i = (page - 1) * 6 * grid;
-      i < 6 * grid * page && sortedFollowingUsers[i];
-      i++
-    ) {
-      result.push(sortedFollowingUsers[i]);
-    }
-    return result;
-  }, [sortedFollowingUsers, grid, page]);
+  const usersOnCurrentPage = useDataOnCurrentPage(
+    page,
+    sortedFollowingUsers,
+    grid * 6
+  );
 
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid: number) => {
@@ -85,6 +81,7 @@ const Following = () => {
   const onDeleteInput: (input: string | undefined) => Promise<any> = (
     input: string | undefined
   ) => Search.deleteFollowingUsersInput(userId, input);
+
 
   return (
     <>

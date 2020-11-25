@@ -1,14 +1,19 @@
 import React, {
+  createContext,
   FormEvent,
+  RefObject,
   useCallback,
+  useContext,
+  useMemo,
   useReducer,
   useRef,
   useState,
 } from "react";
 import "./userActivities.scss";
+import "../../components/CSSTransitions/cssTransitions.scss";
 import Star from "../../components/Svgs/Star";
 import { Activities } from "../../api/axios";
-import Comment from "./Comment";
+import Comment from "./Comments/Comment";
 import { Link } from "react-router-dom";
 import StarsRaiting from "../../components/StarsRaiting/StarsRaiting";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
@@ -20,6 +25,9 @@ import {
 } from "../../api/serverDataInterfaces";
 import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
 import UserRaiting from "./UserRaiting";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import useHavePutLike from "../../Hooks/useHavePutLike";
+import { VisitorUserContext } from "./UserActivities";
 
 interface ActivityProps {
   id: string;
@@ -32,10 +40,13 @@ interface ActivityProps {
   totalRaiting: ServerActivityRaiting;
   personalRate: number;
   hostUserId: string;
-  visitorUser: ServerUser;
   onRemove: () => void;
   comments: ServerActivityComment[];
 }
+
+export const ActivityRefContext = createContext<RefObject<HTMLDivElement>>(
+  null!
+);
 
 const Activity = ({
   id,
@@ -47,16 +58,21 @@ const Activity = ({
   likesNumber,
   totalRaiting,
   personalRate,
-  hostUserId,
-  visitorUser,
+  hostUserId, 
   onRemove,
   comments,
 }: ActivityProps) => {
   const commentInput = useRef<HTMLInputElement>(null);
 
-  const [likedActivity, setLikedActivity] = useState(isLiked);
-  const [numberOfLikes, setNumberOfLikes] = useState(likesNumber);
-  const [rateActivity, setRateActivity] = useState(personalRate);
+  const visitorUser = useContext(VisitorUserContext);
+
+  const [activityLikes, dispatchActivityLikes] = useReducer(
+    activityLikesReducer,
+    {
+      likedActivity: isLiked,
+      numberOfLikes: likesNumber,
+    }
+  );
   const [activityComments, setActivityComments] = useState(comments);
   const [displayedCommentNumber, setDisplayedCommentsNumber] = useState(2);
   const [coverPhotoSrc, setCoverPhotoSrc] = useState(
@@ -64,12 +80,16 @@ const Activity = ({
       ? `/images/userPhotos/${visitorUser.id}.${visitorUser.coverImageExtension}`
       : "/images/userPhotos/anonym.jpg"
   );
+  const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
+
   const [totalRaitingState, dispatchTotalRaiting] = useReducer(
     totalRaitingReducer,
-    totalRaiting
+    {
+      raiting: totalRaiting.raiting,
+      users: totalRaiting.users,
+      personalRate: personalRate,
+    }
   );
-
-  const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
 
   const activityRef = useRef<HTMLDivElement>(null);
 
@@ -78,18 +98,16 @@ const Activity = ({
   const handleLikeButton = () => {
     Activities.like({ userId: visitorUser.id, activityId: id })
       .then(() => {
-        setNumberOfLikes(likedActivity ? numberOfLikes - 1 : numberOfLikes + 1);
-        setLikedActivity(!likedActivity);
+        dispatchActivityLikes({ type: "default" });
       })
       .catch(error);
   };
 
   const handleRateActivity = useCallback(
     (rate: number) => {
-      if (rate === rateActivity) {
+      if (rate === totalRaitingState.personalRate) {
         Activities.deleteRate({ userId: visitorUser.id, activityId: id })
           .then(() => {
-            setRateActivity(0);
             dispatchTotalRaiting({
               type: "delete rate",
               visitorUser: visitorUser,
@@ -100,18 +118,16 @@ const Activity = ({
       } else {
         Activities.rate({ userId: visitorUser.id, activityId: id, rate: rate })
           .then(() => {
-            setRateActivity(rate);
             dispatchTotalRaiting({
               type: "update total rate",
               visitorUser: visitorUser,
               rate: rate,
-              rateActivity: rateActivity,
             });
           })
           .catch(error);
       }
     },
-    [error, visitorUser, id, rateActivity]
+    [error, visitorUser, id, totalRaitingState.personalRate]
   );
 
   let totalStars = [];
@@ -125,8 +141,7 @@ const Activity = ({
   }
 
   const handleSubmitComment = (ev: FormEvent<HTMLFormElement>) => {
-    const target = ev.target as any;
-    const comment = target.commentBody.value;
+    const comment = commentInput.current?.value || "";
     if (comment.trim() !== "") {
       Activities.addComment({
         userId: visitorUser.id,
@@ -144,42 +159,34 @@ const Activity = ({
     ev.preventDefault();
   };
 
-  const handleIsLikedComment = (users: ServerUser[]): boolean => {
-    if (!users) {
-      return false;
+  const handleIsLikedComment = useHavePutLike();
+
+  const displayedComments = useMemo(() => {
+    const arr: ServerActivityComment[] = [];
+    for (let i = 0; i < displayedCommentNumber && activityComments[i]; i++) {
+      arr.push(activityComments[i]);
     }
-    let isLiked = false;
-    users.forEach((u) => {
-      if (u.id === visitorUser.id) {
-        isLiked = true;
-      }
-    });
+    return arr;
+  }, [displayedCommentNumber, activityComments]);
 
-    return isLiked;
-  };
-
-  let displayedComments = [];
-  for (let i = 0; i < displayedCommentNumber; i++) {
-    if (activityComments[i]) {
-      displayedComments.push(activityComments[i]);
-    } else {
-      break;
-    }
-  }
-
-  const handleDeleteComment = (id: string) => {
-    Activities.deleteComment(id)
-      .then(() => {
-        setActivityComments([...activityComments].filter((c) => c.id !== id));
-      })
-      .catch(error);
-  };
+  const handleDeleteComment = useCallback(
+    (id: string) => {
+      Activities.deleteComment(id)
+        .then(() => {
+          setActivityComments((oldActivityComments) =>
+            [...oldActivityComments].filter((c) => c.id !== id)
+          );
+        })
+        .catch(error);
+    },
+    [error]
+  );
 
   const profileImgError = useProfileCoverPhotoError(setCoverPhotoSrc);
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div className="my-activities__container">
         {hostUserId ===
           JSON.parse(localStorage.getItem("user") || "{}")["id"] && (
           <div className="my-activities__activities-side__activity__editing">
@@ -223,7 +230,7 @@ const Activity = ({
             <div className="my-activities__activities-side__activity__personal-raiting">
               <h3>Your raiting:</h3>
               <StarsRaiting
-                initialState={rateActivity}
+                initialState={totalRaitingState.personalRate}
                 handleStarClick={handleRateActivity}
               />
             </div>
@@ -242,17 +249,17 @@ const Activity = ({
           </div>
           <div className="my-activities__activities-side__activity__buttons">
             <button onClick={() => handleLikeButton()}>
-              {likedActivity ? (
+              {activityLikes.likedActivity ? (
                 <img src="/images/activities/blueLike.svg" alt="blue like" />
               ) : (
                 <img src="/images/activities/like.svg" alt="like" />
               )}
-              {likedActivity ? (
+              {activityLikes.likedActivity ? (
                 <div className="my-activities__activities-side__activity__buttons__like">
-                  UnLike ({numberOfLikes})
+                  UnLike ({activityLikes.numberOfLikes})
                 </div>
               ) : (
-                <div>Like ({numberOfLikes})</div>
+                <div>Like ({activityLikes.numberOfLikes})</div>
               )}
               <span>&nbsp;</span>
             </button>
@@ -262,17 +269,30 @@ const Activity = ({
             </button>
           </div>
           <div className="my-activities__activities-side__activity__comments">
-            {displayedComments.map((c) => (
-              <Comment
-                key={c.id}
-                commentData={c}
-                visitorUser={visitorUser}
-                activityId={id}
-                isLiked={handleIsLikedComment(c.commentLikeUsers)}
-                onDeleteComment={() => handleDeleteComment(c.id)}
-                activityRef={activityRef}
-              />
-            ))}
+            <TransitionGroup>
+              {displayedComments.map((c) => (
+                <CSSTransition
+                  timeout={300}
+                  classNames="fade"
+                  key={c.id}
+                  in={displayedComments.length > 0}
+                  unmountOnExit
+                >
+                  <ActivityRefContext.Provider value={activityRef}>
+                    <Comment
+                      key={c.id}
+                      commentData={c}
+                      activityId={id}
+                      isLiked={handleIsLikedComment(
+                        c.commentLikeUsers,
+                        visitorUser.id
+                      )}
+                      onDeleteComment={handleDeleteComment}
+                    />
+                  </ActivityRefContext.Provider>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
             {displayedCommentNumber < activityComments.length ? (
               <button
                 className="my-activities__activities-side__activity__comments__show-more"
@@ -313,13 +333,27 @@ const Activity = ({
   );
 };
 
+function activityLikesReducer(
+  state: { likedActivity: boolean; numberOfLikes: number },
+  action: { type: string }
+) {
+  switch (action.type) {
+    case "default":
+      if (state.likedActivity) {
+        return { likedActivity: false, numberOfLikes: state.numberOfLikes - 1 };
+      }
+      return { likedActivity: true, numberOfLikes: state.numberOfLikes + 1 };
+    default:
+      throw new Error("Invalid action");
+  }
+}
+
 function totalRaitingReducer(
-  state: ServerActivityRaiting,
+  state: ServerActivityRaiting & { personalRate: number },
   action: {
     type: string;
-    rate: number;
     visitorUser: ServerUser;
-    rateActivity?: number;
+    rate: number;
   }
 ) {
   const uLength = state.users.length;
@@ -332,6 +366,7 @@ function totalRaitingReducer(
       return {
         raiting: newRaiting || 0,
         users: state.users.filter((u) => u.id !== action.visitorUser.id),
+        personalRate: 0,
       };
 
     case "update total rate":
@@ -356,11 +391,11 @@ function totalRaitingReducer(
         return {
           raiting: newRaiting,
           users: [...state.users, newRaitingUser],
+          personalRate: action.rate,
         };
       } else {
         const newRaiting = Math.round(
-          (state.raiting * uLength - action.rateActivity! + action.rate) /
-            uLength
+          (state.raiting * uLength - state.personalRate + action.rate) / uLength
         );
         return {
           raiting: newRaiting,
@@ -368,6 +403,7 @@ function totalRaitingReducer(
             ...state.users.filter((u) => u.id !== action.visitorUser.id),
             newRaitingUser,
           ],
+          personalRate: action.rate,
         };
       }
 

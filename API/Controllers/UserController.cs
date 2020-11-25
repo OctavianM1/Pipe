@@ -78,7 +78,7 @@ namespace API.Controllers
     [HttpPost("subscribe")]
     public async Task<ActionResult<Unit>> SubscribeToGetEmails(Subscribe.Command command)
     {
-      return await _mediator.Send(command);
+      return await _mediator.Send(command); 
     }
 
     [AllowAnonymous]

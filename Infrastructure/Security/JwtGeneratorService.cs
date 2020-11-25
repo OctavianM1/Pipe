@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Security
 {
-  public class JwtGenerator : IJwtGenerator
+  public class JwtGeneratorService : IJwtGeneratorService
   {
     public string CreateToken(User user)
     {

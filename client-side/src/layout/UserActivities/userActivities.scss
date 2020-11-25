@@ -4,6 +4,10 @@
 
   display: flex;
 
+  &__container {
+    position: relative;
+  }
+
   &__search {
     display: block;
     max-width: 140rem;

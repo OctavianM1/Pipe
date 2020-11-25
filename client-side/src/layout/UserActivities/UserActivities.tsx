@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import FilterSide from "../../components/FilterSide/FilterSide";
-
 import "./userActivities.scss";
-
 import { Activities, Users, Search, Follows } from "../../api/axios";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import useHavePutLike from "../../Hooks/useHavePutLike";
@@ -11,7 +9,6 @@ import useHavePutRate from "../../Hooks/useHavePutRate";
 import Activity from "./Activity";
 import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
-import { useMemo } from "react";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
@@ -20,6 +17,10 @@ import {
   ServerUsersRelationActivity,
   ServerUser,
 } from "../../api/serverDataInterfaces";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
+
+export const VisitorUserContext = createContext<ServerUser>(null!);
 
 const MyActivities = () => {
   const { userId: hostUserId } = useParams<{ userId: string }>();
@@ -44,13 +45,11 @@ const MyActivities = () => {
 
   const nrOfPages = Math.ceil(sortedActivities.length / 5);
 
-  const activitiesOnCurrentPage = useMemo(() => {
-    const result = [];
-    for (let i = (page - 1) * 5; i < 5 * page && sortedActivities[i]; i++) {
-      result.push(sortedActivities[i]);
-    }
-    return result;
-  }, [page, sortedActivities]);
+  const activitiesOnCurrentPage = useDataOnCurrentPage(
+    page,
+    sortedActivities,
+    5
+  );
 
   useEffect(() => {
     Activities.list(hostUserId)
@@ -88,31 +87,22 @@ const MyActivities = () => {
     }
   }, [activities.length, displayNoActivitiesMsg]);
 
-  const onGetInputs = useCallback(
-    (matchString) =>
-      Search.getActivities(hostUserId, visitorUser.id, matchString || ""),
-    [hostUserId, visitorUser]
-  );
+  const onGetInputs = (matchString?: string) =>
+    Search.getActivities(hostUserId, visitorUser.id, matchString || "");
 
-  const onSetInput = useCallback(
-    (matchString) =>
-      Search.setInputActivities({
-        userHostId: hostUserId,
-        userVisitorId: visitorUser.id,
-        userInput: matchString,
-      }),
-    [hostUserId, visitorUser]
-  );
+  const onSetInput = (matchString: string) =>
+    Search.setInputActivities({
+      userHostId: hostUserId,
+      userVisitorId: visitorUser.id,
+      userInput: matchString,
+    });
 
-  const onDeleteInput = useCallback(
-    (matchString) =>
-      Search.deleteInputActivities({
-        userHostId: hostUserId,
-        userVisitorId: visitorUser.id,
-        userInput: matchString || "",
-      }),
-    [hostUserId, visitorUser]
-  );
+  const onDeleteInput = (matchString?: string) =>
+    Search.deleteInputActivities({
+      userHostId: hostUserId,
+      userVisitorId: visitorUser.id,
+      userInput: matchString || "",
+    });
 
   const handleFollowClick = () => {
     if (userData?.isVisitorFollowingHost) {
@@ -196,36 +186,53 @@ const MyActivities = () => {
                 </div>
               ) : (
                 <div className="my-activities__activities-side">
-                  {activitiesOnCurrentPage.length > 0 ? (
-                    activitiesOnCurrentPage.map((activity) => (
-                      <Activity
-                        key={activity.id}
-                        id={activity.id}
-                        title={activity.title}
-                        body={activity.body}
-                        subject={activity.subject}
-                        onRemove={() => handleRemoveActivity(activity.id)}
-                        date={activity.dateTimeCreated}
-                        totalRaiting={activity.raiting}
-                        isLiked={havePutLike(
-                          activity.likes.users,
-                          visitorUser.id
-                        )}
-                        likesNumber={activity.likes.likes}
-                        personalRate={havePutRate(
-                          activity.raiting.users,
-                          visitorUser.id
-                        )}
-                        hostUserId={hostUserId}
-                        visitorUser={visitorUser}
-                        comments={activity.comments}
-                      />
-                    ))
-                  ) : (
-                    <div className="my-activities__activities-side__not-found">
-                      No activities found!
-                    </div>
-                  )}
+                  <TransitionGroup>
+                    {activitiesOnCurrentPage.length > 0 ? (
+                      activitiesOnCurrentPage.map((activity) => (
+                        <CSSTransition
+                          timeout={{
+                            enter: 370,
+                            exit: 300,
+                          }}
+                          classNames="activity"
+                          key={activity.id}
+                          // in={activitiesOnCurrentPage.length > 0}
+                          // unmountOnExit
+                          mountOnEnter={true}
+                          onExit={() => console.log("exit")}
+                          onEnter={() => console.log("enter")}
+                        >
+                          <VisitorUserContext.Provider value={visitorUser}>
+                            <Activity
+                              key={activity.id}
+                              id={activity.id}
+                              title={activity.title}
+                              body={activity.body}
+                              subject={activity.subject}
+                              onRemove={() => handleRemoveActivity(activity.id)}
+                              date={activity.dateTimeCreated}
+                              totalRaiting={activity.raiting}
+                              isLiked={havePutLike(
+                                activity.likes.users,
+                                visitorUser.id
+                              )}
+                              likesNumber={activity.likes.likes}
+                              personalRate={havePutRate(
+                                activity.raiting.users,
+                                visitorUser.id
+                              )}
+                              hostUserId={hostUserId}
+                              comments={activity.comments}
+                            />
+                          </VisitorUserContext.Provider>
+                        </CSSTransition>
+                      ))
+                    ) : (
+                      <div className="my-activities__activities-side__not-found">
+                        No activities found!
+                      </div>
+                    )}
+                  </TransitionGroup>
                   <div className="my-activities__pagination">
                     <Pagination
                       hash={hash}
@@ -276,8 +283,6 @@ function filterSubject(
   }
   return newActivities;
 }
-
-export default React.memo(MyActivities);
 
 function sortByRaitingStars(
   hashObj: { [key: string]: string },
@@ -393,3 +398,5 @@ function getHours(date: string) {
 function getMinutes(date: string) {
   return +date.substring(14, 16);
 }
+
+export default MyActivities;

@@ -61,7 +61,7 @@ const Users = {
   subscribeToSendEmails: (body: { email: string }) =>
     request.post("user/subscribe", body),
   isSubscribed: (email: string) => request.get(`/user/isSubscribed/${email}`),
-};
+}; 
 
 const Activities = {
   create: (body: {
@@ -133,7 +133,7 @@ const Search = {
   userNumber: (number: number) => request.get(`/search/usersNumber/${number}`),
   allUsers: (userId: string, matchString: string | undefined) =>
     request.post("/search/searchAllUsers", {
-      userId,
+      userId, 
       matchString: matchString || "",
     }),
   followingUsers: (userId: string, matchString: string | undefined) =>

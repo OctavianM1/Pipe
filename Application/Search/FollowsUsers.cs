@@ -31,7 +31,7 @@ namespace Application.Search
         .OrderByDescending(sf => sf.DateTimeCreated)
         .Select(sf => new Input
         {
-          Id = sf.Id,
+          Id = sf.Input,
           UserInput = sf.Input,
           IsVisited = true
         }).Take(10).ToListAsync();
@@ -39,10 +39,12 @@ namespace Application.Search
         if (displayedInputs.Count() < 10)
         {
           var onlyInputs = displayedInputs.Select(d => d.UserInput);
-          displayedInputs.AddRange(await _context.Follows.Where(u => u.Follower.Name.StartsWith(request.MatchString) && u.UserId == id && !onlyInputs.Contains(u.Follower.Name)).Select(u => new Input
+          displayedInputs.AddRange(await _context.Follows.Where(u => u.Follower.Name.StartsWith(request.MatchString) && u.UserId == id && !onlyInputs.Contains(u.Follower.Name))
+          .GroupBy(u => u.Follower.Name)
+          .Select(u => new Input
           {
-            Id = u.Id,
-            UserInput = u.Follower.Name,
+            Id = u.Key,
+            UserInput = u.Key,
             IsVisited = false
           }).Take(10 - displayedInputs.Count()).ToListAsync());
         }

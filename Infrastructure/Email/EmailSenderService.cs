@@ -7,10 +7,10 @@ using SendGrid.Helpers.Mail;
 
 namespace Infrastructure.Email
 {
-  public class EmailSender : IEmailSender
+  public class EmailSenderService : IEmailSenderService
   {
     private readonly IConfiguration _configuration;
-    public EmailSender(IConfiguration configuration)
+    public EmailSenderService(IConfiguration configuration)
     {
       _configuration = configuration;
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./searchUsers.scss";
 import Loader from "../../components/Loader/Loader";
 import SearchInput from "../../components/SearchInput/SearchInput";
@@ -17,6 +17,7 @@ import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
 import sortUsers from "../../utilities/sortUsers";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
+import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 
 const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
@@ -35,17 +36,7 @@ const SearchUsers = () => {
 
   const nrOfPages = Math.ceil(users.length / 6 / grid);
 
-  const usersOnCurrentPage = useMemo(() => {
-    const result = [];
-    for (
-      let i = (page - 1) * 6 * grid;
-      i < 6 * grid * page && sortedUsers[i];
-      i++
-    ) {
-      result.push(sortedUsers[i]);
-    }
-    return result;
-  }, [sortedUsers, grid, page]);
+  const usersOnCurrentPage = useDataOnCurrentPage(page, sortedUsers, 6 * grid);
 
   const error = useApiErrorHandler();
   const handleChangePage = useChangePage(hashObj, hash);
@@ -70,20 +61,29 @@ const SearchUsers = () => {
       .catch(error);
   }, [error]);
 
-  const onGetInputs: (matchString?: string) => Promise<ServerSearchInput[]> = (
+  const onGetInputs: (
     matchString?: string
-  ) => Search.allUsers(userId, matchString);
+  ) => Promise<ServerSearchInput[]> = useCallback(
+    (matchString?: string) => Search.allUsers(userId, matchString),
+    [userId]
+  );
 
-  const onSetInput: (input: string | undefined) => Promise<ServerUser[]> = (
+  const onSetInput: (
     input: string | undefined
-  ) => Search.setInputAllUsers({ userId, input });
+  ) => Promise<ServerUser[]> = useCallback(
+    (input: string | undefined) => Search.setInputAllUsers({ userId, input }),
+    [userId]
+  );
 
-  const onDeleteInput: (input: string | undefined) => Promise<any> = (
+  const onDeleteInput: (
     input: string | undefined
-  ) => Search.deleteAllUsersInput(userId, input);
-
+  ) => Promise<any> = useCallback(
+    (input: string | undefined) => Search.deleteAllUsersInput(userId, input),
+    [userId]
+  );
+    
   return (
-    <>
+    <div className='following'>
       <div className="following__search">
         <SearchInput
           placeholder="Search for users"
@@ -102,7 +102,7 @@ const SearchUsers = () => {
           <div className="following__display">
             <SortDropDown elements={getDefaultSortUsersElements} />
             <div className="following__display-grid">
-              <Grid2x2
+              <Grid2x2 
                 active={grid === 2}
                 onClick={() => handleGridChange(2)}
               />
@@ -145,7 +145,7 @@ const SearchUsers = () => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 

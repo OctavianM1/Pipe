@@ -18,9 +18,9 @@ namespace Application.Users
     public class Handler : IRequestHandler<Query, string>
     {
       private readonly DataContext _context;
-      private readonly IJwtGenerator _jwtGenerator;
-      private readonly IEmailSender _sender;
-      public Handler(DataContext context, IEmailSender sender, IJwtGenerator jwtGenerator)
+      private readonly IJwtGeneratorService _jwtGenerator;
+      private readonly IEmailSenderService _sender;
+      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator)
       {
         _sender = sender;
         _jwtGenerator = jwtGenerator;

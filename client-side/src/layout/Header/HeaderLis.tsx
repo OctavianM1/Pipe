@@ -23,7 +23,7 @@ const HeaderLis = ({
 
   const onClickLogout = () => {
     window.localStorage.setItem("user", "{}");
-    history.go(0);
+    history.push("/");
   };
 
   const onClickLoginMobile = () => {

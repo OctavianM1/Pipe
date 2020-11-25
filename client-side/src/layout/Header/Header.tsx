@@ -1,4 +1,10 @@
-import React, { useState, useRef, Dispatch, SetStateAction } from "react";
+import React, {
+  useState,
+  useRef,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from "react";
 import "./Header.scss";
 import "../../components/Buttons/BottomEffect/bottomEffect.scss";
 import "../../components/Buttons/StandardBtn/standardButton.scss";
@@ -18,8 +24,13 @@ const Header = ({
     setDropDown(!dropDown);
   };
 
-  const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, setDropDown, "menu-mobile-btn");
+  const wrapperRef = useRef<HTMLDivElement>(null!);
+  useOutsideAlerter(
+    wrapperRef,
+    dropDown,
+    useCallback(() => setDropDown(false), []),
+    "menu-mobile-btn"
+  );
 
   return (
     <div className="header header-mobile">

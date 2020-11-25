@@ -7,15 +7,15 @@ import ContextProvider from "./context";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Router>
       <ScrollToTopTransaction>
         <ContextProvider>
           <App />
         </ContextProvider>
       </ScrollToTopTransaction>
-    </Router>
-  </React.StrictMode>,
+    </Router>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );
 

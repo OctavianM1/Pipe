@@ -2,57 +2,19 @@ import React, {
   ChangeEvent,
   Dispatch,
   FormEvent,
+  useCallback,
   useEffect,
   useReducer,
   useRef,
   useState,
 } from "react";
+import { CSSTransition } from "react-transition-group";
 import { UploadFile } from "../../api/axios";
 import { ServerUser } from "../../api/serverDataInterfaces";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import useDisableScroll from "../../Hooks/useDisableScroll";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
-
-function onResizeProfile(
-  dispatchEdit: Dispatch<{
-    type: string;
-  }>
-) {
-  const windowWidth = window.innerWidth;
-  if (windowWidth < 1125 && windowWidth > 825) {
-    dispatchEdit({ type: "small label" });
-  } else {
-    dispatchEdit({ type: "large label" });
-  }
-}
-
-interface editState {
-  editMode: boolean;
-  labelClassStyle: string;
-}
-
-function editReducer(state: editState, action: { type: string }) {
-  switch (action.type) {
-    case "closeEdit":
-      return {
-        editMode: false,
-        labelClassStyle: "profile__container__public__el__label",
-      };
-    case "small label":
-      return {
-        editMode: true,
-        labelClassStyle: "profile__container__public__el__label-small",
-      };
-    case "large label":
-      return {
-        editMode: true,
-        labelClassStyle: "profile__container__public__el__label-large",
-      };
-    default:
-      throw new Error("Invalid action type");
-  }
-}
 
 const CoverPhoto = ({ user }: { user: ServerUser }) => {
   const [coverPhotoSrc, setCoverPhotoSrc] = useState(
@@ -80,7 +42,24 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     });
   }
   useDisableScroll([biggerPhoto]);
-  useOutsideAlerter(biggerPhotoContainer, setBiggerPhoto);
+  useOutsideAlerter(
+    biggerPhotoContainer,
+    biggerPhoto,
+    useCallback(() => {
+      // biggerPhotoContainer.current?.addEventListener(
+      //   "transitionend",
+      //   function tr() {
+      //     biggerPhotoContainer.current?.classList.add('');
+      //     setBiggerPhoto(false);
+      //       biggerPhotoContainer.current?.removeEventListener(
+      //         "transitionend",
+      //         tr
+      //       );
+      //   }
+      // );
+      setBiggerPhoto(false);
+    }, [])
+  );
 
   const saveFile = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -172,7 +151,12 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
 
   return (
     <>
-      {biggerPhoto && (
+      <CSSTransition
+        timeout={{ enter: 500, exit: 300 }}
+        in={biggerPhoto}
+        unmountOnExit
+        classNames="fade-in"
+      >
         <div className="profile__show-big-image">
           <img
             ref={biggerPhotoContainer}
@@ -181,7 +165,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
             alt="Big cover"
           />
         </div>
-      )}
+      </CSSTransition>
       <div
         className={
           edit.editMode
@@ -255,5 +239,45 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     </>
   );
 };
+
+function onResizeProfile(
+  dispatchEdit: Dispatch<{
+    type: string;
+  }>
+) {
+  const windowWidth = window.innerWidth;
+  if (windowWidth < 1125 && windowWidth > 825) {
+    dispatchEdit({ type: "small label" });
+  } else {
+    dispatchEdit({ type: "large label" });
+  }
+}
+
+interface editState {
+  editMode: boolean;
+  labelClassStyle: string;
+}
+
+function editReducer(state: editState, action: { type: string }) {
+  switch (action.type) {
+    case "closeEdit":
+      return {
+        editMode: false,
+        labelClassStyle: "profile__container__public__el__label",
+      };
+    case "small label":
+      return {
+        editMode: true,
+        labelClassStyle: "profile__container__public__el__label-small",
+      };
+    case "large label":
+      return {
+        editMode: true,
+        labelClassStyle: "profile__container__public__el__label-large",
+      };
+    default:
+      throw new Error("Invalid action type");
+  }
+}
 
 export default CoverPhoto;

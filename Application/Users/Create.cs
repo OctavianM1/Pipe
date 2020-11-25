@@ -28,10 +28,10 @@ namespace Application.Users
     public class Handler : IRequestHandler<Command>
     {
       private readonly DataContext _context;
-      private readonly IEmailSender _sender;
-      private readonly IJwtGenerator _jwtGenerator;
+      private readonly IEmailSenderService _sender;
+      private readonly IJwtGeneratorService _jwtGenerator;
 
-      public Handler(DataContext context, IEmailSender sender, IJwtGenerator jwtGenerator)
+      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator)
       {
         _jwtGenerator = jwtGenerator;
         _sender = sender;

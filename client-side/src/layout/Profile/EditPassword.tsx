@@ -29,7 +29,11 @@ const EditPassword = ({
 
   const popUpSuccessChangePassRef = useRef<HTMLDivElement>(null);
 
-  useOutsideAlerter(popUpSuccessChangePassRef, setPopUpSuccessChangePass);
+  useOutsideAlerter(
+    popUpSuccessChangePassRef,
+    popUpSuccessChangePass,
+    useCallback(() => setPopUpSuccessChangePass(false), [])
+  );
 
   if (popUpSuccessChangePass) {
     window.scroll({

@@ -1,7 +1,8 @@
+import { useCallback } from "react";
 import { ServerUser } from "../api/serverDataInterfaces";
 
-export default function havePutLike() {
-  return (users: ServerUser[], visitorUserId: string) => {
+export default function useHavePutLike() {
+  return useCallback((users: ServerUser[], visitorUserId: string) => {
     if (!users) {
       return false;
     }
@@ -12,5 +13,5 @@ export default function havePutLike() {
       }
     });
     return putLike;
-  };
+  }, []);
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useHash from "../../Hooks/useHash";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
@@ -6,15 +6,15 @@ import useReplaceHash from "../../Hooks/useReplaceHash";
 
 import "./sortDropDown.scss";
 
-const SortDropDown = ({
-  elements,
-}: {
-  elements: any[];
-}) => {
+const SortDropDown = ({ elements }: { elements: any[] }) => {
   const [filter, setFilter] = useState(false);
   const filterContainer = useRef(null);
 
-  useOutsideAlerter(filterContainer, setFilter);
+  useOutsideAlerter(
+    filterContainer,
+    filter,
+    useCallback(() => setFilter(false), [])
+  );
 
   const { hash } = useLocation();
   const hashObj = useHash();
@@ -72,4 +72,4 @@ const SortDropDown = ({
   );
 };
 
-export default SortDropDown;
+export default React.memo(SortDropDown);

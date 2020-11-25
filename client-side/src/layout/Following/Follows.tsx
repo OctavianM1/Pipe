@@ -20,6 +20,7 @@ import sortUsers from "../../utilities/sortUsers";
 import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElements";
 import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
+import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 
 const Follows = () => {
   const [followsUsers, setFollowsUsers] = useState<ServerUser[]>([]);
@@ -43,17 +44,11 @@ const Follows = () => {
 
   const nrOfPages = Math.ceil(followsUsers.length / 6 / grid);
 
-  const usersOnCurrentPage = useMemo(() => {
-    const result = [];
-    for (
-      let i = (page - 1) * 6 * grid;
-      i < 6 * grid * page && sortedFollowsUsers[i];
-      i++
-    ) {
-      result.push(sortedFollowsUsers[i]);
-    }
-    return result;
-  }, [sortedFollowsUsers, grid, page]);
+  const usersOnCurrentPage = useDataOnCurrentPage(
+    page,
+    sortedFollowsUsers,
+    6 * grid
+  );
 
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid: number) => {
@@ -85,6 +80,8 @@ const Follows = () => {
   const onDeleteInput: (input: string | undefined) => Promise<any> = (
     input: string | undefined
   ) => Search.deleteFollowsUsersInput(userId, input);
+
+    
 
   return (
     <>

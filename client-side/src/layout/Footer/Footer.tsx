@@ -1,8 +1,10 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { Users } from "../../api/axios";
 import Logo from "../../components/Logo/Logo";
+import { CSSTransition } from "react-transition-group";
 
 import "./footer.scss";
+import "../../components/CSSTransitions/cssTransitions.scss";
 
 const Footer = () => {
   const [subscribeBtnClasses, setSubscribeBtnClasses] = useState(
@@ -68,7 +70,12 @@ const Footer = () => {
         </div>
       )}
       <div className="footer">
-        {(!subscribedToEmail || !subscribedToEmail.email) && (
+        <CSSTransition
+          in={!subscribedToEmail || !subscribedToEmail.email}
+          timeout={300}
+          classNames="fade"
+          unmountOnExit
+        > 
           <div>
             <img
               src="/images/footer/landscape-subscribe.svg"
@@ -96,7 +103,7 @@ const Footer = () => {
               </form>
             </div>
           </div>
-        )}
+        </CSSTransition>
         <div>
           <img src="/images/footer/landscape.svg" alt="landscape svg" />
           <div className="footer-container">

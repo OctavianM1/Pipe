@@ -1,4 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import "./searchInput.scss";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import Loupe from "../Svgs/Loupe";
@@ -12,7 +21,7 @@ import {
 interface SearchInputProps {
   placeholder: string;
   onGetInputs: (matchString?: string) => Promise<ServerSearchInput[]>;
-  onSetInput: (input: string | undefined) => Promise<any>;
+  onSetInput: (input: string) => Promise<any>;
   onDeleteInput: (input: string) => Promise<any>;
   setUsers:
     | Dispatch<SetStateAction<ServerUser[]>>
@@ -26,10 +35,12 @@ const SearchInput = ({
   onDeleteInput,
   setUsers,
 }: SearchInputProps) => {
-  const [dislpayDropDown, setDisplayDropDown] = useState(false);
+  const [input, dispatchInput] = useReducer(inputReducer, {
+    dislpayDropDown: false,
+    activeSeachInput: -1,
+    numberOfLettersInput: 0,
+  });
   const [searchInputs, setSearchInputs] = useState<ServerSearchInput[]>([]);
-  const [activeSeachInput, setActiveSearchInput] = useState(-1);
-  const [numberOfLettersInput, setNumberOfLettersInput] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -39,10 +50,10 @@ const SearchInput = ({
     onGetInputs().then(setSearchInputs).catch(error);
   }, [onGetInputs, error]);
 
-  const onChangeSearch = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => {
     const val = ev.target.value;
     onGetInputs(val.trim()).then(setSearchInputs).catch(error);
-    setNumberOfLettersInput(val.length);
+    dispatchInput({ type: "set letters", length: val.length });
   };
 
   const onClickInput = (ev: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
@@ -62,11 +73,11 @@ const SearchInput = ({
       .split("</span>")
       .join("");
     onSetInput(val).then(setUsers).catch(error);
+
     if (inputRef.current) {
       inputRef.current.value = val;
     }
-    setDisplayDropDown(false);
-    setActiveSearchInput(-1);
+    dispatchInput({ type: "init" });
   };
 
   const handleDeleteInput = (
@@ -83,59 +94,52 @@ const SearchInput = ({
     ev.preventDefault();
   };
 
-  useEffect(() => {
-    function onKey(ev: KeyboardEvent) {
-      if (ev.key === "ArrowUp" && activeSeachInput > 0) {
-        if (inputRef.current) {
-          inputRef.current.value = searchInputs[activeSeachInput - 1].userInput;
-        }
-        setActiveSearchInput(activeSeachInput - 1);
-      } else if (
-        ev.key === "ArrowDown" &&
-        activeSeachInput < searchInputs.length - 1
-      ) {
-        if (inputRef.current) {
-          inputRef.current.value = searchInputs[activeSeachInput + 1].userInput;
-        }
-        setActiveSearchInput(activeSeachInput + 1);
-      } else if (ev.key === "Enter") {
-        if (inputRef.current?.value && inputRef.current?.value.length > 1) {
-          onSetInput(inputRef.current?.value).then(setUsers).catch(error);
-        }
-        setNumberOfLettersInput(0);
-        setDisplayDropDown(false);
-        setActiveSearchInput(-1);
-        inputRef.current?.blur();
-      }
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.selectionStart = inputRef.current.selectionEnd =
-            inputRef.current.value.length;
-        }
-      }, 0);
-    }
-    if (dislpayDropDown) {
-      document.addEventListener("keydown", onKey);
-    }
-    return () => {
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [
-    dislpayDropDown,
-    activeSeachInput,
-    searchInputs,
-    setUsers,
-    error,
-    onSetInput,
-  ]);
-
   const handleOnMouseMove = (idx: number) => {
-    setActiveSearchInput(idx);
+    dispatchInput({ type: "set active", length: idx });
   };
 
-  useOutsideAlerter(formRef, setDisplayDropDown, null, () =>
-    setActiveSearchInput(-1)
+  useOutsideAlerter(
+    formRef,
+    input.dislpayDropDown,
+    useCallback(() => dispatchInput({ type: "no active" }), [])
   );
+
+  const onKeyDownSearch = (ev: React.KeyboardEvent<HTMLInputElement>) => {
+    if (ev.key === "ArrowUp" && input.activeSeachInput > 0) {
+      if (inputRef.current) {
+        inputRef.current.value =
+          searchInputs[input.activeSeachInput - 1].userInput;
+      }
+      dispatchInput({
+        type: "set active",
+        length: input.activeSeachInput - 1,
+      });
+    } else if (
+      ev.key === "ArrowDown" &&
+      input.activeSeachInput < searchInputs.length - 1
+    ) {
+      if (inputRef.current) {
+        inputRef.current.value =
+          searchInputs[input.activeSeachInput + 1].userInput;
+      }
+      dispatchInput({
+        type: "set active",
+        length: input.activeSeachInput + 1,
+      });
+    } else if (ev.key === "Enter") {
+      if (inputRef.current?.value && inputRef.current?.value.length > 1) {
+        onSetInput(inputRef.current?.value).then(setUsers).catch(error);
+      }
+      dispatchInput({ type: "init" });
+      inputRef.current?.blur();
+    }
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.selectionStart = inputRef.current.selectionEnd =
+          inputRef.current.value.length;
+      }
+    }, 0);
+  };
 
   return (
     <form className="searchInput" ref={formRef}>
@@ -146,8 +150,9 @@ const SearchInput = ({
           placeholder={placeholder}
           className="searchInput__input"
           autoComplete="off"
-          onFocus={() => setDisplayDropDown(true)}
+          onFocus={() => dispatchInput({ type: "open" })}
           onChange={onChangeSearch}
+          onKeyDown={onKeyDownSearch}
         />
         <button className="searchInput__back">
           <Loupe />
@@ -156,7 +161,7 @@ const SearchInput = ({
       </div>
       <ul
         className={
-          dislpayDropDown
+          input.dislpayDropDown
             ? "searchInput__drop-down searchInput__drop-down-active"
             : "searchInput__drop-down"
         }
@@ -169,7 +174,7 @@ const SearchInput = ({
                   onMouseMove={() => handleOnMouseMove(idx)}
                   key={i.id}
                   className={
-                    idx === activeSeachInput
+                    idx === input.activeSeachInput
                       ? "searchInput__drop-down__visited searchInput__active-li"
                       : "searchInput__drop-down__visited"
                   }
@@ -177,9 +182,11 @@ const SearchInput = ({
                 >
                   <div>
                     <span>
-                      {i.userInput.substring(0, numberOfLettersInput)}
+                      {i.userInput.substring(0, input.numberOfLettersInput)}
                     </span>
-                    <span>{i.userInput.substring(numberOfLettersInput)}</span>
+                    <span>
+                      {i.userInput.substring(input.numberOfLettersInput)}
+                    </span>
                   </div>
                   <button
                     className="delete"
@@ -196,14 +203,18 @@ const SearchInput = ({
                   key={i.id}
                   onClick={onClickInput}
                   className={
-                    idx === activeSeachInput ? "searchInput__active-li" : ""
+                    idx === input.activeSeachInput
+                      ? "searchInput__active-li"
+                      : ""
                   }
                 >
                   <div>
                     <span>
-                      {i.userInput.substring(0, numberOfLettersInput)}
+                      {i.userInput.substring(0, input.numberOfLettersInput)}
                     </span>
-                    <span>{i.userInput.substring(numberOfLettersInput)}</span>
+                    <span>
+                      {i.userInput.substring(input.numberOfLettersInput)}
+                    </span>
                   </div>
                 </li>
               );
@@ -213,5 +224,37 @@ const SearchInput = ({
     </form>
   );
 };
+
+function inputReducer(
+  state: {
+    dislpayDropDown: boolean;
+    activeSeachInput: number;
+    numberOfLettersInput: number;
+  },
+  action: { type: string; length?: number }
+) {
+  switch (action.type) {
+    case "set active":
+      if (action.length === undefined) throw new Error("Invalid length");
+      return { ...state, activeSeachInput: action.length };
+    case "set letters":
+      if (action.length === undefined) throw new Error("Invalid length");
+      return { ...state, numberOfLettersInput: action.length };
+    case "init":
+      return {
+        numberOfLettersInput: 0,
+        dislpayDropDown: false,
+        activeSeachInput: -1,
+      };
+    case "open": {
+      return { ...state, dislpayDropDown: true };
+    }
+    case "no active": {
+      return { ...state, dislpayDropDown: false, activeSeachInput: -1 };
+    }
+    default:
+      throw new Error("Invalid action");
+  }
+}
 
 export default React.memo(SearchInput);

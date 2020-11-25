@@ -12,7 +12,7 @@ const UserRaiting = ({ user }: { user: ServerActivityUserRaiting }) => {
   );
 
   const profileCoverImg = useProfileCoverPhotoError(setCoverPhotoSrc);
-
+ 
   return (
     <Link
       className="my-activities__activities-side__activity__total-raiting__users__user"
@@ -34,4 +34,3 @@ const UserRaiting = ({ user }: { user: ServerActivityUserRaiting }) => {
 };
 
 export default React.memo(UserRaiting);
- 

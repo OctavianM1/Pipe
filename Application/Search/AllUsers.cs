@@ -30,41 +30,21 @@ namespace Application.Search
 
         var displayedInputs = new List<Input>();
         var id = Guid.Parse(request.UserId);
-        if (request.UserId == request.MatchString)
+        var inputs = await _context.SearchAllUsers.Where(s => s.UserId == id && s.Input.StartsWith(request.MatchString))
+          .OrderByDescending(s => s.DateTimeCreated)
+          .Select(s => new { s.Input, s.Id })
+          .Take(10)
+          .ToListAsync();
+        foreach (var i in inputs)
         {
-          var inputs = await _context.SearchAllUsers.Where(s => s.UserId == id)
-            .OrderByDescending(s => s.DateTimeCreated)
-            .Select(s => new { s.Input, s.Id })
-            .Take(10)
-            .ToListAsync();
+          displayedInputs.Add(new Input
+          {
+            Id = i.Input,
+            UserInput = i.Input,
+            IsVisited = true,
+          });
+        }
 
-          foreach (var i in inputs)
-          {
-            displayedInputs.Add(new Input
-            {
-              Id = i.Id,
-              UserInput = i.Input,
-              IsVisited = true,
-            });
-          }
-        }
-        else
-        {
-          var inputs = await _context.SearchAllUsers.Where(s => s.UserId == id && s.Input.StartsWith(request.MatchString))
-            .OrderByDescending(s => s.DateTimeCreated)
-            .Select(s => new { s.Input, s.Id })
-            .Take(10)
-            .ToListAsync();
-          foreach (var i in inputs)
-          {
-            displayedInputs.Add(new Input
-            {
-              Id = i.Id,
-              UserInput = i.Input,
-              IsVisited = true,
-            });
-          }
-        }
 
         int countSpaces = 10 - displayedInputs.Count;
         if (countSpaces > 0)
@@ -74,40 +54,21 @@ namespace Application.Search
           {
             onlyInputs.Add(d.UserInput);
           }
-          if (request.UserId == request.MatchString)
+          var usersRemaings = await _context.Users.Where(u => !onlyInputs.Contains(u.Name) && u.Name.StartsWith(request.MatchString))
+            .GroupBy(u => u.Name)
+            .Take(countSpaces)
+            .Select(u => new { Name = u.Key })
+            .ToListAsync();
+          foreach (var u in usersRemaings)
           {
-            var usersRemaings = await _context.Users.Where(u => !onlyInputs.Contains(u.Name))
-                          .OrderByDescending(u => u.CountFollowers)
-                          .Take(countSpaces)
-                          .Select(u => new { Id = u.Id, Name = u.Name })
-                          .ToListAsync();
-            foreach (var u in usersRemaings)
+            displayedInputs.Add(new Input
             {
-              displayedInputs.Add(new Input
-              {
-                Id = u.Id,
-                UserInput = u.Name,
-                IsVisited = false,
-              });
-            }
+              Id = u.Name,
+              UserInput = u.Name,
+              IsVisited = false,
+            });
           }
-          else
-          {
-            var usersRemaings = await _context.Users.Where(u => !onlyInputs.Contains(u.Name) && u.Name.StartsWith(request.MatchString))
-              .OrderByDescending(u => u.CountFollowers)
-              .Take(countSpaces)
-              .Select(u => new { Id = u.Id, Name = u.Name })
-              .ToListAsync();
-            foreach (var u in usersRemaings)
-            {
-              displayedInputs.Add(new Input
-              {
-                Id = u.Id,
-                UserInput = u.Name,
-                IsVisited = false,
-              });
-            }
-          }
+
         }
         return displayedInputs;
       }

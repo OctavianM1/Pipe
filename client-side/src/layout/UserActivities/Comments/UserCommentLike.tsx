@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ServerUser } from "../../api/serverDataInterfaces";
-import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
+import { ServerUser } from "../../../api/serverDataInterfaces";
+import useProfileCoverPhotoError from "../../../Hooks/useProfileCoverPhotoError";
 
 const UserCommentLike = ({ user }: { user: ServerUser }) => {
   const [coverPhotoSrc, setCoverPhotoSrc] = useState(
@@ -11,7 +11,6 @@ const UserCommentLike = ({ user }: { user: ServerUser }) => {
   );
 
   const profileCoverImg = useProfileCoverPhotoError(setCoverPhotoSrc);
-
   return (
     <Link className="user-liker" to={`/activities/${user.id}`} key={user.id}>
       <div className="user-liker__container">

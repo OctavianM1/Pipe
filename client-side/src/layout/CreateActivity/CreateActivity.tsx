@@ -1,6 +1,8 @@
 import React, {
+  Dispatch,
   FocusEvent,
   FormEvent,
+  useCallback,
   useReducer,
   useRef,
   useState,
@@ -43,32 +45,12 @@ const CreateActivity = ({
 
   const [successCreatedPopUp, setSuccessCreatedPopUp] = useState(false);
   const successPopUp = useRef<HTMLDivElement>(null);
-  useOutsideAlerter(successPopUp, setSuccessCreatedPopUp);
+  useOutsideAlerter(
+    successPopUp,
+    successCreatedPopUp,
+    useCallback(() => setSuccessCreatedPopUp(false), [])
+  );
   const error = useApiErrorHandler();
-
-  const handleBlurInput = (
-    ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
-  ) => {
-    if (ev.target.name === "title") {
-      if (ev.target.value.trim()) {
-        dispatchInputs({ type: "active title label" });
-      } else {
-        dispatchInputs({ type: "inactive title label" });
-      }
-    } else if (ev.target.name === "subject") {
-      if (ev.target.value.trim()) {
-        dispatchInputs({ type: "active subject label" });
-      } else {
-        dispatchInputs({ type: "inactive subject label" });
-      }
-    } else if (ev.target.name === "body") {
-      if (ev.target.value.trim()) {
-        dispatchInputs({ type: "active body label" });
-      } else {
-        dispatchInputs({ type: "inactive body label" });
-      }
-    }
-  };
 
   const handleFocusInput = (
     ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
@@ -82,65 +64,68 @@ const CreateActivity = ({
     }
   };
 
-  const handleSubmitForm = (ev: FormEvent<HTMLFormElement>) => {
-    let errors = false;
-    const target = ev.target as any;
-    if (target.title.value.length < 5) {
-      errors = true;
-      dispatchInputs({ type: "active title logger" });
-    } else {
-      dispatchInputs({ type: "inactive title logger" });
-    }
-    if (target.subject.value.length < 2) {
-      errors = true;
-      dispatchInputs({ type: "active subject logger" });
-    } else {
-      dispatchInputs({ type: "inactive subject logger" });
-    }
-    if (target.body.value.length < 15) {
-      errors = true;
-      dispatchInputs({ type: "active body logger" });
-    } else {
-      dispatchInputs({ type: "inactive body logger" });
-    }
-
-    if (!errors) {
-      const title = target.title.value;
-      const subject = target.subject.value;
-      const body = target.body.value;
-      if (edit) {
-        Activities.update({
-          activityId: activityId!,
-          title: title,
-          subject: subject,
-          body: body,
-        })
-          .then(() => {
-            setSuccessCreatedPopUp(true);
-            dispatchInputs({ type: "submitted edited" });
-          })
-          .catch(error);
+  const handleSubmitForm = useCallback(
+    (ev: FormEvent<HTMLFormElement>) => {
+      let errors = false;
+      const target = ev.target as any;
+      if (target.title.value.length < 5) {
+        errors = true;
+        dispatchInputs({ type: "active title logger" });
       } else {
-        Activities.create({
-          userHostId: JSON.parse(window.localStorage.getItem("user") || "{}")
-            .id,
-          title: title,
-          subject: subject,
-          body: body,
-        })
-          .then(() => {
-            setSuccessCreatedPopUp(true);
-            dispatchInputs({ type: "submitted" });
-            if (bodyInput.current) {
-              bodyInput.current.value = "";
-            }
-          })
-          .catch(error);
+        dispatchInputs({ type: "inactive title logger" });
       }
-    }
+      if (target.subject.value.length < 2) {
+        errors = true;
+        dispatchInputs({ type: "active subject logger" });
+      } else {
+        dispatchInputs({ type: "inactive subject logger" });
+      }
+      if (target.body.value.length < 15) {
+        errors = true;
+        dispatchInputs({ type: "active body logger" });
+      } else {
+        dispatchInputs({ type: "inactive body logger" });
+      }
 
-    ev.preventDefault();
-  };
+      if (!errors) {
+        const title = target.title.value;
+        const subject = target.subject.value;
+        const body = target.body.value;
+        if (edit) {
+          Activities.update({
+            activityId: activityId!,
+            title: title,
+            subject: subject,
+            body: body,
+          })
+            .then(() => {
+              setSuccessCreatedPopUp(true);
+              dispatchInputs({ type: "submitted edited" });
+            })
+            .catch(error);
+        } else {
+          Activities.create({
+            userHostId: JSON.parse(window.localStorage.getItem("user") || "{}")
+              .id,
+            title: title,
+            subject: subject,
+            body: body,
+          })
+            .then(() => {
+              setSuccessCreatedPopUp(true);
+              dispatchInputs({ type: "submitted" });
+              if (bodyInput.current) {
+                bodyInput.current.value = "";
+              }
+            })
+            .catch(error);
+        }
+      }
+
+      ev.preventDefault();
+    },
+    [activityId, error, edit]
+  );
 
   return (
     <>
@@ -171,7 +156,7 @@ const CreateActivity = ({
           onSubmit={handleSubmitForm}
         >
           <UpLabelInput
-            handleBlurInput={handleBlurInput}
+            handleBlurInput={(ev) => handleBlurInput(ev, dispatchInputs)}
             handleFocusInput={handleFocusInput}
             edit
             val={title}
@@ -182,7 +167,7 @@ const CreateActivity = ({
             loggerText="Title cannot be shorter then 5 characters"
           />
           <UpLabelInput
-            handleBlurInput={handleBlurInput}
+            handleBlurInput={(ev) => handleBlurInput(ev, dispatchInputs)}
             handleFocusInput={handleFocusInput}
             edit
             val={subject}
@@ -197,7 +182,7 @@ const CreateActivity = ({
               ref={bodyInput}
               name="body"
               className="create-activity__container__body"
-              onBlur={handleBlurInput}
+              onBlur={(ev) => handleBlurInput(ev, dispatchInputs)}
               onFocus={handleFocusInput}
               defaultValue={edit ? body : ""}
             />
@@ -285,6 +270,33 @@ function inputsReducer(
 
     default:
       throw new Error(`Problem action reducer inputs:: ${action.type}`);
+  }
+}
+
+function handleBlurInput(
+  ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>,
+  dispatchInputs: Dispatch<{
+    type: string;
+  }>
+) {
+  if (ev.target.name === "title") {
+    if (ev.target.value.trim()) {
+      dispatchInputs({ type: "active title label" });
+    } else {
+      dispatchInputs({ type: "inactive title label" });
+    }
+  } else if (ev.target.name === "subject") {
+    if (ev.target.value.trim()) {
+      dispatchInputs({ type: "active subject label" });
+    } else {
+      dispatchInputs({ type: "inactive subject label" });
+    }
+  } else if (ev.target.name === "body") {
+    if (ev.target.value.trim()) {
+      dispatchInputs({ type: "active body label" });
+    } else {
+      dispatchInputs({ type: "inactive body label" });
+    }
   }
 }
 

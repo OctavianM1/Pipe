@@ -1,10 +1,10 @@
-import { Dispatch, RefObject, SetStateAction, useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
 function useOutsideAlerter(
   ref: RefObject<HTMLElement>,
-  setPopUp: Dispatch<SetStateAction<boolean>>,
-  className?: string | null,
-  fn?: () => void
+  popUp: boolean,
+  fn?: () => void,
+  className?: string | null
 ) {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -15,15 +15,15 @@ function useOutsideAlerter(
         (!className || !target.classList.contains(className))
       ) {
         fn && fn();
-        setPopUp(false);
       }
     }
-
-    document.addEventListener("mousedown", handleClickOutside);
+    if (popUp) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref, setPopUp, className, fn]);
+  }, [ref, className, fn, popUp]);
 }
 
 export default useOutsideAlerter;

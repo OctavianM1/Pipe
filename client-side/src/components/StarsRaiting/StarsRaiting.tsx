@@ -31,4 +31,4 @@ const StarsRaiting = ({
   return <>{personalStars}</>;
 };
 
-export default StarsRaiting;
+export default React.memo(StarsRaiting);
