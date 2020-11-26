@@ -3,6 +3,10 @@ import React, {
   useState,
   Dispatch,
   SetStateAction,
+  createContext,
+  useRef,
+  RefObject,
+  useEffect,
 } from "react";
 import "./App.scss";
 import "./components/CSSTransitions/cssTransitions.scss";
@@ -26,6 +30,8 @@ import ConfirmEmail from "./layout/ConfirmEmail/ConfirmEmail";
 import RestorePassword from "./layout/RestorePassword/RestorePassword";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
+export const AppContext = createContext<RefObject<HTMLDivElement> | null>(null);
+
 function App() {
   const {
     openLoginModal,
@@ -38,6 +44,8 @@ function App() {
   } = useContext(Context);
   const [openRegisterModal, isOpenRegisterModal] = useState(false);
 
+  const appRef = useRef<HTMLDivElement>(null);
+
   if (networkError) {
     setTimeout(() => {
       setNetworkError(false);
@@ -48,72 +56,87 @@ function App() {
 
   const location = useLocation();
 
-  return (
-    <div className="App disable-scroll">
- 
-      {openLoginModal && <Login openRegisterModal={openRegisterModal} />}
-      <Header isOpenRegisterModal={isOpenRegisterModal} />
+  useEffect(() => {
+    const ref = appRef.current;
+    if (location.pathname.startsWith("/activities") && ref) {
+      setTimeout(() => {
+        ref.classList.remove("overflow-hidden");  
+      }, 450);
+    }
+    return () => {
+      if (ref) {
+        ref.classList.add("overflow-hidden");
+      }
+    };
+  }, [location.pathname]);
 
-      {networkError && (
-        <div
-          style={{ backgroundColor: "rgba(223, 51, 51, 0.9)" }}
-          className="network-error"
-        >
-          <h3>Network error</h3>
-          <p>Somethig is temporarily wrong with your network connection.</p>
-          <p>Please make sure you are connected to the internet.</p>
-        </div>
-      )}
-      <TransitionGroup>
-        <CSSTransition
-          key={location.pathname}
-          timeout={{ enter: 500, exit: 100 }}
-          classNames="page"
-          unmountOnExit
-        >
-          <div>
-            <Switch location={location}>
-              <Route path="/profile" exact>
-                <Profile />
-              </Route>
-              <Route path="/add-activity" exact>
-                <CreateActivity />
-              </Route>
-              <Route path="/activities/:userId" exact>
-                <UserActivities />
-              </Route>
-              <Route path={`/activities/:userId/edit/:activityId`} exact>
-                <EditActivity />
-              </Route>
-              <Route path="/following" exact>
-                <Following />
-              </Route>
-              <Route path="/followers" exact>
-                <Follows />
-              </Route>
-              <Route path="/search-users" exact>
-                <SearchUsers />
-              </Route>
-              <Route path="/confirmEmail/:token">
-                <ConfirmEmail />
-              </Route>
-              <Route path="/restorePassword/:token">
-                <RestorePassword />
-              </Route>
-              <Route path="/unauthorized" exact>
-                <NonAuthenticated />
-              </Route>
-              <Route path="/" exact>
-                <Home isOpenRegisterModal={isOpenRegisterModal} />
-              </Route>
-              <Route path="/">
-                <NotFound />
-              </Route>
-            </Switch>
-            <Footer />
+  return (
+    <div className="App disable-scroll overflow-hidden" ref={appRef}>
+      <AppContext.Provider value={appRef}>
+        {openLoginModal && <Login openRegisterModal={openRegisterModal} />}
+        <Header isOpenRegisterModal={isOpenRegisterModal} />
+
+        {networkError && (
+          <div
+            style={{ backgroundColor: "rgba(223, 51, 51, 0.9)" }}
+            className="network-error"
+          >
+            <h3>Network error</h3>
+            <p>Somethig is temporarily wrong with your network connection.</p>
+            <p>Please make sure you are connected to the internet.</p>
           </div>
-        </CSSTransition>
-      </TransitionGroup>
+        )}
+        <TransitionGroup>
+          <CSSTransition
+            key={location.pathname}
+            timeout={{ enter: 500, exit: 100 }}
+            classNames="page"
+            unmountOnExit
+          >
+            <div>
+              <Switch location={location}>
+                <Route path="/profile" exact>
+                  <Profile />
+                </Route>
+                <Route path="/add-activity" exact>
+                  <CreateActivity />
+                </Route>
+                <Route path="/activities/:userId" exact>
+                  <UserActivities />
+                </Route>
+                <Route path={`/activities/:userId/edit/:activityId`} exact>
+                  <EditActivity />
+                </Route>
+                <Route path="/following" exact>
+                  <Following />
+                </Route>
+                <Route path="/followers" exact>
+                  <Follows />
+                </Route>
+                <Route path="/search-users" exact>
+                  <SearchUsers />
+                </Route>
+                <Route path="/confirmEmail/:token">
+                  <ConfirmEmail />
+                </Route>
+                <Route path="/restorePassword/:token">
+                  <RestorePassword />
+                </Route>
+                <Route path="/unauthorized" exact>
+                  <NonAuthenticated />
+                </Route>
+                <Route path="/" exact>
+                  <Home isOpenRegisterModal={isOpenRegisterModal} />
+                </Route>
+                <Route path="/">
+                  <NotFound />
+                </Route>
+              </Switch>
+              <Footer />
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
+      </AppContext.Provider>
     </div>
   );
 }

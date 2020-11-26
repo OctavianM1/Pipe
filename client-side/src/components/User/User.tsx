@@ -1,6 +1,8 @@
 import React from "react";
 import "./user.scss";
 import { Link } from "react-router-dom";
+import useCoverImage from "../../Hooks/useCoverImage";
+import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
 
 interface UserProps {
   id: string;
@@ -9,6 +11,7 @@ interface UserProps {
   followers: number;
   grid: number;
   activities: number;
+  extension: string | null;
 }
 
 const User = ({
@@ -18,10 +21,15 @@ const User = ({
   followers,
   grid,
   activities,
+  extension,
 }: UserProps) => {
+  const [coverPhotoSrc, setCoverPhotoSrc] = useCoverImage(id, extension);
+
+  const onImgError = useProfileCoverPhotoError(setCoverPhotoSrc);
+
   return (
     <Link to={`/activities/${id}`} className={`user grid-${grid}x${grid}`}>
-      <img src="/images/userPhotos/anonym.jpg" alt="anonym" />
+      <img src={coverPhotoSrc} onError={onImgError} alt="cover" />
       <div>
         <div>
           Name: <span>{name}</span>

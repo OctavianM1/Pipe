@@ -65,7 +65,6 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
       font-family: "Roboto";
       z-index: 10;
-      overflow: hidden;
 
       &__personal-raiting {
         position: relative;
@@ -356,6 +355,7 @@
           }
 
           &__body {
+            white-space: pre;
             font-family: "Roboto";
             padding-top: 5px;
             word-break: break-word;
@@ -368,19 +368,40 @@
         align-items: center;
         margin-top: 2rem;
 
-        & input {
+        &__placeholder {
+          position: absolute;
+          top: 50%;
+          left: 2rem;
+          transform: translateY(-50%);
+          font-weight: 100;
+          font-size: 1.4rem;
+          letter-spacing: 1px;
+        }
+
+        &__container {
+          position: relative;
+          width: 10%;
           padding: 1rem 2rem;
-          border-radius: 40px;
+          border-radius: 15px;
           background-color: rgb(232, 232, 232);
           border: none;
           flex: 1 0 auto;
+          flex-basis: auto;
+          cursor: text;
 
           &:focus {
             outline: none;
           }
         }
 
-        & img {
+        &__input {
+          word-break: break-all;
+          &:focus {
+            outline: none;
+          }
+        }
+
+        & > img {
           width: 4rem;
           height: 4rem;
           border-radius: 50%;
@@ -646,24 +667,74 @@
 }
 
 .activities-info {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 15;
   display: flex;
   max-width: 140rem;
-  margin: 5rem auto 0 auto;
+  margin: 0 auto;
+  padding: 3.5px 30px;
   justify-content: space-evenly;
   align-items: center;
+  background-color: rgb(244, 244, 244);
 
-  & > div {
+  &__left {
+    flex-basis: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: "Roboto";
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 3rem;
+    font-weight: 300;
 
     & > span {
       color: #5759ff;
     }
+
+    &-pasive {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & > div {
+        margin: 0 2rem;
+      }
+    }
+
+    &-active {
+      justify-content: center;
+      margin-left: auto;
+      & > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 10px;
+        border-radius: 10px;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
+        & > img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-right: 2rem;
+        }
+
+        &:hover {
+          background-color: rgb(255, 255, 255);
+        }
+      }
+    }
   }
 
-  & > button {
-    font-size: 2rem;
+  &__right {
+    flex-basis: 16rem;
+    padding: 10px 0;
+    & > button {
+      font-size: 2rem;
+      margin-left: auto;
+    }
   }
 }
 

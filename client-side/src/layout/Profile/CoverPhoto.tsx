@@ -12,15 +12,15 @@ import { CSSTransition } from "react-transition-group";
 import { UploadFile } from "../../api/axios";
 import { ServerUser } from "../../api/serverDataInterfaces";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
+import useCoverImage from "../../Hooks/useCoverImage";
 import useDisableScroll from "../../Hooks/useDisableScroll";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
 
 const CoverPhoto = ({ user }: { user: ServerUser }) => {
-  const [coverPhotoSrc, setCoverPhotoSrc] = useState(
+  const [coverPhotoSrc, setCoverPhotoSrc] = useCoverImage(
+    user.id,
     user.coverImageExtension
-      ? `/images/userPhotos/${user.id}.${user.coverImageExtension}`
-      : "/images/userPhotos/anonym.jpg"
   );
   const [inputCoverPhotoLogger, setInputCoverPhotoLogger] = useState("");
   const [file, setFile] = useState<string | Blob>("");
@@ -46,17 +46,6 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     biggerPhotoContainer,
     biggerPhoto,
     useCallback(() => {
-      // biggerPhotoContainer.current?.addEventListener(
-      //   "transitionend",
-      //   function tr() {
-      //     biggerPhotoContainer.current?.classList.add('');
-      //     setBiggerPhoto(false);
-      //       biggerPhotoContainer.current?.removeEventListener(
-      //         "transitionend",
-      //         tr
-      //       );
-      //   }
-      // );
       setBiggerPhoto(false);
     }, [])
   );

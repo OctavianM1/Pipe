@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  FormEvent,
   RefObject,
   useCallback,
   useContext,
@@ -23,11 +22,11 @@ import {
   ServerActivityRaiting,
   ServerActivityUserRaiting,
 } from "../../api/serverDataInterfaces";
-import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
 import UserRaiting from "./UserRaiting";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useHavePutLike from "../../Hooks/useHavePutLike";
 import { VisitorUserContext } from "./UserActivities";
+import CommentInput from "./CommentInput";
 
 interface ActivityProps {
   id: string;
@@ -58,11 +57,12 @@ const Activity = ({
   likesNumber,
   totalRaiting,
   personalRate,
-  hostUserId, 
+  hostUserId,
   onRemove,
   comments,
 }: ActivityProps) => {
-  const commentInput = useRef<HTMLInputElement>(null);
+  const commentInput = useRef<HTMLDivElement>(null);
+  comments.forEach((c) => console.log(c.comment));
 
   const visitorUser = useContext(VisitorUserContext);
 
@@ -75,11 +75,7 @@ const Activity = ({
   );
   const [activityComments, setActivityComments] = useState(comments);
   const [displayedCommentNumber, setDisplayedCommentsNumber] = useState(2);
-  const [coverPhotoSrc, setCoverPhotoSrc] = useState(
-    visitorUser.coverImageExtension
-      ? `/images/userPhotos/${visitorUser.id}.${visitorUser.coverImageExtension}`
-      : "/images/userPhotos/anonym.jpg"
-  );
+
   const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
 
   const [totalRaitingState, dispatchTotalRaiting] = useReducer(
@@ -140,25 +136,6 @@ const Activity = ({
     );
   }
 
-  const handleSubmitComment = (ev: FormEvent<HTMLFormElement>) => {
-    const comment = commentInput.current?.value || "";
-    if (comment.trim() !== "") {
-      Activities.addComment({
-        userId: visitorUser.id,
-        activityId: id,
-        commentBody: comment,
-      })
-        .then((comment: ServerActivityComment) => {
-          setActivityComments([comment, ...activityComments]);
-          if (commentInput.current) {
-            commentInput.current.value = "";
-          }
-        })
-        .catch(error);
-    }
-    ev.preventDefault();
-  };
-
   const handleIsLikedComment = useHavePutLike();
 
   const displayedComments = useMemo(() => {
@@ -182,7 +159,33 @@ const Activity = ({
     [error]
   );
 
-  const profileImgError = useProfileCoverPhotoError(setCoverPhotoSrc);
+  const onKey = useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.key === "Enter" && !ev.shiftKey) {
+        ev.preventDefault();
+        const comment = commentInput.current?.innerText || "";
+        if (comment.trim() !== "") {
+          Activities.addComment({
+            userId: visitorUser.id,
+            activityId: id,
+            commentBody: comment,
+          })
+            .then((comment: ServerActivityComment) => {
+              setActivityComments(
+                (activityComments: ServerActivityComment[]) => {
+                  return [comment, ...activityComments];
+                }
+              );
+              if (commentInput.current) {
+                commentInput.current.innerText = "";
+              }
+            })
+            .catch(error);
+        }
+      }
+    },
+    [id, visitorUser.id, error]
+  );
 
   return (
     <>
@@ -282,7 +285,7 @@ const Activity = ({
                     <Comment
                       key={c.id}
                       commentData={c}
-                      activityId={id}
+                      activityId={id} 
                       isLiked={handleIsLikedComment(
                         c.commentLikeUsers,
                         visitorUser.id
@@ -310,22 +313,7 @@ const Activity = ({
                 {activityComments.length > 2 ? "Show less" : ""}
               </button>
             )}
-            <form
-              className="my-activities__activities-side__activity__add-comment"
-              onSubmit={handleSubmitComment}
-            >
-              <img
-                onError={profileImgError}
-                src={coverPhotoSrc}
-                alt="anonym user"
-              />
-              <input
-                ref={commentInput}
-                type="text"
-                name="commentBody"
-                placeholder="Write a comment..."
-              />
-            </form>
+            <CommentInput inputRef={commentInput} onKey={onKey} />
           </div>
         </div>
       </div>

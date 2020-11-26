@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState, useMemo } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import FilterSide from "../../components/FilterSide/FilterSide";
 import "./userActivities.scss";
-import { Activities, Users, Search, Follows } from "../../api/axios";
+import { Activities, Users, Search } from "../../api/axios";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import useHavePutLike from "../../Hooks/useHavePutLike";
 import useHavePutRate from "../../Hooks/useHavePutRate";
@@ -11,7 +11,6 @@ import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
 import Pagination from "../../components/Pagination/Pagination";
 import SearchInput from "../../components/SearchInput/SearchInput";
-import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
 import {
   ServerActivity,
   ServerUsersRelationActivity,
@@ -19,21 +18,22 @@ import {
 } from "../../api/serverDataInterfaces";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
+import ActivitiesInfo from "./ActivitiesInfo";
 
 export const VisitorUserContext = createContext<ServerUser>(null!);
 
 const MyActivities = () => {
-  const { userId: hostUserId } = useParams<{ userId: string }>();
   const visitorUser: ServerUser = JSON.parse(
     window.localStorage.getItem("user") || "{}"
   );
+  const errorHandler = useApiErrorHandler();
+  const { userId: hostUserId } = useParams<{ userId: string }>();
 
   const [activities, setActivities] = useState<ServerActivity[]>([]);
   const [loader, setLoader] = useState(true);
   const [displayNoActivitiesMsg, setDisplayNoActivitiesMsg] = useState(false);
   const [userData, setUserData] = useState<ServerUsersRelationActivity>(null!);
 
-  const errorHandler = useApiErrorHandler();
   const { hash } = useLocation();
   const hashObj = useHash();
 
@@ -104,29 +104,6 @@ const MyActivities = () => {
       userInput: matchString || "",
     });
 
-  const handleFollowClick = () => {
-    if (userData?.isVisitorFollowingHost) {
-      Follows.unfollow({ userId: hostUserId, followUserId: visitorUser.id })
-        .then(() =>
-          setUserData({
-            ...userData,
-            isVisitorFollowingHost: false,
-            countFollows: userData.countFollows - 1,
-          })
-        )
-        .catch(errorHandler);
-    } else {
-      Follows.follow({ userId: hostUserId, followUserId: visitorUser.id })
-        .then(() =>
-          setUserData({
-            ...userData,
-            isVisitorFollowingHost: true,
-            countFollows: userData.countFollows + 1,
-          })
-        )
-        .catch(errorHandler);
-    }
-  };
 
   return (
     <>
@@ -156,23 +133,11 @@ const MyActivities = () => {
         ) : (
           <>
             {hostUserId !== visitorUser.id && userData && (
-              <div className="activities-info">
-                <div>
-                  Name: <span>{userData.name}</span>
-                </div>
-                <div>
-                  Following: <span>{userData.countFollowing}</span>
-                </div>
-                <div>
-                  Follows: <span>{userData.countFollows}</span>
-                </div>
-                <div>
-                  Activities: <span>{userData.numberOfActivities}</span>
-                </div>
-                <StandardButton onClick={handleFollowClick}>
-                  {userData.isVisitorFollowingHost ? "Unfollow" : "Follow"}
-                </StandardButton>
-              </div>
+              <ActivitiesInfo
+                setUserData={setUserData}
+                userData={userData}
+                errorHandler={errorHandler}
+              />
             )}
             <div className="my-activities">
               <div className="my-activities__filter-side">
@@ -196,8 +161,6 @@ const MyActivities = () => {
                           }}
                           classNames="activity"
                           key={activity.id}
-                          // in={activitiesOnCurrentPage.length > 0}
-                          // unmountOnExit
                           mountOnEnter={true}
                           onExit={() => console.log("exit")}
                           onEnter={() => console.log("enter")}

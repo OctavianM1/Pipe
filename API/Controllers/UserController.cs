@@ -92,7 +92,7 @@ namespace API.Controllers
     public async Task<ActionResult<AppUsersActivity>> GetUsersActivity(string userHostId, string userVisitorId)
     {
       return await _mediator.Send(new UsersActivity.Query { UserHostId = userHostId, UserVisitorId = userVisitorId });
-    }
+    } 
 
     [HttpPut("changeName")]
     public async Task<ActionResult<AppUser>> UpdateName(UpdateName.Command command)

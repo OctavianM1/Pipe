@@ -28,15 +28,23 @@ const SearchUsers = () => {
   const hashObj = useHash();
 
   const sortedUsers = useMemo(() => {
-    if (!hashObj["sort"]) return [...users];
-    return sortUsers(hashObj["sort"], [...users]);
+    let newUsers = [...users];
+    if (hashObj["search"]) {
+      newUsers = newUsers.filter((u) => u.name.startsWith(hashObj["search"]));
+    }
+    if (!hashObj["sort"]) return newUsers;
+    return sortUsers(hashObj["sort"], newUsers);
   }, [users, hashObj]);
 
   const page = Number(hashObj["p"]) || 1;
 
-  const nrOfPages = Math.ceil(users.length / 6 / grid);
+  const nrOfPages = Math.ceil(sortedUsers.length / 6 / grid);
 
-  const usersOnCurrentPage = useDataOnCurrentPage(page, sortedUsers, 6 * grid);
+  const usersOnCurrentPage: ServerUser[] = useDataOnCurrentPage(
+    page,
+    sortedUsers,
+    6 * grid
+  );
 
   const error = useApiErrorHandler();
   const handleChangePage = useChangePage(hashObj, hash);
@@ -81,9 +89,9 @@ const SearchUsers = () => {
     (input: string | undefined) => Search.deleteAllUsersInput(userId, input),
     [userId]
   );
-    
+ 
   return (
-    <div className='following'>
+    <div className="following">
       <div className="following__search">
         <SearchInput
           placeholder="Search for users"
@@ -91,6 +99,7 @@ const SearchUsers = () => {
           onSetInput={onSetInput}
           onDeleteInput={onDeleteInput}
           setUsers={setUsers}
+          defaultValue={hashObj['search']}
         />
       </div>
       {loader ? (
@@ -102,7 +111,7 @@ const SearchUsers = () => {
           <div className="following__display">
             <SortDropDown elements={getDefaultSortUsersElements} />
             <div className="following__display-grid">
-              <Grid2x2 
+              <Grid2x2
                 active={grid === 2}
                 onClick={() => handleGridChange(2)}
               />
@@ -127,6 +136,7 @@ const SearchUsers = () => {
                   followers={u.countFollowers}
                   activities={u.numberOfActivities || 0}
                   grid={grid}
+                  extension={u.coverImageExtension}
                 />
               ))
             ) : (

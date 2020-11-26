@@ -11,5 +11,7 @@ namespace ApplicationUser
     public int CountFollows { get; set; }
     public int NumberOfActivities { get; set; }
     public bool IsVisitorFollowingHost { get; set; }
+    public string CoverImageExtension { get; set; }
+
   }
 }

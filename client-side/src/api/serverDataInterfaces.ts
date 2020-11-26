@@ -70,6 +70,7 @@ export interface ServerUsersRelationActivity {
   countFollows: number;
   numberOfActivities: number;
   isVisitorFollowingHost: boolean;
+  coverImageExtension: string | null;
 }
 
 // Search Input

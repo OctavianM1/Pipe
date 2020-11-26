@@ -1,14 +1,6 @@
-import React, {
-  FormEvent,
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-} from "react";
-
+import React, { useCallback, useContext, useRef, useState } from "react";
 import "./../userActivities.scss";
 import "../../../components/CSSTransitions/cssTransitions.scss";
-
 import { Activities } from "../../../api/axios";
 import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
 import {
@@ -28,6 +20,7 @@ import useSubmitCommentOutside from "./useSubmitCommentOutside";
 import useOnEditCommentSubmit from "./useOnEditCommentSubmit";
 import useCoverImage from "../../../Hooks/useCoverImage";
 import useLikes from "./useLikes";
+import CommentInput from "../CommentInput";
 
 interface CommentProps {
   activityId: string;
@@ -52,7 +45,7 @@ const Comment = ({
 
   const { commentEdit, dispatchCommentEdit } = useCommentEdit(
     commentData.comment
-  ); 
+  );
 
   const [commentResponses, setCommentResponses] = useState<
     ServerActivityCommentResponse[]
@@ -126,30 +119,33 @@ const Comment = ({
     }, 40);
   };
 
-  const handleSubmitAddComment = (ev: FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
-    if (
-      responseCommentInputRef.current?.value &&
-      responseCommentInputRef.current.value.length > 0
-    ) {
-      Activities.addCommentResponse({
-        parentActivityCommentId: commentData.id,
-        userId: visitorUser.id,
-        comment: responseCommentInputRef.current.value,
-      })
-        .then((responses) => {
-          setRespondCommentInputMode(false);
-          setCommentResponses(responses);
-        })
-        .catch(error);
-    }
-  };
-
   const showCommentResponses = () => {
     Activities.getCommentResponses(commentData.id)
       .then(setCommentResponses)
       .catch(error);
   };
+
+  const onKey = useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.key === "Enter" && !ev.shiftKey) {
+        ev.preventDefault();
+        const comment = responseCommentInputRef.current?.innerText || "";
+        if (comment.trim() !== "") {
+          Activities.addCommentResponse({
+            parentActivityCommentId: commentData.id,
+            userId: visitorUser.id,
+            comment: comment,
+          })
+            .then((responses: ServerActivityCommentResponse[]) => {
+              setRespondCommentInputMode(false);
+              setCommentResponses(responses);
+            })
+            .catch(error);
+        }
+      }
+    },
+    [visitorUser.id, error, commentData.id]
+  );
 
   return (
     <>
@@ -164,7 +160,7 @@ const Comment = ({
           <img
             onError={profileImgError}
             src={coverPhotoSrc}
-            alt="anonym user"
+            alt="anonym user" 
           />
           <div
             onMouseEnter={() => setDisplayCommentDate(true)}
@@ -235,7 +231,7 @@ const Comment = ({
                 key={c.id}
                 responseComment={c}
                 coverPhotoSrc={coverPhotoVisitorSrc}
-                profileImgError={profileImgError}
+                profileImgError={profileVisitorImgError}
                 onClickRespond={onClickRespond}
                 setCommentResponses={setCommentResponses}
                 setNumberOfResponses={setNumberOfResponses}
@@ -244,30 +240,14 @@ const Comment = ({
           ))}
       </TransitionGroup>
       {respondCommentInputMode && (
-        <form
-          style={{ marginLeft: "6%", marginTop: "1rem" }}
-          className="my-activities__activities-side__activity__add-comment"
-          onSubmit={handleSubmitAddComment}
-        >
-          <img
-            onError={profileVisitorImgError}
-            src={coverPhotoVisitorSrc}
-            alt="anonym user"
-          />
-          <input
-            type="text"
-            name="responseCommentBody"
-            placeholder="Respond to comment..."
-            defaultValue={`${commentData.user.name} `}
-            ref={responseCommentInputRef}
-          />
+        <CommentInput inputRef={responseCommentInputRef} onKey={onKey}>
           <img
             id="button-remove-respond-comment"
             src="/images/activities/cancel.svg"
             alt="delete"
             onClick={() => setRespondCommentInputMode(false)}
           />
-        </form>
+        </CommentInput>
       )}
     </>
   );

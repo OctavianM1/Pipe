@@ -36,7 +36,8 @@ namespace Application.Users
           CountFollowing = u.CountFollowing,
           CountFollows = u.CountFollowers,
           NumberOfActivities = _context.Activities.Count(a => a.UserHostId == userHostIdGuid),
-          IsVisitorFollowingHost = _context.Follows.FirstOrDefault(f => f.UserId == userHostIdGuid && f.FollowerId == userVisitorIdGuid) != null
+          IsVisitorFollowingHost = _context.Follows.FirstOrDefault(f => f.UserId == userHostIdGuid && f.FollowerId == userVisitorIdGuid) != null,
+          CoverImageExtension = u.CoverImageExtension
         }).FirstOrDefaultAsync();
       }
     }

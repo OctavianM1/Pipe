@@ -74,7 +74,8 @@ namespace Application.Search
               Email = u.Email,
               CountFollowers = u.CountFollowers,
               CountFollowing = u.CountFollowing,
-              CoverImageExtension = u.CoverImageExtension
+              CoverImageExtension = u.CoverImageExtension,
+              NumberOfActivities = u.Activities.Count()
             })
             .ToListAsync();
         }

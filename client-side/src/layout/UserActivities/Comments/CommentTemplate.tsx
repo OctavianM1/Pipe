@@ -52,6 +52,8 @@ const CommentTemplate = ({
       };
     });
   }, []);
+  console.log(commentEdit.comment);
+
   return (
     <>
       <div className="my-activities__activities-side__activity__comments__comment__name">

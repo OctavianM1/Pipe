@@ -81,7 +81,7 @@ namespace API.Controllers
     [HttpPost("add-comment")]
     public async Task<ActionResult<AppComment>> AddComment(AddComment.Command command)
     {
-      return await _mediator.Send(command);
+      return await _mediator.Send(command); 
     }
 
     [HttpPut("update-comment")]
@@ -99,7 +99,7 @@ namespace API.Controllers
     [HttpPost("like-comment")]
     public async Task<ActionResult<Unit>> LikeComment(LikeComment.Command command)
     {
-      return await _mediator.Send(command);
+      return await _mediator.Send(command); 
     }
 
     [HttpPut("add-comment-response")]

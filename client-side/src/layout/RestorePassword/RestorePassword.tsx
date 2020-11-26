@@ -7,8 +7,10 @@ import handleBlurPassword from "../../utilities/handleBlurPassword";
 import { Users } from "../../api/axios";
 import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
 import jwt_decode from "jwt-decode";
+import useIsMounted from "../../Hooks/useIsMounted";
 
 const RestorePassword = () => {
+  const idMountedRef = useIsMounted();
   const [restoreLoggers, dispatchRestoreLoggers] = useReducer(
     restoreLoggersReducer,
     {
@@ -70,7 +72,9 @@ const RestorePassword = () => {
         .then(() => {
           passInput.value = "";
           confirmedPassInput.value = "";
-          dispatchRestoreLoggers({ type: "success recovered" });
+          if (idMountedRef) {
+            dispatchRestoreLoggers({ type: "success recovered" });
+          }
         })
         .catch((err: any) => console.log(err));
     }

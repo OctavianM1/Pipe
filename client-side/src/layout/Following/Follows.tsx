@@ -21,8 +21,10 @@ import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElem
 import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
+import useIsMounted from "../../Hooks/useIsMounted";
 
 const Follows = () => {
+  const isMounted = useIsMounted();
   const [followsUsers, setFollowsUsers] = useState<ServerUser[]>([]);
   const [grid, setGrid] = useState(3);
   const [loader, setLoader] = useState(true);
@@ -36,15 +38,19 @@ const Follows = () => {
   const { hash } = useLocation();
   const hashObj = useHash();
   const sortedFollowsUsers = useMemo(() => {
-    if (!hashObj["sort"]) return [...followsUsers];
-    return sortUsers(hashObj["sort"], [...followsUsers]);
+    let newUsers = [...followsUsers];
+    if (hashObj["search"]) {
+      newUsers = newUsers.filter((u) => u.name.startsWith(hashObj["search"]));
+    }
+    if (!hashObj["sort"]) return newUsers;
+    return sortUsers(hashObj["sort"], newUsers);
   }, [followsUsers, hashObj]);
 
   const page = Number(hashObj["p"]) || 1;
 
   const nrOfPages = Math.ceil(followsUsers.length / 6 / grid);
 
-  const usersOnCurrentPage = useDataOnCurrentPage(
+  const usersOnCurrentPage: ServerUser[] = useDataOnCurrentPage(
     page,
     sortedFollowsUsers,
     6 * grid
@@ -52,7 +58,7 @@ const Follows = () => {
 
   const handleChangePage = useChangePage(hashObj, hash);
   const handleGridChange = (newGrid: number) => {
-    const nrOfNewPages = Math.ceil(followsUsers.length / 6 / newGrid);
+    const nrOfNewPages = Math.ceil(sortedFollowsUsers.length / 6 / newGrid);
     if (page > nrOfNewPages) {
       handleChangePage(nrOfNewPages);
     }
@@ -63,11 +69,13 @@ const Follows = () => {
     fws
       .follows(userId)
       .then((users: ServerUser[]) => {
-        setFollowsUsers(users);
-        setLoader(false);
+        if (isMounted.current) {
+          setFollowsUsers(users);
+          setLoader(false);
+        }
       })
       .catch(error);
-  }, [error, userId]);
+  }, [error, userId, isMounted]);
 
   const onGetInputs: (matchString?: string) => Promise<ServerSearchInput[]> = (
     matchString?: string
@@ -80,8 +88,6 @@ const Follows = () => {
   const onDeleteInput: (input: string | undefined) => Promise<any> = (
     input: string | undefined
   ) => Search.deleteFollowsUsersInput(userId, input);
-
-    
 
   return (
     <>
@@ -100,6 +106,7 @@ const Follows = () => {
             onSetInput={onSetInput}
             onDeleteInput={onDeleteInput}
             setUsers={setFollowsUsers}
+            defaultValue={hashObj["search"]}
           />
         </div>
         {loader ? (
@@ -136,6 +143,7 @@ const Follows = () => {
                     followers={u.countFollowers}
                     activities={u.numberOfActivities || 0}
                     grid={grid}
+                    extension={u.coverImageExtension}
                   />
                 ))
               ) : (

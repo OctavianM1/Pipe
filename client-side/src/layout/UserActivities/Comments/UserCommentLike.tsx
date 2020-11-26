@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ServerUser } from "../../../api/serverDataInterfaces";
+import useCoverImage from "../../../Hooks/useCoverImage";
 import useProfileCoverPhotoError from "../../../Hooks/useProfileCoverPhotoError";
 
 const UserCommentLike = ({ user }: { user: ServerUser }) => {
-  const [coverPhotoSrc, setCoverPhotoSrc] = useState(
+  const [coverPhotoSrc, setCoverPhotoSrc] = useCoverImage(
+    user.id,
     user.coverImageExtension
-      ? `/images/userPhotos/${user.id}.${user.coverImageExtension}`
-      : "/images/userPhotos/anonym.jpg"
   );
 
   const profileCoverImg = useProfileCoverPhotoError(setCoverPhotoSrc);

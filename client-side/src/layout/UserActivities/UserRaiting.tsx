@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ServerActivityUserRaiting } from "../../api/serverDataInterfaces";
 import Star from "../../components/Svgs/Star";
+import useCoverImage from "../../Hooks/useCoverImage";
 import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
 
 const UserRaiting = ({ user }: { user: ServerActivityUserRaiting }) => {
-  const [coverPhotoSrc, setCoverPhotoSrc] = useState(
+  const [coverPhotoSrc, setCoverPhotoSrc] = useCoverImage(
+    user.id,
     user.coverImageExtension
-      ? `/images/userPhotos/${user.id}.${user.coverImageExtension}`
-      : "/images/userPhotos/anonym.jpg"
   );
 
   const profileCoverImg = useProfileCoverPhotoError(setCoverPhotoSrc);
- 
+
   return (
     <Link
       className="my-activities__activities-side__activity__total-raiting__users__user"

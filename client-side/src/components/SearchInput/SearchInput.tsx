@@ -17,6 +17,10 @@ import {
   ServerSearchInput,
   ServerActivity,
 } from "../../api/serverDataInterfaces";
+import useReplaceHash from "../../Hooks/useReplaceHash";
+import { useLocation } from "react-router-dom";
+import useHash from "../../Hooks/useHash";
+import useIsMounted from "../../Hooks/useIsMounted";
 
 interface SearchInputProps {
   placeholder: string;
@@ -26,6 +30,7 @@ interface SearchInputProps {
   setUsers:
     | Dispatch<SetStateAction<ServerUser[]>>
     | Dispatch<SetStateAction<ServerActivity[]>>;
+  defaultValue?: string | undefined;
 }
 
 const SearchInput = ({
@@ -34,7 +39,9 @@ const SearchInput = ({
   onSetInput,
   onDeleteInput,
   setUsers,
+  defaultValue,
 }: SearchInputProps) => {
+  const isMounted = useIsMounted();
   const [input, dispatchInput] = useReducer(inputReducer, {
     dislpayDropDown: false,
     activeSeachInput: -1,
@@ -46,9 +53,19 @@ const SearchInput = ({
 
   const error = useApiErrorHandler();
 
+  const { hash } = useLocation();
+  const hashObj = useHash();
+  const replaceHash = useReplaceHash();
+
   useEffect(() => {
-    onGetInputs().then(setSearchInputs).catch(error);
-  }, [onGetInputs, error]);
+    onGetInputs()
+      .then((searchInputs) => {
+        if (isMounted.current) {
+          setSearchInputs(searchInputs);
+        }
+      })
+      .catch(error);
+  }, [onGetInputs, error, isMounted]);
 
   const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => {
     const val = ev.target.value;
@@ -73,6 +90,7 @@ const SearchInput = ({
       .split("</span>")
       .join("");
     onSetInput(val).then(setUsers).catch(error);
+    replaceHash(hash, `&search=${hashObj["search"]}`, `&search=${val}`);
 
     if (inputRef.current) {
       inputRef.current.value = val;
@@ -129,6 +147,11 @@ const SearchInput = ({
     } else if (ev.key === "Enter") {
       if (inputRef.current?.value && inputRef.current?.value.length > 1) {
         onSetInput(inputRef.current?.value).then(setUsers).catch(error);
+        replaceHash(
+          hash,
+          `&search=${hashObj["search"]}`,
+          `&search=${inputRef.current?.value}`
+        );
       }
       dispatchInput({ type: "init" });
       inputRef.current?.blur();
@@ -153,6 +176,7 @@ const SearchInput = ({
           onFocus={() => dispatchInput({ type: "open" })}
           onChange={onChangeSearch}
           onKeyDown={onKeyDownSearch}
+          defaultValue={defaultValue}
         />
         <button className="searchInput__back">
           <Loupe />
