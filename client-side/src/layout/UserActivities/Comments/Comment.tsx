@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./../userActivities.scss";
 import "../../../components/CSSTransitions/cssTransitions.scss";
 import { Activities } from "../../../api/axios";
@@ -20,7 +26,7 @@ import useSubmitCommentOutside from "./useSubmitCommentOutside";
 import useOnEditCommentSubmit from "./useOnEditCommentSubmit";
 import useCoverImage from "../../../Hooks/useCoverImage";
 import useLikes from "./useLikes";
-import CommentInput from "../CommentInput";
+import CommentInput from "./CommentInput";
 
 interface CommentProps {
   activityId: string;
@@ -62,6 +68,16 @@ const Comment = ({
     visitorUser.id,
     visitorUser.coverImageExtension
   );
+
+  const [displayedResponsesNr, setDisplayedResponsesNr] = useState(3);
+
+  const displayedCommentResponses = useMemo(() => {
+    const displayedCR = [];
+    for (let i = 0; i < displayedResponsesNr && commentResponses[i]; i++) {
+      displayedCR.push(commentResponses[i]);
+    }
+    return displayedCR;
+  }, [commentResponses, displayedResponsesNr]);
 
   const displayedUsersLike = useDisplayLimited(10, likes.allUsersLike);
 
@@ -123,6 +139,7 @@ const Comment = ({
     Activities.getCommentResponses(commentData.id)
       .then(setCommentResponses)
       .catch(error);
+    setDisplayedResponsesNr(3);
   };
 
   const onKey = useCallback(
@@ -139,6 +156,7 @@ const Comment = ({
             .then((responses: ServerActivityCommentResponse[]) => {
               setRespondCommentInputMode(false);
               setCommentResponses(responses);
+              setNumberOfResponses((nr) => nr + 1);
             })
             .catch(error);
         }
@@ -146,6 +164,10 @@ const Comment = ({
     },
     [visitorUser.id, error, commentData.id]
   );
+
+  let displayUsersReplied =
+    (numberOfResponses > 0 && commentResponses.length === 0) ||
+    displayedResponsesNr === 0;
 
   return (
     <>
@@ -160,7 +182,7 @@ const Comment = ({
           <img
             onError={profileImgError}
             src={coverPhotoSrc}
-            alt="anonym user" 
+            alt="anonym user"
           />
           <div
             onMouseEnter={() => setDisplayCommentDate(true)}
@@ -204,7 +226,7 @@ const Comment = ({
         handleOnLikeComment={handleOnLikeComment}
         onClickRespond={onClickRespond}
       />
-      {numberOfResponses > 0 && commentResponses.length === 0 && (
+      {displayUsersReplied && (
         <div
           className="comment__number-of-responses"
           onClick={showCommentResponses}
@@ -218,27 +240,47 @@ const Comment = ({
         </div>
       )}
       <TransitionGroup>
-        {commentResponses.length > 0 &&
-          commentResponses.map((c) => (
-            <CSSTransition
-              timeout={300}
-              classNames="fade"
+        {displayedCommentResponses.map((c) => (
+          <CSSTransition
+            timeout={300}
+            classNames="fade"
+            key={c.id}
+            in={commentResponses.length > 0}
+            unmountOnExit
+          >
+            <ResponseComment
               key={c.id}
-              in={commentResponses.length > 0}
-              unmountOnExit
-            >
-              <ResponseComment
-                key={c.id}
-                responseComment={c}
-                coverPhotoSrc={coverPhotoVisitorSrc}
-                profileImgError={profileVisitorImgError}
-                onClickRespond={onClickRespond}
-                setCommentResponses={setCommentResponses}
-                setNumberOfResponses={setNumberOfResponses}
-              />
-            </CSSTransition>
-          ))}
+              responseComment={c}
+              coverPhotoSrc={coverPhotoVisitorSrc}
+              profileImgError={profileVisitorImgError}
+              onClickRespond={onClickRespond}
+              setCommentResponses={setCommentResponses}
+              setNumberOfResponses={setNumberOfResponses}
+            />
+          </CSSTransition>
+        ))}
       </TransitionGroup>
+      {displayedCommentResponses.length > 0 &&
+        displayedCommentResponses.length < commentResponses.length && (
+          <button
+            className="my-activities__activities-side__activity__comments__show-more"
+            onClick={() => setDisplayedResponsesNr(displayedResponsesNr * 2)}
+          >
+            Show more responses (
+            {commentResponses.length - displayedResponsesNr})
+          </button>
+        )}
+
+      {displayedCommentResponses.length > 0 &&
+        displayedCommentResponses.length === commentResponses.length && (
+          <button
+            className="my-activities__activities-side__activity__comments__show-more"
+            onClick={() => setDisplayedResponsesNr(0)}
+          >
+            Hide responses
+          </button>
+        )}
+
       {respondCommentInputMode && (
         <CommentInput inputRef={responseCommentInputRef} onKey={onKey}>
           <img

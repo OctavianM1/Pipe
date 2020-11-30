@@ -3,6 +3,7 @@ import React, {
   FocusEvent,
   FormEvent,
   useCallback,
+  useEffect,
   useReducer,
   useRef,
   useState,
@@ -16,6 +17,7 @@ import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import UpLabelInput from "../../components/UpLabelInput/UpLabelInput";
 import FancyHeader from "../../components/Headers/FancyHeader";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 interface CreateActivityProps {
   edit: boolean;
@@ -51,6 +53,8 @@ const CreateActivity = ({
     useCallback(() => setSuccessCreatedPopUp(false), [])
   );
   const error = useApiErrorHandler();
+
+  useDocumentTitle(edit ? "Edit activity" : "Create an activity", [edit]);
 
   const handleFocusInput = (
     ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>
@@ -187,6 +191,7 @@ const CreateActivity = ({
               defaultValue={edit ? body : ""}
             />
             <span
+              style={inputs.bodyLogger ? { top: "38%" } : {}}
               className={
                 inputs.bodyLabel
                   ? "textarea-label textarea-label-active"

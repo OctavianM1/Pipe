@@ -52,7 +52,6 @@ const CommentTemplate = ({
       };
     });
   }, []);
-  console.log(commentEdit.comment);
 
   return (
     <>

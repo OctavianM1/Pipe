@@ -6,6 +6,7 @@ import Loader from "../../components/Loader/Loader";
 import "./confirmEmail.scss";
 import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
 import jwt_decode from "jwt-decode";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const ConfirmEmail = () => {
   const [emailConfirmationState, dispatchEmailConfirmation] = useReducer(
@@ -31,6 +32,8 @@ const ConfirmEmail = () => {
   } catch {
     dispatchEmailConfirmation({ type: "wrong" });
   }
+
+  useDocumentTitle('Confirm email', []);
 
   useEffect(() => {
     if (decodedToken) {

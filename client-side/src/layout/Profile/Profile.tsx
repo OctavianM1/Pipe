@@ -8,6 +8,7 @@ import NameInput from "./NameInput";
 import EmailInput from "./EmailInput";
 import EditPassword from "./EditPassword";
 import Loader from "../../components/Loader/Loader";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const Profile = () => {
   const [userData, setUserData] = useState<ServerUser>(null!);
@@ -18,10 +19,12 @@ const Profile = () => {
     window.localStorage.getItem("user") || "{}"
   );
 
+  useDocumentTitle(`${user.name} profile`, [user.name]);
+
   useEffect(() => {
     Users.details(user.id).then(setUserData).catch(error);
   }, [error, user.id]);
- 
+
   return (
     <div className="profile">
       {userData ? (

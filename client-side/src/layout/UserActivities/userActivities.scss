@@ -387,7 +387,6 @@
           border: none;
           flex: 1 0 auto;
           flex-basis: auto;
-          cursor: text;
 
           &:focus {
             outline: none;
@@ -396,8 +395,82 @@
 
         &__input {
           word-break: break-all;
+          cursor: text;
+          margin-right: 1.9rem;
           &:focus {
             outline: none;
+          }
+        }
+
+        &__select-emoji {
+          position: absolute;
+          right: -0.4rem;
+          bottom: 4.8rem;
+          z-index: 150;
+          & .emoji-mart {
+            border: none;
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+          }
+          & .emoji-mart-preview {
+            display: none;
+          }
+          & .emoji-mart-scroll::-webkit-scrollbar {
+            display: none;
+          }
+          & .emoji-mart-scroll {
+            scrollbar-width: 0;
+          }
+          & .emoji-mart-bar:last-child {
+            display: none;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            bottom: -3.9px;
+            right: 17px;
+            width: 15px;
+            height: 15px;
+            border-radius: 2px;
+            box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+            transform: rotate(45deg);
+            background: linear-gradient(
+              135deg,
+              transparent 0%,
+              transparent 50%,
+              rgb(253, 253, 253) 50%,
+              rgb(253, 253, 253) 100%
+            );
+          }
+        }
+
+        &__emoji {
+          position: absolute;
+          right: 0.7rem;
+          bottom: 0.6rem;
+          width: 2.5rem;
+          height: 2.5rem;
+          z-index: 50;
+          cursor: pointer;
+
+          & > span {
+            z-index: -1;
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            opacity: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            top: 50%;
+            left: 50%;
+            border-radius: 15px;
+            transform: translate(-50%, -50%);
+            transition: 200ms ease;
+          }
+          &:hover span {
+            opacity: 1;
+            width: 153%;
+            height: 153%;
           }
         }
 

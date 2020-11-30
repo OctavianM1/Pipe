@@ -19,6 +19,7 @@ import {
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import ActivitiesInfo from "./ActivitiesInfo";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 export const VisitorUserContext = createContext<ServerUser>(null!);
 
@@ -79,6 +80,10 @@ const MyActivities = () => {
       .catch(errorHandler);
   };
 
+  useDocumentTitle(`${userData ? userData.name : "Anonym"} activities`, [
+    userData,
+  ]);
+
   useEffect(() => {
     if (activities.length === 0) {
       setDisplayNoActivitiesMsg(true);
@@ -103,7 +108,6 @@ const MyActivities = () => {
       userVisitorId: visitorUser.id,
       userInput: matchString || "",
     });
-
 
   return (
     <>

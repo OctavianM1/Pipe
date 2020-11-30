@@ -20,6 +20,9 @@
     @media screen and (max-width: 1400px) {
       max-height: 45rem;
     }
+    @media screen and (max-width: 900px) {
+      transform: perspective(0) rotateY(0);
+    }
 
     & > img {
       width: 100%;

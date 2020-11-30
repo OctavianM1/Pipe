@@ -26,7 +26,7 @@ import UserRaiting from "./UserRaiting";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useHavePutLike from "../../Hooks/useHavePutLike";
 import { VisitorUserContext } from "./UserActivities";
-import CommentInput from "./CommentInput";
+import CommentInput from "./Comments/CommentInput";
 
 interface ActivityProps {
   id: string;
@@ -62,7 +62,6 @@ const Activity = ({
   comments,
 }: ActivityProps) => {
   const commentInput = useRef<HTMLDivElement>(null);
-  comments.forEach((c) => console.log(c.comment));
 
   const visitorUser = useContext(VisitorUserContext);
 
@@ -280,7 +279,7 @@ const Activity = ({
                   key={c.id}
                   in={displayedComments.length > 0}
                   unmountOnExit
-                >
+                > 
                   <ActivityRefContext.Provider value={activityRef}>
                     <Comment
                       key={c.id}
@@ -303,7 +302,7 @@ const Activity = ({
                   setDisplayedCommentsNumber(displayedCommentNumber * 2)
                 }
               >
-                Show more ({activityComments.length - displayedCommentNumber})
+                Show more comments ({activityComments.length - displayedCommentNumber})
               </button>
             ) : (
               <button

@@ -22,6 +22,7 @@ import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import useIsMounted from "../../Hooks/useIsMounted";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const Follows = () => {
   const isMounted = useIsMounted();
@@ -64,6 +65,8 @@ const Follows = () => {
     }
     setGrid(newGrid);
   };
+
+  useDocumentTitle("Follows", []);
 
   useEffect(() => {
     fws

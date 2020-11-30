@@ -4,16 +4,10 @@ import Logo from "../../../components/Logo/Logo";
 import useDisplayComponent from "../../../Hooks/useDisplayComponent";
 
 const PostIntroductionSection: React.FC = () => {
-  const [displaySection, setDisplaySection] = useState(false);
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  useDisplayComponent(
-    sectionRef,
-    displaySection,
-    setDisplaySection,
-    "small->normal"
-  );
+  const displaySection = useDisplayComponent(sectionRef, "small->normal");
 
   return (
     <div

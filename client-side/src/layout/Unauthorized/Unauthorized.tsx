@@ -7,16 +7,19 @@ import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
 import { useHistory } from "react-router-dom";
 
 import "./unauthorized.scss";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const Unauthorized = () => {
   const history = useHistory();
-  const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();  
+  const scrollUpAndOpenLogin = useScrollUpAndOpenLogin();
 
   const userId = JSON.parse(window.localStorage.getItem("user") || "{}")["id"];
 
   if (userId) {
     history.goBack();
   }
+
+  useDocumentTitle("Unauthorized", []);
 
   return (
     <div className="unauthorized">

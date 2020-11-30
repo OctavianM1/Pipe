@@ -299,3 +299,35 @@
     transform: translateY(-50px);
   }
 }
+
+.emoji-enter {
+  transform: translateY(35px);
+  opacity: 0;
+}
+
+.emoji-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: 250ms;
+}
+
+.emoji-enter-done {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.emoji-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.emoji-exit-active {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: 250ms;
+}
+
+.emoji-exit-done {
+  opacity: 0;
+  transform: translateY(35px);
+}

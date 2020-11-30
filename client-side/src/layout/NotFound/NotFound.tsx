@@ -1,8 +1,11 @@
 import React from "react";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 import "./notFound.scss";
 
 const NotFound = () => {
+  useDocumentTitle("Not Found", []);
+
   return (
     <div className="not-found">
       <img src="/images/not-found/404.png" alt="Not Found" />

@@ -1,17 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Header1 from "../../../components/Headers/Header1";
 import useDisplayComponent from "../../../Hooks/useDisplayComponent";
 import "./ourFeatures.scss";
 
 const OurFeatures: React.FC = () => {
-  const [displayTitle, setDisplayTitle] = useState(false);
-  const [displayContactList, setDisplayContactList] = useState(false);
-  const [displayCustomizable, setDisplayCustomizable] = useState(false);
-  const [displayMessageEditing, setDisplayMessageEditing] = useState(false);
-  const [displayAnalytics, setDisplayAnalytics] = useState(false);
-  const [displayAutoMessages, setDisplayAutoMessages] = useState(false);
-  const [displayEasilyInstall, setDisplayEasilyInstall] = useState(false);
-
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contactListRef = useRef<HTMLDivElement>(null);
   const customizableRef = useRef<HTMLDivElement>(null);
@@ -20,41 +12,23 @@ const OurFeatures: React.FC = () => {
   const autoMessagesRef = useRef<HTMLDivElement>(null);
   const easilyInstallRef = useRef<HTMLDivElement>(null);
 
-  useDisplayComponent(titleRef, displayTitle, setDisplayTitle, "bottom->top");
-  useDisplayComponent(
-    contactListRef,
-    displayContactList,
-    setDisplayContactList,
-    "bottom->top"
-  );
-  useDisplayComponent(
+  const displayTitle = useDisplayComponent(titleRef, "bottom->top");
+  const displayContactList = useDisplayComponent(contactListRef, "bottom->top");
+  const displayCustomizable = useDisplayComponent(
     customizableRef,
-    displayCustomizable,
-    setDisplayCustomizable,
     "bottom->top"
   );
-  useDisplayComponent(
+  const displayMessageEditing = useDisplayComponent(
     messageEditingRef,
-    displayMessageEditing,
-    setDisplayMessageEditing,
     "bottom->top"
   );
-  useDisplayComponent(
-    analyticsRef,
-    displayAnalytics,
-    setDisplayAnalytics,
-    "bottom->top"
-  );
-  useDisplayComponent(
+  const displayAnalytics = useDisplayComponent(analyticsRef, "bottom->top");
+  const displayAutoMessages = useDisplayComponent(
     autoMessagesRef,
-    displayAutoMessages,
-    setDisplayAutoMessages,
     "bottom->top"
   );
-  useDisplayComponent(
+  const displayEasilyInstall = useDisplayComponent(
     easilyInstallRef,
-    displayEasilyInstall,
-    setDisplayEasilyInstall,
     "bottom->top"
   );
 

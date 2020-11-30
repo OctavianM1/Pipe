@@ -23,10 +23,11 @@ import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElem
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import useIsMounted from "../../Hooks/useIsMounted";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const Following = () => {
   const isMounted = useIsMounted();
-  
+
   const [followingUsers, setFollowingUsers] = useState<ServerUser[]>([]);
   const [grid, setGrid] = useState(3);
   const [loader, setLoader] = useState(true);
@@ -67,6 +68,8 @@ const Following = () => {
   useGridOnResize(grid, setGrid);
 
   const error = useApiErrorHandler();
+
+  useDocumentTitle("Following", []);
 
   useEffect(() => {
     Follows.following(userId)

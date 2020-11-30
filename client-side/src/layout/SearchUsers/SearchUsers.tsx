@@ -18,6 +18,7 @@ import getDefaultSortUsersElements from "../../utilities/getDefaultSortUsersElem
 import sortUsers from "../../utilities/sortUsers";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
+import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
@@ -60,6 +61,8 @@ const SearchUsers = () => {
 
   const userId = JSON.parse(window.localStorage.getItem("user") || "{}").id;
 
+  useDocumentTitle("Search for users", []);
+
   useEffect(() => {
     Search.userNumber(100)
       .then((users: ServerUser[]) => {
@@ -89,7 +92,7 @@ const SearchUsers = () => {
     (input: string | undefined) => Search.deleteAllUsersInput(userId, input),
     [userId]
   );
- 
+
   return (
     <div className="following">
       <div className="following__search">
@@ -99,7 +102,7 @@ const SearchUsers = () => {
           onSetInput={onSetInput}
           onDeleteInput={onDeleteInput}
           setUsers={setUsers}
-          defaultValue={hashObj['search']}
+          defaultValue={hashObj["search"]}
         />
       </div>
       {loader ? (
