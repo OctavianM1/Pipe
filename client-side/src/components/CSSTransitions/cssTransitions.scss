@@ -1,11 +1,20 @@
 //////////
 // ACTIVITY
 //////////
+.activity-custom {
+  transform: translateX(35%) !important;
+}
+
+.activity-custom-active {
+  transform: translateX(0) !important;
+  transition: 300ms !important;
+}
+
 .activity-enter {
   opacity: 0;
 
   &.my-activities__container {
-    transform: translateX(55%);
+    transform: translateX(35%);
   }
 }
 
@@ -300,6 +309,9 @@
   }
 }
 
+/////////////
+// EMOJI
+/////////////
 .emoji-enter {
   transform: translateY(35px);
   opacity: 0;
@@ -331,3 +343,42 @@
   opacity: 0;
   transform: translateY(35px);
 }
+
+/////////////
+// EXTIND
+/////////////
+.extind-enter {
+  max-height: 0;
+  padding: 0 2rem !important;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+.extind-enter-active {
+  padding: 1.5rem 2rem !important;
+  visibility: visible;
+  max-height: 25rem;
+  transition: 400ms max-height 100ms, 100ms padding;
+}
+
+.extind-enter-done {
+  max-height: fit-content;
+  visibility: visible;
+  overflow: hidden;
+}
+.extind-exit {
+  overflow: hidden;
+  max-height: 25rem;
+}
+
+.extind-exit-active {
+  padding: 0 2rem !important;
+  overflow: hidden;
+  max-height: 0;
+  transition: 400ms max-height, 100ms padding 200ms;
+}
+
+.extind-exit-done {
+  overflow: hidden;
+}
+

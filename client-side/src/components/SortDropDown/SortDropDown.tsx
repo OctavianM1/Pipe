@@ -1,12 +1,17 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useHash from "../../Hooks/useHash";
 import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
 import useReplaceHash from "../../Hooks/useReplaceHash";
+import Filter from "../Svgs/Filter";
 
 import "./sortDropDown.scss";
 
-const SortDropDown = ({ elements }: { elements: any[] }) => {
+const SortDropDown = ({
+  elements,
+}: {
+  elements: Array<{ dataid: string; label: string }>;
+}) => {
   const [filter, setFilter] = useState(false);
   const filterContainer = useRef(null);
 
@@ -20,9 +25,19 @@ const SortDropDown = ({ elements }: { elements: any[] }) => {
   const hashObj = useHash();
   const replaceHash = useReplaceHash();
 
+  const activeLabel = useMemo(() => {
+    if (!hashObj["sort"]) return "Sort by...";
+    for (let e of elements) {
+      if (e.dataid === hashObj["sort"]) {
+        return e.label;
+      }
+    }
+  }, [hashObj]);
+
   const handleClickFilter = (
     ev: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
+    window.scroll({ top: 0, behavior: "smooth" });
     const evTarget = ev.target as any;
     const acutalHash = `&sort=${evTarget.getAttribute("data-id")}`;
     window.location.hash = acutalHash;
@@ -35,8 +50,10 @@ const SortDropDown = ({ elements }: { elements: any[] }) => {
       onClick={() => setFilter(!filter)}
       ref={filterContainer}
     >
-      <img src="/images/filter/filter.svg" alt="filter" />
-      <h2>Sort by</h2>
+      <div>
+        <Filter />
+      </div>
+      <h2>{activeLabel}</h2>
       <span
         className={
           filter

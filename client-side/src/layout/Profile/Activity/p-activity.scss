@@ -1,0 +1,28 @@
+.p-activity {
+  margin-left: auto;
+  flex-basis: 80%;
+
+  &__header-active {
+    animation: makeSmall 450ms;
+  }
+
+  &__header {
+    margin: -5.5rem 0 2rem 1rem;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #5759ff;
+    transform-origin: 0% 0%;
+    transition: transform 450ms;
+  }
+}
+
+@keyframes makeSmall {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

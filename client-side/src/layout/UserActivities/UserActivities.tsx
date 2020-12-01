@@ -129,7 +129,7 @@ const MyActivities = () => {
           setUsers={setActivities}
         />
       </div>
-      <div>
+      <div style={{ overflow: "hidden" }}>
         {loader ? (
           <div className="my-activities__loader">
             <Loader />
@@ -166,8 +166,6 @@ const MyActivities = () => {
                           classNames="activity"
                           key={activity.id}
                           mountOnEnter={true}
-                          onExit={() => console.log("exit")}
-                          onEnter={() => console.log("enter")}
                         >
                           <VisitorUserContext.Provider value={visitorUser}>
                             <Activity

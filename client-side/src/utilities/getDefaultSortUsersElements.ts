@@ -12,4 +12,4 @@ const getDefaultSortUsersElements = [
   { label: "Name (Z-A)", dataid: "name-desc" },
 ];
 
-export default getDefaultSortUsersElements;
+export default getDefaultSortUsersElements; 

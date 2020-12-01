@@ -6,10 +6,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Users } from "../../api/axios";
-import { ServerUser } from "../../api/serverDataInterfaces";
-import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
-import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
+import { Users } from "../../../api/axios";
+import { ServerUser } from "../../../api/serverDataInterfaces";
+import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
+import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
 
 const NameInput = ({
   user,

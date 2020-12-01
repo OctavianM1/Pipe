@@ -15,6 +15,7 @@ namespace ApplicationActivity
     public string Body { get; set; }
     public string Subject { get; set; }
     public string DateTimeCreated { get; set; }
+    public DateTime DateTimeCreatedParsed { get; set; }
     public AppRaiting Raiting { get; set; } 
     public AppActivityLikes Likes { get; set; }  
     public List<AppComment> Comments { get; set; } 

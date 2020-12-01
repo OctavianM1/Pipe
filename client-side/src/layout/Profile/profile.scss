@@ -2,6 +2,86 @@
   max-width: 140rem;
   margin: 10rem auto;
 
+  .my-activities__container {
+    flex-basis: 80%;
+  }
+
+  &__all {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &__side-bar {
+    width: 28rem;
+    margin-right: 2rem;
+    font-family: Helvetica, Arial, sans-serif;
+
+    & > .sortDropDown__display-filter {
+      display: flex;
+      width: 28rem;
+      margin: 0;
+
+      & > h2 {
+        color: #1c1e21;
+        font-family: "Roboto";
+        font-size: 2.6rem;
+        font-weight: 500;
+      }
+    }
+
+    & > .sortDropDown__display-filter {
+      & > div > svg {
+        fill: #1c1e21 !important;
+      }
+      & > span {
+        background: linear-gradient(
+          -45deg,
+          #1c1e21 0%,
+          #1c1e21 50%,
+          transparent 50%,
+          transparent 100%
+        );
+      }
+    }
+
+    & > ul {
+      width: 28rem;
+      padding: 1.5rem 2rem;
+      background-color: #fff;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      & > h1 {
+        font-weight: 600;
+        color: #1c1e21;
+        margin-bottom: 2rem;
+      }
+
+      & > li {
+        color: #333;
+        font-weight: bold;
+        padding: 1rem 1.5rem;
+        font-size: 2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        transition: 250ms;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &:hover {
+          background-color: #ebedf0;
+        }
+      }
+    }
+
+    &__active {
+      background-color: #ebedf0;
+    }
+  }
+
   &__input-logger {
     color: red;
     font-family: "Lato";
@@ -10,6 +90,9 @@
   }
 
   &__loader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
     text-align: center;
   }
 
@@ -49,15 +132,12 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      // transform: translate(-50%, -50%) scale(0.5);
       background-color: white;
       padding: 7rem 10rem;
       z-index: 220;
       border-radius: 30px;
       color: rgb(0, 182, 0);
       font-family: "Roboto";
-      // animation: PopUp 0.5s;
-      // transform: translate(-50%, -50%) scale(1);
     }
   }
 
@@ -74,23 +154,20 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      // transform: translate(-50%, -50%) scale(0.5);
       background-color: white;
       z-index: 220;
       border-radius: 30px;
       color: rgb(0, 182, 0);
       font-family: "Roboto";
-      // animation: PopUp 0.5s;
-      // transform: translate(-50%, -50%) scale(1);
       max-width: 70%;
       max-height: 70%;
     }
   }
 
   &__container {
-    width: 80%;
     padding: 3rem;
-    margin: 0 auto;
+    margin-left: auto;
+    flex-basis: 80%;
     background-color: white;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
     border-radius: 10px;

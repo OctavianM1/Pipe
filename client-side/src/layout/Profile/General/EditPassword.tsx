@@ -7,12 +7,12 @@ import React, {
   FocusEvent,
   useRef,
 } from "react";
-import { Users } from "../../api/axios";
-import { ServerUser } from "../../api/serverDataInterfaces";
-import CloseBtn from "../../components/Buttons/CloseBtn/CloseBtn";
-import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
-import useDisableScroll from "../../Hooks/useDisableScroll";
-import useOutsideAlerter from "../../Hooks/useOutsideAlerter";
+import { Users } from "../../../api/axios";
+import { ServerUser } from "../../../api/serverDataInterfaces";
+import CloseBtn from "../../../components/Buttons/CloseBtn/CloseBtn";
+import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
+import useDisableScroll from "../../../Hooks/useDisableScroll";
+import useOutsideAlerter from "../../../Hooks/useOutsideAlerter";
 
 const EditPassword = ({
   user,

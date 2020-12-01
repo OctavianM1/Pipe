@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import "./postIntroductionSection.scss";
 import Logo from "../../../components/Logo/Logo";
 import useDisplayComponent from "../../../Hooks/useDisplayComponent";
 
 const PostIntroductionSection: React.FC = () => {
-
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const displaySection = useDisplayComponent(sectionRef, "small->normal");

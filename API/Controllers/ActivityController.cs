@@ -131,5 +131,20 @@ namespace API.Controllers
     {
       return await _mediator.Send(command);
     }
+
+    [HttpPost("liked-activities")]
+    public async Task<ActionResult<List<AppActivity>>> LikedActivities(LikedActivities.Query query) {
+      return await _mediator.Send(query);
+    }
+
+    [HttpPost("rated-activities")]
+    public async Task<ActionResult<List<AppActivity>>> RatedActivities(RatedActivities.Query query) {
+      return await _mediator.Send(query);
+    }
+
+    [HttpPost("liked-comments")]
+    public async Task<ActionResult<List<AppActivity>>> LikedComments(LikedComments.Query query) {
+      return await _mediator.Send(query);
+    }
   }
 }

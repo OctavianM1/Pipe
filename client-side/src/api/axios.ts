@@ -61,7 +61,7 @@ const Users = {
   subscribeToSendEmails: (body: { email: string }) =>
     request.post("user/subscribe", body),
   isSubscribed: (email: string) => request.get(`/user/isSubscribed/${email}`),
-}; 
+};
 
 const Activities = {
   create: (body: {
@@ -118,6 +118,24 @@ const Activities = {
     responseCommentId: string;
     newCommentBody: string;
   }) => request.post("/activity/upldate-comment-response", body),
+  likedActivities: (body: {
+    userId: string;
+    took: number;
+    toTake: number;
+    sortBy: string;
+  }) => request.post("/activity/liked-activities", body),
+  ratedActivities: (body: {
+    userId: string;
+    took: number;
+    toTake: number;
+    sortBy: string;
+  }) => request.post("/activity/rated-activities", body),
+  likedComments: (body: {
+    userId: string;
+    took: number;
+    toTake: number;
+    sortBy: string;
+  }) => request.post("/activity/liked-comments", body),
 };
 
 const Follows = {
@@ -133,7 +151,7 @@ const Search = {
   userNumber: (number: number) => request.get(`/search/usersNumber/${number}`),
   allUsers: (userId: string, matchString: string | undefined) =>
     request.post("/search/searchAllUsers", {
-      userId, 
+      userId,
       matchString: matchString || "",
     }),
   followingUsers: (userId: string, matchString: string | undefined) =>
