@@ -122,3 +122,11 @@ button {
     transition: 1s;
   }
 }
+
+.scroll-to-top {
+  &__hide {
+    visibility: hidden;
+    transform: scale(0.5) !important;
+    opacity: 0;
+  }
+}

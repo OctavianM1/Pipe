@@ -26,6 +26,9 @@ namespace Application.Activities
       public int Took { get; set; }
       public int ToTake { get; set; }
       public string SortBy { get; set; }
+      public int FilterRaiting { get; set; }
+      public string FilterTitle { get; set; }
+      public string FilterSubject { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, List<AppActivity>>
@@ -105,7 +108,9 @@ namespace Application.Activities
           }).ToList()
         });
 
-        return await allActivities.SortAsync(request.SortBy, request.Took, request.ToTake);
+        var filteredActivities = allActivities.Filter(request.FilterRaiting, request.FilterTitle, request.FilterSubject);
+
+        return await filteredActivities.SortAsync(request.SortBy, request.Took, request.ToTake);
       }
     }
   }

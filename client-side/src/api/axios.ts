@@ -123,18 +123,26 @@ const Activities = {
     took: number;
     toTake: number;
     sortBy: string;
+    filterRaiting: number;
+    filterSubject: string;
   }) => request.post("/activity/liked-activities", body),
   ratedActivities: (body: {
     userId: string;
     took: number;
     toTake: number;
     sortBy: string;
+    filterRaiting: number;
+    filterTitle: string;
+    filterSubject: string;
   }) => request.post("/activity/rated-activities", body),
   likedComments: (body: {
     userId: string;
     took: number;
     toTake: number;
     sortBy: string;
+    filterRaiting: number;
+    filterTitle: string;
+    filterSubject: string;
   }) => request.post("/activity/liked-comments", body),
 };
 

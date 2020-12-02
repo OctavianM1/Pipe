@@ -32,7 +32,7 @@ const SortDropDown = ({
         return e.label;
       }
     }
-  }, [hashObj]);
+  }, [hashObj, elements]);
 
   const handleClickFilter = (
     ev: React.MouseEvent<HTMLDivElement, MouseEvent>

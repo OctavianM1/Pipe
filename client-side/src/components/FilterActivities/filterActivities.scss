@@ -1,0 +1,78 @@
+.filterActivities {
+  background-color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+
+  & > h1 {
+    font-family: Helvetica, Arial, sans-serif;
+    color: #1c1e21;
+    margin-bottom: 2rem;
+  }
+
+  & > div {
+    & > h2 {
+      cursor: pointer;
+      color: #333;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      font-size: 2.2rem;
+      transition: 250ms;
+      &:hover {
+        background-color: #ebedf0;
+      }
+    }
+  }
+
+  &__list {
+    max-height: 10rem;
+    visibility: visible;
+    transition: 250ms;
+    overflow: hidden;
+
+    &__item {
+      padding: 1rem 1rem 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      & > div {
+        display: flex;
+        align-items: center;
+        & > svg {
+          cursor: pointer;
+        }
+      }
+
+      & > span {
+        font-family: "Roboto";
+        color: #333;
+      }
+
+      & > img {
+        cursor: pointer;
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+
+      & > input[type="text"] {
+        padding: 1rem 1.5rem;
+        font-family: "Roboto";
+        border: 1px solid #d4d4d4;
+        border-radius: 7.5px;
+        width: 18rem;
+        transition: 0.7s;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
+    &__hidden {
+      max-height: 0;
+      visibility: hidden;
+      // display: none;
+    }
+  }
+}

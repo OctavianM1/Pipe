@@ -9,6 +9,7 @@ import useHavePutLike from "../../../Hooks/useHavePutLike";
 import useHavePutRate from "../../../Hooks/useHavePutRate";
 import Loader from "../../../components/Loader/Loader";
 import useHash from "../../../Hooks/useHash";
+import useIsMounted from "../../../Hooks/useIsMounted";
 
 const WatchedActivitiesTemplate = ({
   user,
@@ -21,6 +22,9 @@ const WatchedActivitiesTemplate = ({
     took: number;
     toTake: number;
     sortBy: string;
+    filterRaiting: number;
+    filterTitle: string;
+    filterSubject: string;
   }) => Promise<any>;
   headerString: string;
 }) => {
@@ -36,10 +40,33 @@ const WatchedActivitiesTemplate = ({
     return hashObj["sort"];
   }, [hashObj]);
 
+  const filterRaiting = useMemo(() => {
+    setTook(0);
+    setActivities(null);
+    if (!hashObj["raiting-stars"]) return 0;
+    return +hashObj["raiting-stars"];
+  }, [hashObj]);
+
+  const filterTitle = useMemo(() => {
+    setTook(0);
+    setActivities(null);
+    if (!hashObj["title"]) return "";
+    return hashObj["title"];
+  }, [hashObj]);
+
+  const filterSubject = useMemo(() => {
+    setTook(0);
+    setActivities(null);
+    if (!hashObj["subject"]) return "";
+    return hashObj["subject"];
+  }, [hashObj]);
+
   const activitiesParentRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   const error = useApiErrorHandler();
+
+  const isMountedRef = useIsMounted();
 
   useEffect(() => {
     fetchActivities({
@@ -47,17 +74,32 @@ const WatchedActivitiesTemplate = ({
       toTake: 5,
       took: took,
       sortBy,
+      filterRaiting,
+      filterTitle,
+      filterSubject,
     })
       .then((activs: ServerActivity[]) => {
-        setActivities((oldActivs) => {
-          if (oldActivs === null) {
-            return activs;
-          }
-          return oldActivs.concat(activs);
-        });
+        if (isMountedRef.current) {
+          setActivities((oldActivs) => {
+            if (oldActivs === null) {
+              return activs;
+            }
+            return oldActivs.concat(activs);
+          });
+        }
       })
       .catch(error);
-  }, [user.id, error, took, fetchActivities, sortBy]);
+  }, [
+    user.id,
+    error,
+    took,
+    fetchActivities,
+    sortBy,
+    filterRaiting,
+    filterTitle,
+    filterSubject,
+    isMountedRef
+  ]);
 
   useEffect(() => {
     if (

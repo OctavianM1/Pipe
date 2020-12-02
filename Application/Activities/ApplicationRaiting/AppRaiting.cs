@@ -8,4 +8,4 @@ namespace Application.Activities.ApplicationRaiting
     public double Raiting { get; set; } 
     public List<AppUserRaiting> Users { get; set; } 
   }
-} 
+}  

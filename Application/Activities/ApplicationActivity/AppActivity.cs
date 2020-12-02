@@ -9,7 +9,7 @@ namespace ApplicationActivity
   public class AppActivity 
   { 
     public Guid Id { get; set; }
-    public Guid UserHostId { get; set; }
+    public Guid UserHostId { get; set; } 
     public string UserHostName { get; set; }
     public string Title { get; set; }
     public string Body { get; set; }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Activities.utilities
 {
-  public static class SortActivities
+  public static class ManipulateActivities
   {
     public static async Task<List<AppActivity>> SortAsync(this IQueryable<AppActivity> allActivities, string sort, int took, int toTake)
     {
@@ -59,6 +59,11 @@ namespace Application.Activities.utilities
       }
 
       throw new RestException(System.Net.HttpStatusCode.NotFound, new { sort = "Sort was not found" });
+    }
+
+    public static IQueryable<AppActivity> Filter(this IQueryable<AppActivity> allActivities, int stars, string title, string subject)
+    {
+      return allActivities.Where(a => a.Raiting.Raiting >= stars && a.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase) && a.Subject.Contains(subject, StringComparison.InvariantCultureIgnoreCase));
     }
   }
 }
