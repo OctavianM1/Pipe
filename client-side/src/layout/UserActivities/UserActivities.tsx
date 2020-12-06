@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState, useMemo } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import FilterSide from "../../components/FilterSide/FilterSide";
 import "./userActivities.scss";
 import { Activities, Users, Search } from "../../api/axios";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
@@ -20,6 +19,9 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import ActivitiesInfo from "./ActivitiesInfo";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
+import FilterActivities from "../../components/FilterActivities/FilterActivities";
+import SortDropDown from "../../components/SortDropDown/SortDropDown";
+import getDefaultSortActivityElements from "../../utilities/getDefaultSortActivityElements";
 
 export const VisitorUserContext = createContext<ServerUser>(null!);
 
@@ -129,7 +131,7 @@ const MyActivities = () => {
           setUsers={setActivities}
         />
       </div>
-      <div style={{ overflow: "hidden" }}>
+      <div>
         {loader ? (
           <div className="my-activities__loader">
             <Loader />
@@ -145,7 +147,16 @@ const MyActivities = () => {
             )}
             <div className="my-activities">
               <div className="my-activities__filter-side">
-                <FilterSide />
+                <div
+                  style={
+                    visitorUser && hostUserId === visitorUser.id
+                      ? { position: "sticky", top: "10px" }
+                      : { position: "sticky", top: "80px" }
+                  }
+                >
+                  <FilterActivities />
+                  <SortDropDown elements={getDefaultSortActivityElements} />
+                </div>
               </div>
               {displayNoActivitiesMsg ? (
                 <div className="following__nobody">
@@ -155,9 +166,9 @@ const MyActivities = () => {
                 </div>
               ) : (
                 <div className="my-activities__activities-side">
-                  <TransitionGroup>
-                    {activitiesOnCurrentPage.length > 0 ? (
-                      activitiesOnCurrentPage.map((activity) => (
+                  {activitiesOnCurrentPage.length > 0 ? (
+                    <TransitionGroup>
+                      {activitiesOnCurrentPage.map((activity) => (
                         <CSSTransition
                           timeout={{
                             enter: 370,
@@ -191,13 +202,13 @@ const MyActivities = () => {
                             />
                           </VisitorUserContext.Provider>
                         </CSSTransition>
-                      ))
-                    ) : (
-                      <div className="my-activities__activities-side__not-found">
-                        No activities found!
-                      </div>
-                    )}
-                  </TransitionGroup>
+                      ))}
+                    </TransitionGroup>
+                  ) : (
+                    <div className="my-activities__activities-side__not-found">
+                      No activities found!!
+                    </div>
+                  )}
                   <div className="my-activities__pagination">
                     <Pagination
                       hash={hash}
@@ -220,74 +231,40 @@ function filterSubject(
   activities: ServerActivity[],
   hashObj: { [key: string]: string }
 ) {
-  if (!hashObj["art"] && !hashObj["sport"] && !hashObj["subj"]) {
-    return activities;
-  }
-  const newActivities = [];
-  if (hashObj["art"] === "true") {
-    for (let i = 0; i < activities.length; i++) {
-      if (activities[i].subject.toLowerCase().includes("art")) {
-        newActivities.push(activities[i]);
-      }
-    }
-  }
-  if (hashObj["sport"] === "true") {
-    for (let i = 0; i < activities.length; i++) {
-      if (activities[i].subject.toLowerCase().includes("sport")) {
-        newActivities.push(activities[i]);
-      }
-    }
-  }
-  if (hashObj["subj"]) {
-    const val = hashObj["subj"];
-    for (let i = 0; i < activities.length; i++) {
-      if (activities[i].subject.toLowerCase().includes(val)) {
-        newActivities.push(activities[i]);
-      }
-    }
-  }
-  return newActivities;
-}
-
-function sortByRaitingStars(
-  hashObj: { [key: string]: string },
-  activities: ServerActivity[]
-) {
-  const newDisplayedActivities = [];
-  const raitingStars = +hashObj["raiting-stars"];
-  for (let i = 0; i < activities.length; i++) {
-    if (activities[i].raiting.raiting >= raitingStars) {
-      newDisplayedActivities.push(activities[i]);
-    }
-  }
-  if (hashObj["raiting-ascending"] === "true") {
-    return newDisplayedActivities.sort(
-      (a, b) => a.raiting.raiting - b.raiting.raiting
-    );
-  } else if (hashObj["raiting-descending"] === "true") {
-    return newDisplayedActivities.sort(
-      (a, b) => b.raiting.raiting - a.raiting.raiting
-    );
-  }
-  return newDisplayedActivities;
+  const title = hashObj["title"]?.toLowerCase() || "";
+  const subject = hashObj["subject"]?.toLowerCase() || "";
+  const raitingMin = +hashObj["raiting-stars-min"] - 0.5 || 0;
+  const raitingMax = +hashObj['raiting-stars-max'] || 5;
+  return activities.filter(
+    (a) =>
+      a.title.toLowerCase().includes(title) &&
+      a.subject.toLowerCase().includes(subject) &&
+      a.raiting.raiting >= raitingMin && 
+      a.raiting.raiting <= raitingMax
+  );
 }
 
 function sortActivities(
   activities: ServerActivity[],
   hashObj: { [key: string]: string }
 ) {
-  let result = [...activities];
-  if (hashObj["raiting-stars"]) {
-    result = [...sortByRaitingStars(hashObj, result)];
-  } else if (hashObj["raiting-ascending"] === "true") {
-    result.sort((a, b) => a.raiting.raiting - b.raiting.raiting);
-  } else if (hashObj["raiting-descending"] === "true") {
-    result.sort((a, b) => b.raiting.raiting - a.raiting.raiting);
-  }
-  if (hashObj["date-ascending"] === "true") {
-    result.sort((a, b) => sortDateOldest(a, b));
-  } else if (hashObj["date-descending"] === "true") {
-    result.sort((a, b) => sortDateNewest(a, b));
+  if (!hashObj["sort"]) return filterSubject(activities, hashObj);
+  const sort = hashObj["sort"];
+  let result: ServerActivity[] = [];
+  if (sort === "raiting-ascending") {
+    result = activities.sort((a, b) => a.raiting.raiting - b.raiting.raiting);
+  } else if (sort === "raiting-descending") {
+    result = activities.sort((a, b) => b.raiting.raiting - a.raiting.raiting);
+  } else if (sort === "likes-ascending") {
+    result = activities.sort((a, b) => a.likes.likes - b.likes.likes);
+  } else if (sort === "likes-descending") {
+    result = activities.sort((a, b) => b.likes.likes - a.likes.likes);
+  } else if (sort === "newest") {
+    result = activities.sort((a, b) => sortDateNewest(a, b));
+  } else if (sort === "oldest") {
+    result = activities.sort((a, b) => sortDateOldest(a, b));
+  } else {
+    throw new Error("Invalid sort");
   }
   return filterSubject(result, hashObj);
 }

@@ -22,7 +22,8 @@ const WatchedActivitiesTemplate = ({
     took: number;
     toTake: number;
     sortBy: string;
-    filterRaiting: number;
+    filterRaitingMin: number;
+    filterRaitingMax: number;
     filterTitle: string;
     filterSubject: string;
   }) => Promise<any>;
@@ -40,11 +41,18 @@ const WatchedActivitiesTemplate = ({
     return hashObj["sort"];
   }, [hashObj]);
 
-  const filterRaiting = useMemo(() => {
+  const filterRaitingMin = useMemo(() => {
     setTook(0);
     setActivities(null);
-    if (!hashObj["raiting-stars"]) return 0;
-    return +hashObj["raiting-stars"];
+    if (!hashObj["raiting-stars-min"]) return 0;
+    return +hashObj["raiting-stars-min"];
+  }, [hashObj]);
+
+  const filterRaitingMax = useMemo(() => {
+    setTook(0);
+    setActivities(null);
+    if (!hashObj["raiting-stars-max"]) return 5;
+    return +hashObj["raiting-stars-max"];
   }, [hashObj]);
 
   const filterTitle = useMemo(() => {
@@ -74,7 +82,8 @@ const WatchedActivitiesTemplate = ({
       toTake: 5,
       took: took,
       sortBy,
-      filterRaiting,
+      filterRaitingMin,
+      filterRaitingMax,
       filterTitle,
       filterSubject,
     })
@@ -95,10 +104,11 @@ const WatchedActivitiesTemplate = ({
     took,
     fetchActivities,
     sortBy,
-    filterRaiting,
+    filterRaitingMin,
+    filterRaitingMax,
     filterTitle,
     filterSubject,
-    isMountedRef
+    isMountedRef,
   ]);
 
   useEffect(() => {

@@ -12,6 +12,7 @@
 
   & > div {
     & > h2 {
+      font-family: Helvetica, Arial, sans-serif;
       cursor: pointer;
       color: #333;
       border-radius: 10px;
@@ -35,6 +36,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &__img-active {
+        visibility: visible;
+      }
+
+      &__img-pasive {
+        visibility: hidden;
+      }
 
       & > div {
         display: flex;

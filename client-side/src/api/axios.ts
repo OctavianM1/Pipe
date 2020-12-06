@@ -123,7 +123,8 @@ const Activities = {
     took: number;
     toTake: number;
     sortBy: string;
-    filterRaiting: number;
+    filterRaitingMin: number;
+    filterRaitingMax: number;
     filterSubject: string;
   }) => request.post("/activity/liked-activities", body),
   ratedActivities: (body: {
@@ -131,7 +132,8 @@ const Activities = {
     took: number;
     toTake: number;
     sortBy: string;
-    filterRaiting: number;
+    filterRaitingMin: number;
+    filterRaitingMax: number;
     filterTitle: string;
     filterSubject: string;
   }) => request.post("/activity/rated-activities", body),
@@ -140,7 +142,8 @@ const Activities = {
     took: number;
     toTake: number;
     sortBy: string;
-    filterRaiting: number;
+    filterRaitingMin: number;
+    filterRaitingMax: number;
     filterTitle: string;
     filterSubject: string;
   }) => request.post("/activity/liked-comments", body),

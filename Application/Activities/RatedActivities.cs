@@ -24,7 +24,8 @@ namespace Application.Activities
       public int Took { get; set; }
       public int ToTake { get; set; }
       public string SortBy { get; set; }
-      public int FilterRaiting { get; set; }
+      public int FilterRaitingMin { get; set; }
+      public int FilterRaitingMax { get; set; }
       public string FilterTitle { get; set; }
       public string FilterSubject { get; set; }
     }
@@ -106,7 +107,7 @@ namespace Application.Activities
           }).ToList()
         });
 
-        var filteredActivities = allActivities.Filter(request.FilterRaiting, request.FilterTitle, request.FilterSubject);
+        var filteredActivities = allActivities.Filter(request.FilterRaitingMin - 0.5, request.FilterRaitingMax, request.FilterTitle, request.FilterSubject);
 
         return await filteredActivities.SortAsync(request.SortBy, request.Took, request.ToTake);
       }

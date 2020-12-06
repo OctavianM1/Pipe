@@ -44,8 +44,9 @@ const Profile = () => {
   useEffect(() => {
     const app = document.querySelector(".App");
     if (app) {
-      console.log(app);
-      app.classList.remove("overflow-hidden");
+      setTimeout(() => {
+        app.classList.remove("overflow-hidden");
+      }, 50);
     }
     return () => {
       if (app) {
@@ -102,7 +103,7 @@ const Profile = () => {
               }}
               classNames="extind"
             >
-              <FilterActivities />
+              <FilterActivities /> 
             </CSSTransition>
           </div>
           {profileNavigateIdx === 0 && <General user={user} />}

@@ -61,9 +61,9 @@ namespace Application.Activities.utilities
       throw new RestException(System.Net.HttpStatusCode.NotFound, new { sort = "Sort was not found" });
     }
 
-    public static IQueryable<AppActivity> Filter(this IQueryable<AppActivity> allActivities, int stars, string title, string subject)
+    public static IQueryable<AppActivity> Filter(this IQueryable<AppActivity> allActivities, double starsMin, int starsMax, string title, string subject)
     {
-      return allActivities.Where(a => a.Raiting.Raiting >= stars && a.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase) && a.Subject.Contains(subject, StringComparison.InvariantCultureIgnoreCase));
+      return allActivities.Where(a => a.Raiting.Raiting >= starsMin && a.Raiting.Raiting <= starsMax && a.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase) && a.Subject.Contains(subject, StringComparison.InvariantCultureIgnoreCase));
     }
   }
 }
