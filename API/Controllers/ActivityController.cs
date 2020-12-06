@@ -124,7 +124,7 @@ namespace API.Controllers
     public async Task<ActionResult<Unit>> OnDeleteResponseComment(string responseCommentId)
     {
       return await _mediator.Send(new DeleteResponseComment.Query { ResponseCommentId = Guid.Parse(responseCommentId) });
-    }
+    } 
 
     [HttpPost("upldate-comment-response")]
     public async Task<ActionResult<string>> OnUpdateResponseComment(UpdateResponseComment.Command command)
