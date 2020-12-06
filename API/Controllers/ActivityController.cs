@@ -145,6 +145,6 @@ namespace API.Controllers
     [HttpPost("liked-comments")]
     public async Task<ActionResult<List<AppActivity>>> LikedComments(LikedComments.Query query) {
       return await _mediator.Send(query);
-    }
+    } 
   }
 }
