@@ -24,6 +24,7 @@ import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import useIsMounted from "../../Hooks/useIsMounted";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
+import SpanHoverFixedDisplayMsg from "../../components/SpanHoverFixedDisplayMsg/SpanHoverFixedDisplayMsg";
 
 const Following = () => {
   const isMounted = useIsMounted();
@@ -34,7 +35,7 @@ const Following = () => {
 
   const userId = JSON.parse(window.localStorage.getItem("user") || "{}").id;
 
-  const { hash } = useLocation();
+  const { hash, pathname } = useLocation();
   const hashObj = useHash();
 
   const sortedFollowingUsers = useMemo(() => {
@@ -69,7 +70,7 @@ const Following = () => {
 
   const error = useApiErrorHandler();
 
-  useDocumentTitle("Following", []);
+  useDocumentTitle("Following");
 
   useEffect(() => {
     Follows.following(userId)
@@ -96,12 +97,15 @@ const Following = () => {
 
   return (
     <>
-      <Link to="/search-users" className="search-users bottom-right-icon">
+      <Link
+        to={{
+          pathname: "/search-users",
+          state: { prevPath: pathname },
+        }}
+        className="search-users bottom-right-icon"
+      >
         <Loupe />
-        <span>
-          Search in all users
-          <span className="bottom-right-icon-arrow">&nbsp;</span>
-        </span>
+        <SpanHoverFixedDisplayMsg text="Search in all users" />
       </Link>
       <div className="following">
         <div className="following__search">

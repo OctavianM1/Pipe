@@ -22,6 +22,7 @@ import useDocumentTitle from "../../Hooks/useDocumentTitle";
 import FilterActivities from "../../components/FilterActivities/FilterActivities";
 import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import getDefaultSortActivityElements from "../../utilities/getDefaultSortActivityElements";
+import SpanHoverFixedDisplayMsg from "../../components/SpanHoverFixedDisplayMsg/SpanHoverFixedDisplayMsg";
 
 export const VisitorUserContext = createContext<ServerUser>(null!);
 
@@ -82,9 +83,7 @@ const MyActivities = () => {
       .catch(errorHandler);
   };
 
-  useDocumentTitle(`${userData ? userData.name : "Anonym"} activities`, [
-    userData,
-  ]);
+  useDocumentTitle(`${userData ? userData.name : "Anonym"} activities`);
 
   useEffect(() => {
     if (activities.length === 0) {
@@ -116,10 +115,7 @@ const MyActivities = () => {
       {visitorUser && hostUserId === visitorUser.id && (
         <Link to="/add-activity" className="bottom-right-icon">
           <img src="/images/activities/plus.svg" alt="plus" />
-          <span>
-            Create an activity
-            <span className="bottom-right-icon-arrow">&nbsp;</span>
-          </span>
+          <SpanHoverFixedDisplayMsg text="Create an activity" />
         </Link>
       )}
       <div className="my-activities__search">
@@ -234,12 +230,12 @@ function filterSubject(
   const title = hashObj["title"]?.toLowerCase() || "";
   const subject = hashObj["subject"]?.toLowerCase() || "";
   const raitingMin = +hashObj["raiting-stars-min"] - 0.5 || 0;
-  const raitingMax = +hashObj['raiting-stars-max'] || 5;
+  const raitingMax = +hashObj["raiting-stars-max"] || 5;
   return activities.filter(
     (a) =>
       a.title.toLowerCase().includes(title) &&
       a.subject.toLowerCase().includes(subject) &&
-      a.raiting.raiting >= raitingMin && 
+      a.raiting.raiting >= raitingMin &&
       a.raiting.raiting <= raitingMax
   );
 }

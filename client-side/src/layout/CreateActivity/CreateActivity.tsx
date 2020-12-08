@@ -53,7 +53,7 @@ const CreateActivity = ({
   );
   const error = useApiErrorHandler();
 
-  useDocumentTitle(edit ? "Edit activity" : "Create an activity", [edit]);
+  useDocumentTitle(edit ? "Edit activity" : "Create an activity");
 
   const handleFocusInput = (
     ev: FocusEvent<HTMLInputElement> | FocusEvent<HTMLTextAreaElement>

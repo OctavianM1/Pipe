@@ -4,7 +4,7 @@ import useDocumentTitle from "../../Hooks/useDocumentTitle";
 import "./notFound.scss";
 
 const NotFound = () => {
-  useDocumentTitle("Not Found", []);
+  useDocumentTitle("Not Found");
 
   return (
     <div className="not-found">

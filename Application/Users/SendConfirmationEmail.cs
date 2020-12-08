@@ -5,6 +5,7 @@ using Application.Errors;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 
 namespace Application.Users
@@ -19,11 +20,13 @@ namespace Application.Users
     {
       private readonly DataContext _context;
       private readonly IJwtGeneratorService _jwtGenerator;
+      private readonly IConfiguration _configuration;
       private readonly IEmailSenderService _sender;
-      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator)
+      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator, IConfiguration configuration)
       {
         _sender = sender;
         _jwtGenerator = jwtGenerator;
+        _configuration = configuration;
         _context = context;
       }
 
@@ -45,7 +48,7 @@ namespace Application.Users
         await _sender.SendEmailAsync(
           request.Email,
           "Email verification",
-          EmailsMessages.ConfirmEmail(request.Email, token));
+          EmailsMessages.ConfirmEmail(request.Email, token, _configuration["ClientSideURL"]));
 
         return $"A confirmation email was sent to {request.Email}";
       }

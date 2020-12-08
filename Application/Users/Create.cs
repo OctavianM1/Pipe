@@ -10,6 +10,7 @@ using Application.Interfaces;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 
 namespace Application.Users
@@ -30,9 +31,11 @@ namespace Application.Users
       private readonly DataContext _context;
       private readonly IEmailSenderService _sender;
       private readonly IJwtGeneratorService _jwtGenerator;
+      private readonly IConfiguration _configuration;
 
-      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator)
+      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator, IConfiguration configuration)
       {
+        _configuration = configuration;
         _jwtGenerator = jwtGenerator;
         _sender = sender;
         _context = context;
@@ -81,7 +84,7 @@ namespace Application.Users
         await _sender.SendEmailAsync(
           request.Email,
           "Email verification",
-          EmailsMessages.ConfirmEmail(request.Email, token));
+          EmailsMessages.ConfirmEmail(request.Email, token, _configuration["ClientSideURL"]));
 
 
         if (success)

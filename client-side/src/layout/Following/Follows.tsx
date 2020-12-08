@@ -23,6 +23,7 @@ import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import useIsMounted from "../../Hooks/useIsMounted";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
+import SpanHoverFixedDisplayMsg from "../../components/SpanHoverFixedDisplayMsg/SpanHoverFixedDisplayMsg";
 
 const Follows = () => {
   const isMounted = useIsMounted();
@@ -36,7 +37,7 @@ const Follows = () => {
 
   const error = useApiErrorHandler();
 
-  const { hash } = useLocation();
+  const { hash, pathname } = useLocation();
   const hashObj = useHash();
   const sortedFollowsUsers = useMemo(() => {
     let newUsers = [...followsUsers];
@@ -66,7 +67,7 @@ const Follows = () => {
     setGrid(newGrid);
   };
 
-  useDocumentTitle("Follows", []);
+  useDocumentTitle("Follows");
 
   useEffect(() => {
     fws
@@ -94,12 +95,15 @@ const Follows = () => {
 
   return (
     <>
-      <Link to="/search-users" className="search-users bottom-right-icon">
+      <Link
+        to={{
+          pathname: "/search-users",
+          state: { prevPath: pathname },
+        }}
+        className="search-users bottom-right-icon"
+      >
         <Loupe />
-        <span>
-          Search in all users
-          <span className="bottom-right-icon-arrow">&nbsp;</span>
-        </span>
+        <SpanHoverFixedDisplayMsg text="Search in all users" />
       </Link>
       <div className="following">
         <div className="following__search">

@@ -939,38 +939,6 @@
     }
   }
 
-  & > span {
-    position: absolute;
-    top: 0;
-    right: 70%;
-    width: 12rem;
-    padding: 1rem 2rem;
-    text-align: center;
-    background-color: rgba(49, 42, 42, 0.822);
-    color: rgb(228, 228, 228);
-    font-family: "Roboto";
-    border-radius: 20px;
-    opacity: 0;
-    z-index: -1;
-    visibility: hidden;
-    transition: 0.4s;
-
-    & > .bottom-right-icon-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%) rotate(45deg);
-      left: calc(100% - 6px);
-      width: 12px;
-      height: 12px;
-      background: linear-gradient(
-        45deg,
-        transparent 0%,
-        transparent 50%,
-        rgba(49, 42, 42, 0.822) 50%,
-        rgba(49, 42, 42, 0.822) 100%
-      );
-    }
-  }
 
   & > img:hover + span {
     visibility: visible;

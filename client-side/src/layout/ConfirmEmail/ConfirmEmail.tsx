@@ -33,7 +33,7 @@ const ConfirmEmail = () => {
     dispatchEmailConfirmation({ type: "wrong" });
   }
 
-  useDocumentTitle('Confirm email', []);
+  useDocumentTitle('Confirm email');
 
   useEffect(() => {
     if (decodedToken) {

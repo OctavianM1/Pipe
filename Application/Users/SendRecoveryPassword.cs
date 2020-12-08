@@ -5,6 +5,7 @@ using Application.Errors;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 
 namespace Application.Users
@@ -20,8 +21,10 @@ namespace Application.Users
       private readonly DataContext _context;
       private readonly IJwtGeneratorService _jwtGenerator;
       private readonly IEmailSenderService _sender;
-      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator)
+      private readonly IConfiguration _configuration;
+      public Handler(DataContext context, IEmailSenderService sender, IJwtGeneratorService jwtGenerator, IConfiguration configuration)
       {
+        this._configuration = configuration;
         _sender = sender;
         _jwtGenerator = jwtGenerator;
         _context = context;
@@ -40,7 +43,7 @@ namespace Application.Users
         await _sender.SendEmailAsync(
           request.Email,
           "Restore password",
-          EmailsMessages.RecoveryPassword(request.Email, token));
+          EmailsMessages.RecoveryPassword(request.Email, token, _configuration["ClientSideURL"]));
 
         return $"A restore password email was sent to {request.Email}";
       }

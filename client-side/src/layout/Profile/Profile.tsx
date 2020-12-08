@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./profile.scss";
 import { ServerUser } from "../../api/serverDataInterfaces";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
@@ -11,8 +11,8 @@ import WatchActivity from "./Activity/WatchActivity";
 import SortDropDown from "../../components/SortDropDown/SortDropDown";
 import getDefaultSortActivityElements from "../../utilities/getDefaultSortActivityElements";
 import { CSSTransition } from "react-transition-group";
-import useScrollToTop from "../../Hooks/useScrollToTop";
 import FilterActivities from "../../components/FilterActivities/FilterActivities";
+import ScrollToTopArrowUp from "../../components/ScrollToTopArrowUp/ScrollToTopArrowUp";
 
 const Profile = () => {
   const hashObj = useHash();
@@ -20,9 +20,6 @@ const Profile = () => {
   const [profileNavigateIdx, setProfileNavigateIdx] = useState(
     hashObj["tab"] === "activity" ? 1 : 0
   );
-
-  const scrollToTopRef = useRef<HTMLDivElement>(null);
-  useScrollToTop(scrollToTopRef);
 
   const user: ServerUser = JSON.parse(
     window.localStorage.getItem("user") || "{}"
@@ -59,8 +56,8 @@ const Profile = () => {
     setProfileNavigateIdx(hashObj["tab"] === "activity" ? 1 : 0);
   }, [hashObj]);
 
-  useDocumentTitle(`${user.name} profile`, [user.name]);
-
+  useDocumentTitle(`${user.name} profile`);
+ 
   return (
     <>
       <div className="profile">
@@ -110,12 +107,7 @@ const Profile = () => {
           {profileNavigateIdx === 1 && <ProfileActivity user={user} />}
         </div>
       </div>
-      <div
-        ref={scrollToTopRef}
-        className="profile__arrow__scroll-to-top scroll-to-top__hide"
-      >
-        <img src="/images/profile/black-arrow-pointing-up.svg" alt="arrow up" />
-      </div>
+      <ScrollToTopArrowUp />
     </>
   );
 };

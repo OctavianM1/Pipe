@@ -53,21 +53,21 @@ namespace Application.Emails
 </div>
           ";
     }
-    public static string ConfirmEmail(string email, string token)
+    public static string ConfirmEmail(string email, string token, string clientSideURL)
     {
       var title = "We Appreciate your feedback!";
       var requestMsg = "We received a request to send email confirmaiton to ";
       var incorrectEmailMsg = "If this is correct, please confirm by clicking the button below. If you don’t know why you got this email, please tell us straight away so we can fix this for you.";
-      var redirectMsg = $"http://localhost:3000/confirmEmail/{token}";
+      var redirectMsg = $"{clientSideURL}/confirmEmail/{token}";
       var buttonName = "Confirm";
       return EmailTemplate(email, title, requestMsg, incorrectEmailMsg, redirectMsg, buttonName);
     }
-    public static string RecoveryPassword(string email, string token)
+    public static string RecoveryPassword(string email, string token, string clientSideURL)
     {
       var title = "Password recovery!";
       var requestMsg = "We received a request to send password confirmation to ";
       var incorrectEmailMsg = "If this is correct, please restore password by clicking the button below. If you don’t know why you got this email, please tell us straight away so we can fix this for you.";
-      var redirectUrl = $"http://localhost:3000/restorePassword/{token}";
+      var redirectUrl = $"{clientSideURL}/restorePassword/{token}";
       var buttonName = "Restore";
       return EmailTemplate(email, title, requestMsg, incorrectEmailMsg, redirectUrl, buttonName);
     }

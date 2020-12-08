@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction } from "react";
+import "./home.scss";
+import ScrollToTopArrowUp from "../../components/ScrollToTopArrowUp/ScrollToTopArrowUp";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
 import ActivitiesFacade from "./ActivitiesFacade/ActivitiesFacade";
-import "./home.scss";
 import HowItWorks from "./HowItWorks/HowItWorks";
-
 import IntroductionSection from "./IntroductionSection/IntroductionSection";
 import OurFeatures from "./OurFeatures/OurFeatures";
 import PostIntroductionSection from "./PostIntroductionSection/PostIntroductionSection";
@@ -13,7 +13,7 @@ const Home = ({
 }: {
   isOpenRegisterModal: Dispatch<SetStateAction<boolean>>;
 }) => {
-  useDocumentTitle("Pipe - Home", []);
+  useDocumentTitle("Pipe - Home");
 
   return (
     <div className="home">
@@ -22,8 +22,11 @@ const Home = ({
       <ActivitiesFacade />
       <OurFeatures />
       <PostIntroductionSection />
+
+      <ScrollToTopArrowUp />
     </div>
   );
 };
 
 export default Home;
+ 

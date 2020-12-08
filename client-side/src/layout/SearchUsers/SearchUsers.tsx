@@ -19,13 +19,17 @@ import sortUsers from "../../utilities/sortUsers";
 import { ServerUser, ServerSearchInput } from "../../api/serverDataInterfaces";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
+import BackToPageArrow from "../../components/BackToPageArrow/BackToPageArrow";
 
 const SearchUsers = () => {
   const [loader, setLoader] = useState(true);
   const [grid, setGrid] = useState(3);
   const [users, setUsers] = useState<ServerUser[]>([]);
 
-  const { hash } = useLocation();
+  const {
+    hash,
+    state,
+  }: { hash: string; state: { prevPath?: string } } = useLocation();
   const hashObj = useHash();
 
   const sortedUsers = useMemo(() => {
@@ -61,7 +65,7 @@ const SearchUsers = () => {
 
   const userId = JSON.parse(window.localStorage.getItem("user") || "{}").id;
 
-  useDocumentTitle("Search for users", []);
+  useDocumentTitle("Search for users");
 
   useEffect(() => {
     Search.userNumber(100)
@@ -94,71 +98,74 @@ const SearchUsers = () => {
   );
 
   return (
-    <div className="following">
-      <div className="following__search">
-        <SearchInput
-          placeholder="Search for users"
-          onGetInputs={onGetInputs}
-          onSetInput={onSetInput}
-          onDeleteInput={onDeleteInput}
-          setUsers={setUsers}
-          defaultValue={hashObj["search"]}
-        />
-      </div>
-      {loader ? (
-        <div className="searchUsers__loader">
-          <Loader />
+    <>
+      {state && state.prevPath && <BackToPageArrow prevPath={state.prevPath} />}
+      <div className="following">
+        <div className="following__search">
+          <SearchInput
+            placeholder="Search for users"
+            onGetInputs={onGetInputs}
+            onSetInput={onSetInput}
+            onDeleteInput={onDeleteInput}
+            setUsers={setUsers}
+            defaultValue={hashObj["search"]}
+          />
         </div>
-      ) : (
-        <>
-          <div className="following__display">
-            <SortDropDown elements={getDefaultSortUsersElements} />
-            <div className="following__display-grid">
-              <Grid2x2
-                active={grid === 2}
-                onClick={() => handleGridChange(2)}
-              />
-              <Grid3x3
-                active={grid === 3}
-                onClick={() => handleGridChange(3)}
-              />
-              <Grid4x4
-                active={grid === 4}
-                onClick={() => handleGridChange(4)}
+        {loader ? (
+          <div className="searchUsers__loader">
+            <Loader />
+          </div>
+        ) : (
+          <>
+            <div className="following__display">
+              <SortDropDown elements={getDefaultSortUsersElements} />
+              <div className="following__display-grid">
+                <Grid2x2
+                  active={grid === 2}
+                  onClick={() => handleGridChange(2)}
+                />
+                <Grid3x3
+                  active={grid === 3}
+                  onClick={() => handleGridChange(3)}
+                />
+                <Grid4x4
+                  active={grid === 4}
+                  onClick={() => handleGridChange(4)}
+                />
+              </div>
+            </div>
+            <div className="following__users">
+              {usersOnCurrentPage.length > 0 ? (
+                usersOnCurrentPage.map((u) => (
+                  <User
+                    key={u.id}
+                    id={u.id}
+                    name={u.name}
+                    following={u.countFollowing}
+                    followers={u.countFollowers}
+                    activities={u.numberOfActivities || 0}
+                    grid={grid}
+                    extension={u.coverImageExtension}
+                  />
+                ))
+              ) : (
+                <div className="searchUsers__nobody">
+                  <div>There is no users</div>
+                </div>
+              )}
+            </div>
+            <div className="searchUsers__pagination">
+              <Pagination
+                hash={hash}
+                hashObj={hashObj}
+                page={page}
+                nrOfPages={nrOfPages}
               />
             </div>
-          </div>
-          <div className="following__users">
-            {usersOnCurrentPage.length > 0 ? (
-              usersOnCurrentPage.map((u) => (
-                <User
-                  key={u.id}
-                  id={u.id}
-                  name={u.name}
-                  following={u.countFollowing}
-                  followers={u.countFollowers}
-                  activities={u.numberOfActivities || 0}
-                  grid={grid}
-                  extension={u.coverImageExtension}
-                />
-              ))
-            ) : (
-              <div className="searchUsers__nobody">
-                <div>There is no users</div>
-              </div>
-            )}
-          </div>
-          <div className="searchUsers__pagination">
-            <Pagination
-              hash={hash}
-              hashObj={hashObj}
-              page={page}
-              nrOfPages={nrOfPages}
-            />
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

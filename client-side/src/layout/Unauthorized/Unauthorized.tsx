@@ -1,12 +1,9 @@
 import React from "react";
+import "./unauthorized.scss";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
-
 import Logo from "../../components/Logo/Logo";
 import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
-
 import { useHistory } from "react-router-dom";
-
-import "./unauthorized.scss";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
 
 const Unauthorized = () => {
@@ -19,7 +16,7 @@ const Unauthorized = () => {
     history.goBack();
   }
 
-  useDocumentTitle("Unauthorized", []);
+  useDocumentTitle("Unauthorized");
 
   return (
     <div className="unauthorized">

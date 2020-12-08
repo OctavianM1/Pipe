@@ -48,7 +48,7 @@ const RestorePassword = () => {
     }
   }
 
-  useDocumentTitle("Restore password", []);
+  useDocumentTitle("Restore password");
 
   const openLogin = useScrollUpAndOpenLogin();
 
