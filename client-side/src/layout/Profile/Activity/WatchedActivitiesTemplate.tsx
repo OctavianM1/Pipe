@@ -4,7 +4,7 @@ import { Activities } from "../../../api/axios";
 import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { VisitorUserContext } from "../../UserActivities/UserActivities";
-import Activity from "../../UserActivities/Activity";
+import Activity from "../../UserActivities/Activity/Activity";
 import useHavePutLike from "../../../Hooks/useHavePutLike";
 import useHavePutRate from "../../../Hooks/useHavePutRate";
 import Loader from "../../../components/Loader/Loader";

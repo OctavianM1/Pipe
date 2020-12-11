@@ -1,9 +1,9 @@
 import React, { ReactNode, useRef, useState } from "react";
+import "./howItWorks.scss";
 import Check from "../../../components/Svgs/Check";
 import LeftArrow from "../../../components/Svgs/LeftArrow";
 import RightArrow from "../../../components/Svgs/RightArrow";
 import useDisplayComponent from "../../../Hooks/useDisplayComponent";
-import "./howItWorks.scss";
 
 const data: any = {
   step1: {
@@ -137,8 +137,16 @@ const HowItWorks = () => {
                   <div
                     className={`howItWorks__container__step-${step}__overlay__card__data__members__content`}
                   >
-                    <img src="/images/home/user-2.png" alt="user 2" />
-                    <img src="/images/home/user-1.png" alt="user 1" />
+                    <img
+                      src="/images/home/user-2.png"
+                      alt="user 2"
+                      loading="lazy"
+                    />
+                    <img
+                      src="/images/home/user-1.png"
+                      alt="user 1"
+                      loading="lazy"
+                    />
                   </div>
                 </div>
                 <div
@@ -211,7 +219,7 @@ const HowItWorks = () => {
           <div
             className={`howItWorks__container__robot howItWorks__container__step-${step}__robot`}
           >
-            <img src="/images/home/robot.png" alt="robot" />
+            <img src="/images/home/robot.png" alt="robot" loading="lazy" />
           </div>
           <button
             className="howItWorks__container__arrow howItWorks__container__arrow__left"
@@ -239,16 +247,19 @@ const HowItWorks = () => {
                 className={`howItWorks__container__header__users__user howItWorks__container__header__users__user-1 howItWorks__container__step-${step}__header__users__user-1`}
                 src="/images/home/user-1.png"
                 alt="user 1"
+                loading="lazy"
               />
               <img
                 className={`howItWorks__container__header__users__user howItWorks__container__header__users__user-1 howItWorks__container__step-${step}__header__users__user-2`}
                 src="/images/home/user-2.png"
                 alt="user 2"
+                loading="lazy"
               />
               <img
                 className={`howItWorks__container__header__users__user howItWorks__container__header__users__user-1 howItWorks__container__step-${step}__header__users__user-3`}
                 src="/images/home/user-3.png"
                 alt="user 3"
+                loading="lazy"
               />
             </div>
           </div>
@@ -298,6 +309,7 @@ const HowItWorks = () => {
                     className={`howItWorks__container__body__list__card__content__arrow howItWorks__container__step-${step}__body__list__card__content__arrow`}
                     src="/images/home/arrow-radius.svg"
                     alt="arrow"
+                    loading="lazy"
                   />
                   <div>Walking</div>
                   <div

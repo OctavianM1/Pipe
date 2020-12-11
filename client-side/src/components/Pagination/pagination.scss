@@ -1,4 +1,7 @@
 .pagination {
+  display: flex;
+  justify-content: center;
+  
   &__page {
     position: relative;
     padding: 2.2rem;

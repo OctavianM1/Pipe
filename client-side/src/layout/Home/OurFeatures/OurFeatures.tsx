@@ -48,7 +48,11 @@ const OurFeatures: React.FC = () => {
           }`}
         >
           <div className="element-container__upside">
-            <img src="/images/home/ourfeatures/email.svg" alt="email logo" />
+            <img
+              src="/images/home/ourfeatures/email.svg"
+              alt="email logo"
+              loading="lazy"
+            />
             <h2>Contact List</h2>
           </div>
           <p className="element-container__downside">
@@ -66,6 +70,7 @@ const OurFeatures: React.FC = () => {
             <img
               src="/images/home/ourfeatures/customize.svg"
               alt="email logo"
+              loading="lazy"
             />
             <h2>Customizable</h2>
           </div>
@@ -81,7 +86,11 @@ const OurFeatures: React.FC = () => {
           }`}
         >
           <div className="element-container__upside">
-            <img src="/images/home/ourfeatures/edit.svg" alt="edit logo" />
+            <img
+              src="/images/home/ourfeatures/edit.svg"
+              alt="edit logo"
+              loading="lazy"
+            />
             <h2>Message Editing</h2>
           </div>
           <p className="element-container__downside">
@@ -99,6 +108,7 @@ const OurFeatures: React.FC = () => {
             <img
               src="/images/home/ourfeatures/analytics.svg"
               alt="analytics logo"
+              loading="lazy"
             />
             <h2>Analytics</h2>
           </div>
@@ -114,7 +124,11 @@ const OurFeatures: React.FC = () => {
           }`}
         >
           <div className="element-container__upside">
-            <img src="/images/home/ourfeatures/chat.svg" alt="chat logo" />
+            <img
+              src="/images/home/ourfeatures/chat.svg"
+              alt="chat logo"
+              loading="lazy"
+            />
             <h2>Auto Messages</h2>
           </div>
           <p className="element-container__downside">
@@ -129,7 +143,11 @@ const OurFeatures: React.FC = () => {
           }`}
         >
           <div className="element-container__upside">
-            <img src="/images/home/ourfeatures/install.svg" alt="chat logo" />
+            <img
+              src="/images/home/ourfeatures/install.svg"
+              alt="chat logo"
+              loading="lazy"
+            />
             <h2>Easily Install</h2>
           </div>
           <p className="element-container__downside">

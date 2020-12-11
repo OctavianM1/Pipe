@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./searchUsers.scss";
+import "../Following/following.scss";
 import Loader from "../../components/Loader/Loader";
 import SearchInput from "../../components/SearchInput/SearchInput";
 import Grid2x2 from "../../components/Svgs/Girds/Grid2x2";
@@ -154,14 +155,12 @@ const SearchUsers = () => {
                 </div>
               )}
             </div>
-            <div className="searchUsers__pagination">
-              <Pagination
-                hash={hash}
-                hashObj={hashObj}
-                page={page}
-                nrOfPages={nrOfPages}
-              />
-            </div>
+            <Pagination
+              hash={hash}
+              hashObj={hashObj}
+              page={page}
+              nrOfPages={nrOfPages}
+            />
           </>
         )}
       </div>

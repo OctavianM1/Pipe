@@ -3,7 +3,7 @@ import { RefObject, useEffect } from "react";
 function useOutsideAlerter(
   ref: RefObject<HTMLElement>,
   popUp: boolean,
-  fn?: () => void,
+  fn: () => void,
   className?: string | null
 ) {
   useEffect(() => {
@@ -14,7 +14,7 @@ function useOutsideAlerter(
         !ref.current.contains(target) &&
         (!className || !target.classList.contains(className))
       ) {
-        fn && fn();
+        fn();
       }
     }
     if (popUp) {

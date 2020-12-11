@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ServerActivityUserRaiting } from "../../api/serverDataInterfaces";
-import Star from "../../components/Svgs/Star";
-import useCoverImage from "../../Hooks/useCoverImage";
-import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
+import { ServerActivityUserRaiting } from "../../../api/serverDataInterfaces";
+import Star from "../../../components/Svgs/Star";
+import useCoverImage from "../../../Hooks/useCoverImage";
+import useProfileCoverPhotoError from "../../../Hooks/useProfileCoverPhotoError";
 
 const UserRaiting = ({ user }: { user: ServerActivityUserRaiting }) => {
   const [coverPhotoSrc, setCoverPhotoSrc] = useCoverImage(

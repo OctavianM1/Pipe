@@ -6,11 +6,11 @@ import React, {
   useState,
 } from "react";
 import { CSSTransition } from "react-transition-group";
-import { Follows } from "../../api/axios";
-import { ServerUsersRelationActivity } from "../../api/serverDataInterfaces";
-import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
-import useCoverImage from "../../Hooks/useCoverImage";
-import useProfileCoverPhotoError from "../../Hooks/useProfileCoverPhotoError";
+import { Follows } from "../../../api/axios";
+import { ServerUsersRelationActivity } from "../../../api/serverDataInterfaces";
+import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
+import useCoverImage from "../../../Hooks/useCoverImage";
+import useProfileCoverPhotoError from "../../../Hooks/useProfileCoverPhotoError";
 
 const ActivitiesInfo = ({
   userData,

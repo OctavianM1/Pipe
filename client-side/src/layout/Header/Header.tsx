@@ -19,7 +19,6 @@ const Header = ({
   isOpenRegisterModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [dropDown, setDropDown] = useState(false);
-
   const toggleDropDown = () => {
     setDropDown(!dropDown);
   };
@@ -37,12 +36,6 @@ const Header = ({
       <Link to="/">
         <Logo />
       </Link>
-      <ul className="info-side">
-        <HeaderLis
-          closeDropDown={() => setDropDown(false)}
-          isOpenRegisterModal={isOpenRegisterModal}
-        />
-      </ul>
       <button
         className="menu-mobile-btn standard-btn"
         onClick={() => toggleDropDown()}
@@ -53,7 +46,7 @@ const Header = ({
         className={dropDown ? "drop-down-active" : "drop-down"}
         ref={wrapperRef}
       >
-        <ul className="info-side-mobile">
+        <ul className="info-side">
           <HeaderLis
             closeDropDown={() => setDropDown(false)}
             isOpenRegisterModal={isOpenRegisterModal}
@@ -64,4 +57,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default React.memo(Header);

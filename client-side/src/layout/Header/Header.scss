@@ -27,11 +27,22 @@
   @media screen and (max-width: 900px) {
     margin-right: 0;
   }
+
   @media screen and (max-width: 650px) {
-    display: none;
+    display: block;
+    & > * {
+      padding: 2rem;
+      font-size: 2rem;
+      font-family: "Roboto", sans-serif;
+
+      & > a {
+        color: #5759ff;
+        display: inline-block;
+      }
+    }
   }
 
-  & li {
+  & > li {
     margin-right: 6rem;
 
     @media screen and (max-width: 900px) {
@@ -48,9 +59,63 @@
     }
   }
 
-  & li a {
-    color: #5759ff;
-    letter-spacing: 1.1px;
+  & > li {
+    position: relative;
+    & > a {
+      color: #5759ff;
+      letter-spacing: 1.1px;
+    }
+  }
+
+  & > li .header__li-notification {
+    cursor: pointer;
+    padding: 5px;
+    @media screen and (max-width: 650px) {
+      display: none;
+    }
+    & > img {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    & > span.header__span-top-right {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      box-sizing: content-box;
+      border: 2px solid #f4f4f4;
+      width: 14px;
+      height: 14px;
+      background-color: rgba(255, 13, 13, 0.87);
+      border-radius: 50%;
+      & > p {
+        color: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10px;
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transition: 200ms ease-in-out;
+    }
+
+    &:hover::before {
+      opacity: 0.5;
+      width: 45px;
+      height: 45px;
+    }
   }
 
   & button {
@@ -106,23 +171,6 @@
   }
 }
 
-.info-side-mobile {
-  display: none;
-  @media screen and (max-width: 650px) {
-    display: block;
-    & > * {
-      padding: 2rem;
-      font-size: 2rem;
-      font-family: "Roboto", sans-serif;
-
-      & > a {
-        color: #5759ff;
-        display: inline-block;
-      }
-    }
-  }
-}
-
 .menu-mobile-btn {
   display: none !important;
   @media screen and (max-width: 650px) {
@@ -134,7 +182,6 @@
 }
 
 .drop-down {
-  display: none;
   @media screen and (max-width: 650px) {
     position: absolute;
     top: 100%;
@@ -173,5 +220,145 @@
   100% {
     opacity: 1;
     max-height: 70vh;
+  }
+}
+
+.notification {
+  &__list {
+    position: absolute;
+    padding: 1rem 0;
+    top: 85%;
+    right: -1.5rem;
+    z-index: 150;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+    width: 40rem;
+    max-height: 0;
+    opacity: 0;
+    overflow-y: scroll;
+    transition: 450ms;
+
+    &__loader {
+      position: relative;
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+
+      & > span {
+        position: absolute;
+        margin-top: 5px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #5759ff;
+      }
+
+      &--1 {
+        left: calc(50% - 20px) !important;
+        animation: notificationLoader 800ms infinite;
+      }
+
+      &--2 {
+        animation: notificationLoader 800ms infinite;
+      }
+
+      &--3 {
+        left: calc(50% + 20px) !important;
+        animation: notificationLoader 800ms infinite;
+      }
+    }
+
+    &__no-item {
+      margin: 1rem 0;
+      text-align: center;
+      font-family: "Roboto";
+      font-weight: 400;
+      letter-spacing: 1px;
+      color: rgb(255, 89, 89);
+    }
+
+    &__item {
+      display: flex;
+      padding: 1rem 1.5rem;
+      background-color: rgb(247, 247, 247);
+      margin-bottom: 5px;
+      & > img {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+      }
+      & > div {
+        font-family: "Roboto";
+        font-weight: 400;
+      }
+
+      &__socket {
+        background-color: rgb(255, 239, 239);
+      }
+
+      &__time {
+        color: rgb(119, 119, 119);
+        display: inline-block;
+      }
+
+      &__name {
+        color: rgb(29, 29, 29);
+        font-weight: 500;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &-active {
+      top: 160%;
+      opacity: 1;
+      max-height: 50rem;
+    }
+  }
+}
+
+.header__li-notification__container > span {
+  z-index: 200;
+  position: absolute;
+  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.25);
+  top: 80%;
+  right: 0.7rem;
+  width: 20px;
+  height: 20px;
+  transform: rotate(-45deg);
+  border-radius: 3px;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    transparent 50%,
+    #fff 50%,
+    #fff 50%
+  );
+  opacity: 0;
+  transition: 400ms;
+
+  &.arrow-active {
+    opacity: 1;
+    top: 135%;
+  }
+}
+
+@keyframes notificationLoader {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

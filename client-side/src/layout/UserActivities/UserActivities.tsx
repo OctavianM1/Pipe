@@ -5,7 +5,7 @@ import { Activities, Users, Search } from "../../api/axios";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import useHavePutLike from "../../Hooks/useHavePutLike";
 import useHavePutRate from "../../Hooks/useHavePutRate";
-import Activity from "./Activity";
+import Activity from "./Activity/Activity";
 import useHash from "../../Hooks/useHash";
 import Loader from "../../components/Loader/Loader";
 import Pagination from "../../components/Pagination/Pagination";
@@ -17,7 +17,7 @@ import {
 } from "../../api/serverDataInterfaces";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useDataOnCurrentPage from "../../Hooks/useDataOnCurrentPage";
-import ActivitiesInfo from "./ActivitiesInfo";
+import ActivitiesInfo from "./Activity/ActivitiesInfo";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
 import FilterActivities from "../../components/FilterActivities/FilterActivities";
 import SortDropDown from "../../components/SortDropDown/SortDropDown";
@@ -66,9 +66,11 @@ const MyActivities = () => {
   }, [errorHandler, hostUserId]);
 
   useEffect(() => {
-    Users.usersActivity(hostUserId, visitorUser.id)
-      .then(setUserData)
-      .catch(errorHandler);
+    if (visitorUser.id) {
+      Users.usersActivity(hostUserId, visitorUser.id)
+        .then(setUserData)
+        .catch(errorHandler);
+    }
   }, [hostUserId, visitorUser.id, errorHandler]);
 
   const havePutLike = useHavePutLike();
@@ -205,14 +207,12 @@ const MyActivities = () => {
                       No activities found!!
                     </div>
                   )}
-                  <div className="my-activities__pagination">
-                    <Pagination
-                      hash={hash}
-                      hashObj={hashObj}
-                      page={page}
-                      nrOfPages={nrOfPages}
-                    />
-                  </div>
+                  <Pagination
+                    hash={hash}
+                    hashObj={hashObj}
+                    page={page}
+                    nrOfPages={nrOfPages}
+                  />
                 </div>
               )}
             </div>

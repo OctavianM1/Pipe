@@ -33,7 +33,11 @@ const PostIntroductionSection: React.FC = () => {
           </p>
         </div>
         <div className="post-right-side">
-          <img src="/images/home/post-home-chat.svg" alt="chating" />
+          <img
+            src="/images/home/post-home-chat.png"
+            alt="chating"
+            loading="lazy"
+          />
         </div>
       </div>
     </div>

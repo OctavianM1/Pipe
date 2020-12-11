@@ -48,7 +48,15 @@ namespace Persistence
         .WithOne(cr => cr.CommentResponse)
         .HasForeignKey(c => c.CommentResponseId);
 
+      builder.Entity<Notify>()
+        .HasOne(n => n.NotifierUser)
+        .WithMany(u => u.NotifierNotifications)
+        .HasForeignKey(n => n.NotifierUserId);
 
+      builder.Entity<Notify>()
+        .HasOne(n => n.ObervableUser)
+        .WithMany(u => u.ObservableNotifications)
+        .HasForeignKey(n => n.ObervableUserId);
     }
     public DbSet<User> Users { get; set; }
     public DbSet<Activity> Activities { get; set; }
@@ -64,5 +72,6 @@ namespace Persistence
     public DbSet<SubscriberOnEmailNews> SubscriberOnEmailNews { get; set; }
     public DbSet<CommentResponse> CommentResponse { get; set; }
     public DbSet<CommentResponseLikes> CommentResponseLikes { get; set; }
+    public DbSet<Notify> Notify { get; set; }
   }
 }

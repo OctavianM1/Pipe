@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
+import "./IntroductionSection.scss";
 import Header1 from "../../../components/Headers/Header1";
 import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
-import "./IntroductionSection.scss";
 import useScrollUpAndOpenLogin from "../../../Hooks/useScrollUpAndOpenLogin";
 import { Link } from "react-router-dom";
 
@@ -37,7 +37,7 @@ const IntroductionSection = ({
         )}
         <div className="introduction-section-grid">
           <div>
-            <img src="/images/home/chat-img.svg" alt="Chat"></img>
+            <img src="/images/home/chat-img.png" alt="Chat" loading="lazy" />
           </div>
           <div className="introduction-gird-col-2">
             <h2 className="introduction-header-2">

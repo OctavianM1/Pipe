@@ -1,7 +1,7 @@
 import React, { RefObject, useCallback, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { ServerUser } from "../../../api/serverDataInterfaces";
-import { ActivityRefContext } from "./../Activity";
+import { ActivityRefContext } from "./../Activity/Activity";
 import UserCommentLike from "./UserCommentLike";
 
 const CommentTemplate = ({

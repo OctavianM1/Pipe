@@ -46,14 +46,16 @@ const ActivitiesFacade = () => {
         <img
           ref={firstImageRef}
           style={{ transform: `translateY(${upImagePx}px)` }}
-          src="/images/home/activities-1.png"
+          src="/images/home/activities_1.jpg"
           alt="Activities facade 1"
+          loading='lazy'
         />
         <img
           ref={secondImageRef}
           style={{ transform: `translateY(${upImagePx}px)` }}
-          src="/images/home/activities-2.png"
+          src="/images/home/activities_2.jpg"
           alt="Activities facade 2"
+          loading='lazy'
         />
       </div>
       <div

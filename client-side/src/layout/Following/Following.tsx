@@ -73,14 +73,16 @@ const Following = () => {
   useDocumentTitle("Following");
 
   useEffect(() => {
-    Follows.following(userId)
-      .then((users: ServerUser[]) => {
-        if (isMounted.current) {
-          setFollowingUsers(users);
-          setLoader(false);
-        }
-      })
-      .catch(error);
+    if (userId) {
+      Follows.following(userId)
+        .then((users: ServerUser[]) => {
+          if (isMounted.current) {
+            setFollowingUsers(users);
+            setLoader(false);
+          }
+        })
+        .catch(error);
+    }
   }, [error, userId, isMounted]);
 
   const onGetInputs: (matchString?: string) => Promise<ServerSearchInput[]> = (
@@ -164,14 +166,12 @@ const Following = () => {
                 </div>
               )}
             </div>
-            <div className="searchUsers__pagination">
-              <Pagination
-                hash={hash}
-                hashObj={hashObj}
-                page={page}
-                nrOfPages={nrOfPages}
-              />
-            </div>
+            <Pagination
+              hash={hash}
+              hashObj={hashObj}
+              page={page}
+              nrOfPages={nrOfPages}
+            />
           </>
         )}
       </div>

@@ -11,8 +11,11 @@ namespace Domain
     public string Name { get; set; }
     public int CountFollowers { get; set; }
     public int CountFollowing { get; set; }
-    public virtual ICollection<Activity> Activities { get; set; }
     public bool IsEmailConfirmed { get; set; }
     public string CoverImageExtension { get; set; }
+    public virtual ICollection<Activity> Activities { get; set; }
+    public virtual ICollection<Notify> NotifierNotifications { get; set; }
+    public virtual ICollection<Notify> ObservableNotifications { get; set; }
+
   }
 }

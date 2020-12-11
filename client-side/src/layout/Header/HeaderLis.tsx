@@ -1,10 +1,8 @@
 import React, { Dispatch, SetStateAction, useContext } from "react";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
-
-import { Link, useLocation } from "react-router-dom";
+import Notification from "./Notification/Notification";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { Context } from "../../context";
-
-import { useHistory } from "react-router-dom";
 
 const HeaderLis = ({
   closeDropDown,
@@ -14,16 +12,13 @@ const HeaderLis = ({
   isOpenRegisterModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { pathname } = useLocation();
-
   const { isOpenLoginModal } = useContext(Context);
-
   const user = JSON.parse(window.localStorage.getItem("user") || "{}");
-
   const history = useHistory();
 
   const onClickLogout = () => {
-    window.localStorage.setItem("user", "{}");
     history.push("/");
+    window.localStorage.setItem("user", "{}");
   };
 
   const onClickLoginMobile = () => {
@@ -94,6 +89,7 @@ const HeaderLis = ({
               Profile
             </Link>
           </li>
+          <Notification />
           <li>
             <StandardButton onClick={onClickLogout}>Logout</StandardButton>
           </li>

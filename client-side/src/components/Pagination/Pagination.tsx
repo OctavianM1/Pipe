@@ -127,7 +127,7 @@ const Pagination = ({ hash, hashObj, page, nrOfPages }: PaginationProps) => {
     }
     paginationNumbers = loopInPages(pags);
   }
-  return <>{paginationNumbers}</>;
+  return <div className="pagination">{paginationNumbers}</div>;
 };
 
 export default Pagination;

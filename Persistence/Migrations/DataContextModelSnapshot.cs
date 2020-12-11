@@ -215,6 +215,33 @@ namespace Persistence.Migrations
                     b.ToTable("Follows");
                 });
 
+            modelBuilder.Entity("Domain.Notify", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateTimeCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<Guid>("NotifierUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ObervableUserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotifierUserId");
+
+                    b.HasIndex("ObervableUserId");
+
+                    b.ToTable("Notify");
+                });
+
             modelBuilder.Entity("Domain.SearchActivities", b =>
                 {
                     b.Property<Guid>("Id")
@@ -477,6 +504,21 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Notify", b =>
+                {
+                    b.HasOne("Domain.User", "NotifierUser")
+                        .WithMany("NotifierNotifications")
+                        .HasForeignKey("NotifierUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "ObervableUser")
+                        .WithMany("ObservableNotifications")
+                        .HasForeignKey("ObervableUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,13 +1,4 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { UploadFile } from "../../../api/axios";
 import { ServerUser } from "../../../api/serverDataInterfaces";
@@ -23,11 +14,15 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     user.coverImageExtension
   );
   const [inputCoverPhotoLogger, setInputCoverPhotoLogger] = useState("");
-  const [file, setFile] = useState<string | Blob>("");
-  const [fileExtension, setFileExtension] = useState("");
+
+  const [fileData, setFileData] = useState({
+    file: "",
+    fileExtension: "",
+    chooseFileName: "Change avatar",
+  });
+
   const [biggerPhoto, setBiggerPhoto] = useState(false);
-  const [chooseFileName, setChooseFileName] = useState("Change avatar");
-  const [edit, dispatchEdit] = useReducer(editReducer, {
+  const [edit, dispatchEdit] = React.useReducer(editReducer, {
     editMode: false,
     labelClassStyle: "profile__container__public__el__label",
   });
@@ -50,22 +45,26 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     }, [])
   );
 
-  const saveFile = (e: ChangeEvent<HTMLInputElement>) => {
+  const saveFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const evTarget = e.target as any;
     if (evTarget.files.length > 1) {
       setInputCoverPhotoLogger("You need to select only 1 file");
     }
-    const fileExtension = evTarget.files[0].name.split(".")[1];
+    const splitFileName = evTarget.files[0].name.split(".");
+    const fileExtension = splitFileName[splitFileName.length - 1];
+
     if (
       fileExtension === "png" ||
       fileExtension === "jpg" ||
       fileExtension === "jpeg" ||
       fileExtension === "pneg"
     ) {
-      setChooseFileName(evTarget.files[0].name);
-      setFile(evTarget.files[0]);
-      setFileExtension(evTarget.files[0].name.split(".")[1]);
+      setFileData({
+        file: evTarget.files[0],
+        chooseFileName: evTarget.files[0].name,
+        fileExtension,
+      });
       setInputCoverPhotoLogger("");
     } else {
       setInputCoverPhotoLogger(
@@ -74,24 +73,32 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
     }
   };
 
-  const uploadFile = (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+  const uploadFile = (
+    e: React.FormEvent<HTMLFormElement | HTMLButtonElement>
+  ) => {
     e.preventDefault();
     if (
-      fileExtension === "png" ||
-      fileExtension === "jpg" ||
-      fileExtension === "jpeg" ||
-      fileExtension === "pneg"
+      fileData.fileExtension === "png" ||
+      fileData.fileExtension === "jpg" ||
+      fileData.fileExtension === "jpeg" ||
+      fileData.fileExtension === "pneg"
     ) {
       const formData = new FormData();
-      formData.append("formFile", file);
-      formData.append("fileName", `${user.id}.${fileExtension}`);
-      formData.append("fileExtension", fileExtension);
+      formData.append("formFile", fileData.file);
+      formData.append("fileName", `${user.id}.${fileData.fileExtension}`);
+      formData.append("fileExtension", fileData.fileExtension);
       formData.append("userId", user.id);
       UploadFile.userCoverImage(formData)
         .then(() => {
           window.localStorage.setItem(
             "user",
-            JSON.stringify({ ...user, coverImageExtension: fileExtension })
+            JSON.stringify({
+              ...user,
+              coverImageExtension: fileData.fileExtension,
+            })
+          );
+          setCoverPhotoSrc(
+            `/images/userPhotos/${user.id}.${fileData.fileExtension}`
           );
           dispatchEdit({ type: "closeEdit" });
         })
@@ -177,7 +184,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
                   className="profile__container__public__el__info__cahnge-avatar"
                 >
                   <img src="/images/profile/upload.svg" alt="Upload" />
-                  <span>{chooseFileName}</span>
+                  <span>{fileData.chooseFileName}</span>
                 </label>
                 <input
                   id="uploadFileInput"
@@ -193,7 +200,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
               </div>
               <div className="profile__submit-cancel-pair">
                 <StandardButton
-                  onClick={uploadFile}
+                  type="submit"
                   id="submitCoverImage"
                   classNames={["profile__submit-btn"]}
                 >
@@ -230,7 +237,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
 };
 
 function onResizeProfile(
-  dispatchEdit: Dispatch<{
+  dispatchEdit: React.Dispatch<{
     type: string;
   }>
 ) {

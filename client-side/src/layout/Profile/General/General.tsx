@@ -14,9 +14,10 @@ const General = ({ user }: { user: ServerUser }) => {
   const error = useApiErrorHandler();
 
   useEffect(() => {
-    Users.details(user.id).then(setUserData).catch(error);
+    if (user.id) {
+      Users.details(user.id).then(setUserData).catch(error);
+    }
   }, [error, user.id]);
-
 
   return (
     <>

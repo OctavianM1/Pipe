@@ -1,13 +1,4 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useReducer, useRef, useState } from "react";
 import "./searchInput.scss";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 import Loupe from "../Svgs/Loupe";
@@ -28,8 +19,8 @@ interface SearchInputProps {
   onSetInput: (input: string) => Promise<any>;
   onDeleteInput: (input: string) => Promise<any>;
   setUsers:
-    | Dispatch<SetStateAction<ServerUser[]>>
-    | Dispatch<SetStateAction<ServerActivity[]>>;
+    | React.Dispatch<React.SetStateAction<ServerUser[]>>
+    | React.Dispatch<React.SetStateAction<ServerActivity[]>>;
   defaultValue?: string | undefined;
 }
 
@@ -57,17 +48,7 @@ const SearchInput = ({
   const hashObj = useHash();
   const replaceHash = useReplaceHash();
 
-  useEffect(() => {
-    onGetInputs()
-      .then((searchInputs) => {
-        if (isMounted.current) {
-          setSearchInputs(searchInputs);
-        }
-      })
-      .catch(error);
-  }, [onGetInputs, error, isMounted]);
-
-  const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearch = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const val = ev.target.value;
     onGetInputs(val.trim()).then(setSearchInputs).catch(error);
     dispatchInput({ type: "set letters", length: val.length });
@@ -164,6 +145,19 @@ const SearchInput = ({
     }, 0);
   };
 
+  const onFocus = () => {
+    dispatchInput({ type: "open" });
+    if (!searchInputs.length) {
+      onGetInputs()
+        .then((searchInputs) => {
+          if (isMounted.current) {
+            setSearchInputs(searchInputs);
+          }
+        })
+        .catch(error);
+    }
+  };
+
   return (
     <form className="searchInput" ref={formRef}>
       <div className="searchInput__container">
@@ -173,7 +167,7 @@ const SearchInput = ({
           placeholder={placeholder}
           className="searchInput__input"
           autoComplete="off"
-          onFocus={() => dispatchInput({ type: "open" })}
+          onFocus={onFocus}
           onChange={onChangeSearch}
           onKeyDown={onKeyDownSearch}
           defaultValue={defaultValue}

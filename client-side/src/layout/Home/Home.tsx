@@ -2,11 +2,17 @@ import React, { Dispatch, SetStateAction } from "react";
 import "./home.scss";
 import ScrollToTopArrowUp from "../../components/ScrollToTopArrowUp/ScrollToTopArrowUp";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
-import ActivitiesFacade from "./ActivitiesFacade/ActivitiesFacade";
-import HowItWorks from "./HowItWorks/HowItWorks";
 import IntroductionSection from "./IntroductionSection/IntroductionSection";
-import OurFeatures from "./OurFeatures/OurFeatures";
-import PostIntroductionSection from "./PostIntroductionSection/PostIntroductionSection";
+import LoadOnDemand from "../../components/LoadOnDemand/LoadOnDemand";
+
+const HowItWorks = React.lazy(() => import("./HowItWorks/HowItWorks"));
+const ActivitiesFacade = React.lazy(
+  () => import("./ActivitiesFacade/ActivitiesFacade")
+);
+const OurFeatures = React.lazy(() => import("./OurFeatures/OurFeatures"));
+const PostIntroductionSection = React.lazy(
+  () => import("./PostIntroductionSection/PostIntroductionSection")
+);
 
 const Home = ({
   isOpenRegisterModal,
@@ -18,10 +24,18 @@ const Home = ({
   return (
     <div className="home">
       <IntroductionSection isOpenRegisterModal={isOpenRegisterModal} />
-      <HowItWorks />
-      <ActivitiesFacade />
-      <OurFeatures />
-      <PostIntroductionSection />
+      <LoadOnDemand>
+        <HowItWorks />
+      </LoadOnDemand>
+      <LoadOnDemand>
+        <ActivitiesFacade />
+      </LoadOnDemand>
+      <LoadOnDemand>
+        <OurFeatures />
+      </LoadOnDemand>
+      <LoadOnDemand>
+        <PostIntroductionSection />
+      </LoadOnDemand>
 
       <ScrollToTopArrowUp />
     </div>
@@ -29,4 +43,3 @@ const Home = ({
 };
 
 export default Home;
- 

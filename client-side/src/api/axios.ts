@@ -216,4 +216,9 @@ const UploadFile = {
     request.post("/uploadFile/userCoverImage", body),
 };
 
-export { Users, Activities, Follows, Search, UploadFile };
+const NotificationAPI = {
+  getAll: (body: { userId: string; taken: number; toTake: number }) =>
+    request.post("/notification/all", body),
+};
+
+export { Users, Activities, Follows, Search, UploadFile, NotificationAPI };

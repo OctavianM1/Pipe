@@ -1,6 +1,7 @@
 using System.Text;
 using API.Middleware;
 using Application.Interfaces;
+using Application.Notify;
 using Application.Users;
 using Infrastructure.Email;
 using Infrastructure.Security;
@@ -42,7 +43,10 @@ namespace API
       {
         opt.AddPolicy("CorsPolicy", policy =>
         {
-          policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+          policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .WithOrigins(Configuration["ClientSideURL"])
+          .AllowCredentials();
         });
       });
       services.AddMediatR(typeof(Login.Handler).Assembly);
@@ -75,7 +79,7 @@ namespace API
 
       services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
       services.AddScoped<IEmailSenderService, EmailSenderService>();
-
+      services.AddSignalR();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +103,7 @@ namespace API
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapHub<NotifyHub>("/hubs/notify");
       });
     }
   }

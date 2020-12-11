@@ -79,3 +79,11 @@ export interface ServerSearchInput {
   userInput: string;
   isVisited: boolean;
 }
+
+// Notify Message
+export interface NotifyMessage {
+  id: string;
+  user: ServerUser;
+  message: string;
+  time: string;
+}
