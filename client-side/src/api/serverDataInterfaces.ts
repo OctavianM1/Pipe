@@ -84,6 +84,7 @@ export interface ServerSearchInput {
 export interface NotifyMessage {
   id: string;
   user: ServerUser;
+  observableUsersIds: string[];
   message: string;
   time: string;
 }

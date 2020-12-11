@@ -32,9 +32,9 @@ namespace API.Controllers
           Id = n.Id,
           User = new AppUser
           {
-            Id = n.ObervableUser.Id,
-            Name = n.ObervableUser.Name,
-            CoverImageExtension = n.ObervableUser.CoverImageExtension
+            Id = n.NotifierUser.Id,
+            Name = n.NotifierUser.Name,
+            CoverImageExtension = n.NotifierUser.CoverImageExtension
           },
           Message = n.Message,
           Time = n.DateTimeCreated

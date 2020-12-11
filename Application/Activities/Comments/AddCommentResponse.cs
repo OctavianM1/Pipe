@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Notify.SendNotification;
 using Application.Users.ApplicationUser;
 using ApplicationComment;
 using Domain;
@@ -24,8 +25,10 @@ namespace Application.Activities.Comments
     public class Handler : IRequestHandler<Command, List<AppCommentResponse>>
     {
       private readonly DataContext _context;
-      public Handler(DataContext context)
+      private readonly ISendNotification _sendNotification;
+      public Handler(DataContext context, ISendNotification sendNotification)
       {
+        _sendNotification = sendNotification;
         _context = context;
       }
 
@@ -42,6 +45,13 @@ namespace Application.Activities.Comments
         bool success = await _context.SaveChangesAsync() > 0;
         if (success)
         {
+          var parentComment = await _context.ActivityComments.Where(ac => ac.Id == request.ParentActivityCommentId)
+            .Select(ac => new { UserId = ac.UserId, Comment = ac.Comment })
+            .FirstOrDefaultAsync();
+
+          var message = $"responsed to your comment - {parentComment.Comment}";
+          await _sendNotification.Send(request.UserId, parentComment.UserId, message);
+
           return await _context.CommentResponse.Where(cr => cr.ParentActivityCommentId == request.ParentActivityCommentId).Select(cr => new AppCommentResponse
           {
             Id = cr.Id,

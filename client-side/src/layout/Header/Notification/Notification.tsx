@@ -1,13 +1,5 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
-import React, {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { lazy, useEffect, useReducer, useRef, useState } from "react";
 import { NotificationAPI } from "../../../api/axios";
 import { NotifyMessage, ServerUser } from "../../../api/serverDataInterfaces";
 import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
@@ -38,7 +30,7 @@ const Notification = () => {
   useOutsideAlerter(
     displayNotificationContainerRef,
     notification.isDisplayedNotifications,
-    useCallback(() => {
+    React.useCallback(() => {
       displayNotificationContainerRef.current?.classList.remove(
         "notification__list-active"
       );
@@ -62,6 +54,7 @@ const Notification = () => {
   useEffect(() => {
     NotificationAPI.getAll({ userId: visitorUser.id, taken: 0, toTake: 7 })
       .then((notifs: NotifyMessage[]) => {
+        console.log(notifs);
         dispatchNotification({
           type: "set notifications",
           notification: notifs,
@@ -75,16 +68,18 @@ const Notification = () => {
       connection
         .start()
         .then(() => {
-          connection.on("ReceiveMessage", (message: any) => {
-            dispatchNotification({
-              type: "set socket notifications",
-              notification: [message],
-            });
+          connection.on("ReceiveMessage", (message: NotifyMessage) => {
+            if (message.observableUsersIds.includes(visitorUser.id)) {
+              dispatchNotification({
+                type: "set socket notifications",
+                notification: [message],
+              });
+            }
           });
         })
         .catch((e: any) => console.log("Connection failed: ", e));
     }
-  }, [connection]);
+  }, [connection, visitorUser.id]);
 
   const allNotifsLength =
     notification.notifications.length + notification.socketNotification.length;
@@ -219,7 +214,9 @@ const Notification = () => {
           >
             {allNotificationItems.length > 0 ? (
               <>
-                <Suspense fallback={<div />}>{allNotificationItems}</Suspense>
+                <React.Suspense fallback={<div />}>
+                  {allNotificationItems}
+                </React.Suspense>
                 {notification.loader && (
                   <div className="notification__list__loader">
                     <span className="notification__list__loader--1">

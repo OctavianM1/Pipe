@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Notify;
+using Application.Notify.SendNotification;
 using Application.Users.ApplicationUser;
 using Domain;
 using MediatR;
@@ -22,12 +23,12 @@ namespace Application.Activities
     public class Handler : IRequestHandler<Command>
     {
       private readonly DataContext _context;
-      private readonly IHubContext<NotifyHub, INotifyClient> _notifyHub;
+      private readonly ISendNotification _sendNotification;
 
-      public Handler(DataContext context, IHubContext<NotifyHub, INotifyClient> notifyHub)
+      public Handler(DataContext context, ISendNotification sendNotification)
       {
+        _sendNotification = sendNotification;
         _context = context;
-        _notifyHub = notifyHub;
       }
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
       {
@@ -49,39 +50,11 @@ namespace Application.Activities
         var success = await _context.SaveChangesAsync() > 0;
         if (success)
         {
-          var notifyId = Guid.NewGuid();
-          var activityData = _context.Activities.Where(a => a.Id == request.ActivityId).Select(a => new { Title = a.Title, UserId = a.UserHostId }).FirstOrDefault();
+          var activityData = _context.Activities.Where(a => a.Id == request.ActivityId)
+            .Select(a => new { Title = a.Title, UserId = a.UserHostId })
+            .FirstOrDefault();
           var message = like == null ? $"liked your activity - {activityData.Title}" : $"removed like from activity - {activityData.Title}";
-          var user = _context.Users.Where(u => u.Id == request.UserId).Select(u => new AppUser
-          {
-            Id = u.Id,
-            Name = u.Name,
-            CoverImageExtension = u.CoverImageExtension,
-          }).FirstOrDefault();
-
-          var notify = new NotifyMessage
-          {
-            Id = notifyId,
-            User = user,
-            Message = message,
-            Time = DateTime.Now
-          };
-
-          _context.Notify.Add(new Domain.Notify
-          {
-            Id = notifyId,
-            Message = message,
-            NotifierUserId = request.UserId,
-            ObervableUserId = activityData.UserId,
-            DateTimeCreated = DateTime.Now
-          });
-
-          bool successNotify = await _context.SaveChangesAsync() > 0;
-
-          if (successNotify)
-          {
-            await _notifyHub.Clients.All.ReceiveMessage(notify);
-          }
+          await _sendNotification.Send(request.UserId, activityData.UserId, message);
 
           return Unit.Value;
         }

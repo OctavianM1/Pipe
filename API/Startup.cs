@@ -2,6 +2,7 @@ using System.Text;
 using API.Middleware;
 using Application.Interfaces;
 using Application.Notify;
+using Application.Notify.SendNotification;
 using Application.Users;
 using Infrastructure.Email;
 using Infrastructure.Security;
@@ -79,6 +80,7 @@ namespace API
 
       services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
       services.AddScoped<IEmailSenderService, EmailSenderService>();
+      services.AddScoped<ISendNotification, SendNotification>();
       services.AddSignalR();
     }
 

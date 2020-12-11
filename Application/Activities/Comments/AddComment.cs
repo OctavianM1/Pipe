@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Notify.SendNotification;
 using Application.Users.ApplicationUser;
 using ApplicationComment;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Activities.Comments
@@ -23,9 +25,11 @@ namespace Application.Activities.Comments
     public class Handler : IRequestHandler<Command, AppComment>
     {
       private readonly DataContext _context;
-      public Handler(DataContext context)
+      private readonly ISendNotification _sendNotification;
+      public Handler(DataContext context, ISendNotification sendNotification)
       {
-        this._context = context;
+        _sendNotification = sendNotification;
+        _context = context;
       }
 
       public async Task<AppComment> Handle(Command request, CancellationToken cancellationToken)
@@ -55,6 +59,14 @@ namespace Application.Activities.Comments
             NumberOfActivities = u.Activities.Count(),
             CoverImageExtension = u.CoverImageExtension
           }).FirstOrDefault();
+
+          var activityData = await _context.Activities.Where(a => a.Id == request.ActivityId)
+            .Select(a => new { Title = a.Title, UserHostId = a.UserHostId })
+            .FirstOrDefaultAsync();
+
+          var message = $"added new comment to your activity - {activityData.Title}";
+          await _sendNotification.Send(request.UserId, activityData.UserHostId, message);
+
           return new AppComment
           {
             Id = activityComment.Id,
