@@ -3,6 +3,7 @@ import { CSSTransition } from "react-transition-group";
 import { UploadFile } from "../../../api/axios";
 import { ServerUser } from "../../../api/serverDataInterfaces";
 import StandardButton from "../../../components/Buttons/StandardBtn/StandardButton";
+import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
 import useCoverImage from "../../../Hooks/useCoverImage";
 import useDisableScroll from "../../../Hooks/useDisableScroll";
 import useOutsideAlerter from "../../../Hooks/useOutsideAlerter";
@@ -44,6 +45,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
       setBiggerPhoto(false);
     }, [])
   );
+  const error = useApiErrorHandler();
 
   const saveFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -102,7 +104,7 @@ const CoverPhoto = ({ user }: { user: ServerUser }) => {
           );
           dispatchEdit({ type: "closeEdit" });
         })
-        .catch((err) => console.log(err));
+        .catch(error);
     }
   };
 

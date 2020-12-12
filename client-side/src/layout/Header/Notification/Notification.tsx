@@ -54,7 +54,6 @@ const Notification = () => {
   useEffect(() => {
     NotificationAPI.getAll({ userId: visitorUser.id, taken: 0, toTake: 7 })
       .then((notifs: NotifyMessage[]) => {
-        console.log(notifs);
         dispatchNotification({
           type: "set notifications",
           notification: notifs,

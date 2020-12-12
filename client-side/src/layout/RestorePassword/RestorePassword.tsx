@@ -9,6 +9,7 @@ import useScrollUpAndOpenLogin from "../../Hooks/useScrollUpAndOpenLogin";
 import jwt_decode from "jwt-decode";
 import useIsMounted from "../../Hooks/useIsMounted";
 import useDocumentTitle from "../../Hooks/useDocumentTitle";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const RestorePassword = () => {
   const idMountedRef = useIsMounted();
@@ -47,7 +48,7 @@ const RestorePassword = () => {
       setValidToken(false);
     }
   }
-
+  const error = useApiErrorHandler();
   useDocumentTitle("Restore password");
 
   const openLogin = useScrollUpAndOpenLogin();
@@ -79,7 +80,7 @@ const RestorePassword = () => {
             dispatchRestoreLoggers({ type: "success recovered" });
           }
         })
-        .catch((err: any) => console.log(err));
+        .catch(error);
     }
   };
 

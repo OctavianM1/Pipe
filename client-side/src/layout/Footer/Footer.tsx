@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group";
 
 import "./footer.scss";
 import "../../components/CSSTransitions/cssTransitions.scss";
+import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const Footer = () => {
   const [subscribeBtnClasses, setSubscribeBtnClasses] = useState(
@@ -16,6 +17,8 @@ const Footer = () => {
   const subscribedToEmail = JSON.parse(
     window.localStorage.getItem("subscribeToEmail") || "{}"
   );
+
+  const error = useApiErrorHandler();
 
   const handleFocusInput = () => {
     setSubscribeBtnClasses("footer-subscribe__form__submit-black");
@@ -33,9 +36,9 @@ const Footer = () => {
             window.localStorage.setItem("subscribeToEmail", "{}");
           }
         })
-        .catch((err: any) => console.log(err));
+        .catch(error);
     }
-  }, [subscribedToEmail]);
+  }, [subscribedToEmail, error]);
 
   const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
     const target = ev.target as any;
@@ -48,7 +51,7 @@ const Footer = () => {
         );
         setIsSubscribing(true);
       })
-      .catch((err: any) => console.log(err));
+      .catch(error);
     ev.preventDefault();
   };
 

@@ -14,7 +14,7 @@ export default function useApiErrorHandler() {
         cb && cb();
       } else if (error.status === 401) {
         history.push("/unauthorized");
-      } else if (error.status === 500) {
+      } else if (error.status === 404 || error.status === 500) {
         history.push("/server-error");
       }
     },

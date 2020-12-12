@@ -143,7 +143,6 @@ function onSendEmail(
       dispatchLoggers({ type: "create account", msg });
     })
     .catch((err: any) => {
-      console.log(err);
       if ((err.status === 404 || err.status === 400) && err.data.errors.email) {
         dispatchLoggers({ type: "email login", msg: err.data.errors.email });
       }
