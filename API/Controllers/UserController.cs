@@ -80,6 +80,11 @@ namespace API.Controllers
     {
       return await _mediator.Send(command); 
     }
+    [HttpPost("unsubscribe")]
+    public async Task<ActionResult<Unit>> UnSubscribeToGetEmails(UnSubscribe.Command command)
+    {
+      return await _mediator.Send(command); 
+    }
 
     [AllowAnonymous]
     [HttpGet("isSubscribed/{email}")]

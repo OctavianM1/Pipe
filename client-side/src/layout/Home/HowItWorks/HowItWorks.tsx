@@ -96,7 +96,7 @@ const HowItWorks = () => {
           <h1>See how it works</h1>
           <p>
             Go from idea to action in seconds with Pipe’s intuitively simple
-            boards, lists, and cards.
+            navigation, notification and activity tracking.
           </p>
         </div>
         <div

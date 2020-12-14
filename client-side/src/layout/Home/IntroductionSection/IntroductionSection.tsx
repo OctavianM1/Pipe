@@ -41,12 +41,12 @@ const IntroductionSection = ({
           </div>
           <div className="introduction-gird-col-2">
             <h2 className="introduction-header-2">
-              Talk to your visitors without leaving Pipe.
+              Exchange your activities with other users on Pipe.
             </h2>
             <p>
-              Start conversations with visitors on your website through
-              Smallchat and convert those visitors into customers. All from
-              inside Pipe.
+              Start new relationships and get inspired by other users
+              activities. Get notified. Watch your activity. All from inside
+              Pipe.
             </p>
             {user && user.id ? (
               <div className="introduction-section-container__follow-btns">

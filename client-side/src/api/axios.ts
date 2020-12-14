@@ -60,6 +60,9 @@ const Users = {
     request.put("user/recoveryPassword", body),
   subscribeToSendEmails: (body: { email: string }) =>
     request.post("user/subscribe", body),
+  unSubscribeToSendEmails: (body: { email: string }) =>
+    request.post("user/unsubscribe", body),
+
   isSubscribed: (email: string) => request.get(`/user/isSubscribed/${email}`),
 };
 

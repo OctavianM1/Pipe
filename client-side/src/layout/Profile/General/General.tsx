@@ -6,7 +6,9 @@ import useApiErrorHandler from "../../../Hooks/useApiErrorHandler";
 import CoverPhoto from "./CoverPhoto";
 import EditPassword from "./EditPassword";
 import EmailInput from "./EmailInput";
+import EmailSubscribe from "./EmailSubscribe";
 import NameInput from "./NameInput";
+import StatelessProfileItem from "./StatelessProfileItem";
 
 const General = ({ user }: { user: ServerUser }) => {
   const [userData, setUserData] = useState<ServerUser>(null!);
@@ -37,36 +39,19 @@ const General = ({ user }: { user: ServerUser }) => {
                 userData={userData}
                 setUserData={setUserData}
               />
-              <div className="profile__container__public__el">
-                <div className="profile__container__public__el__label">
-                  Following
-                </div>
-                <div className="profile__container__public__el__info">
-                  <div className="profile__container__public__el__info__data">
-                    {userData.countFollowing}
-                  </div>
-                </div>
-              </div>
-              <div className="profile__container__public__el">
-                <div className="profile__container__public__el__label">
-                  Follows
-                </div>
-                <div className="profile__container__public__el__info">
-                  <div className="profile__container__public__el__info__data">
-                    {userData.countFollowers}
-                  </div>
-                </div>
-              </div>
-              <div className="profile__container__public__el">
-                <div className="profile__container__public__el__label">
-                  Activities
-                </div>
-                <div className="profile__container__public__el__info">
-                  <div className="profile__container__public__el__info__data">
-                    {userData.numberOfActivities}
-                  </div>
-                </div>
-              </div>
+              <StatelessProfileItem
+                label="Following"
+                data={userData.countFollowing}
+              />
+              <StatelessProfileItem
+                label="Follows"
+                data={userData.countFollowers}
+              />
+              <StatelessProfileItem
+                label="Activities"
+                data={userData.numberOfActivities}
+              />
+              <EmailSubscribe userData={userData} setUserData={setUserData} />
             </div>
             <div className="profile__container__security">
               <h2 className="profile__container__info">Security information</h2>

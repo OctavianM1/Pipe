@@ -56,8 +56,8 @@ const OurFeatures: React.FC = () => {
             <h2>Contact List</h2>
           </div>
           <p className="element-container__downside">
-            Quickly and easily view your customer information or export a CSV to
-            your favorite email platform.
+            Quickly and easily view your activity information and recieve emails
+            on your favourite platform.
           </p>
         </div>
         <div
@@ -148,7 +148,7 @@ const OurFeatures: React.FC = () => {
               alt="chat logo"
               loading="lazy"
             />
-            <h2>Easily Install</h2>
+            <h2>Easily Use</h2>
           </div>
           <p className="element-container__downside">
             Add a single embed script to your site. Tweak some settings, and

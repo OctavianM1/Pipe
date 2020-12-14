@@ -38,7 +38,8 @@ namespace Application.Users
           CountFollowers = u.CountFollowers,
           CountFollowing = u.CountFollowing,
           NumberOfActivities = u.Activities.Count(),
-          CoverImageExtension = u.CoverImageExtension
+          CoverImageExtension = u.CoverImageExtension,
+          IsSubscribedToEmails = _context.SubscriberOnEmailNews.FirstOrDefault(e => e.Email == u.Email) != null
         }).FirstOrDefaultAsync(u => u.Id == request.Id);
         if (user == null)
         {

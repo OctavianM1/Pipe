@@ -1,5 +1,5 @@
 import React, { RefObject } from "react";
-import "./Header.scss";
+import "./header.scss";
 
 const Header1: React.FC<{
   headerRef?: RefObject<HTMLHeadingElement>;

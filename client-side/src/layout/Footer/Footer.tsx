@@ -8,9 +8,9 @@ import "../../components/CSSTransitions/cssTransitions.scss";
 import useApiErrorHandler from "../../Hooks/useApiErrorHandler";
 
 const Footer = () => {
-  const [subscribeBtnClasses, setSubscribeBtnClasses] = useState(
-    "footer-subscribe__form__submit-initial"
-  );
+  const [subscribeBtnClasses, setSubscribeBtnClasses] = useState([
+    "footer-subscribe__form__submit-initial",
+  ]);
 
   const [isSubscribing, setIsSubscribing] = useState(false);
 
@@ -21,11 +21,11 @@ const Footer = () => {
   const error = useApiErrorHandler();
 
   const handleFocusInput = () => {
-    setSubscribeBtnClasses("footer-subscribe__form__submit-black");
+    setSubscribeBtnClasses(["footer-subscribe__form__submit-black"]);
   };
 
   const handleBlurInput = () => {
-    setSubscribeBtnClasses("footer-subscribe__form__submit-white");
+    setSubscribeBtnClasses(["footer-subscribe__form__submit-white"]);
   };
 
   useEffect(() => {
@@ -43,12 +43,17 @@ const Footer = () => {
   const handleSubmit = (ev: FormEvent<HTMLFormElement>) => {
     const target = ev.target as any;
     const email = target.email.value;
+    setSubscribeBtnClasses([
+      "footer-subscribe__form__submit-black",
+      "footer-subscribe__form__submit-isSubmiting",
+    ]);
     Users.subscribeToSendEmails({ email })
       .then(() => {
         window.localStorage.setItem(
           "subscribeToEmail",
           JSON.stringify({ email })
         );
+        setSubscribeBtnClasses(["footer-subscribe__form__submit-black"]);
         setIsSubscribing(true);
       })
       .catch(error);
@@ -78,27 +83,30 @@ const Footer = () => {
           timeout={300}
           classNames="fade"
           unmountOnExit
-        > 
+        >
           <div>
             <img
               src="/images/footer/landscape-subscribe.svg"
               alt="landscape svg"
             />
             <div className="footer-subscribe">
-              <form
-                className="footer-subscribe__form"
-                onSubmit={(ev) => handleSubmit(ev)}
-              >
+              <form className="footer-subscribe__form" onSubmit={handleSubmit}>
                 <input
-                  className="footer-subscribe__form__input"
+                  className={
+                    subscribeBtnClasses.length === 2
+                      ? "footer-subscribe__form__input footer-subscribe__form__input-isSubmiting"
+                      : "footer-subscribe__form__input"
+                  }
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  onFocus={() => handleFocusInput()}
-                  onBlur={() => handleBlurInput()}
+                  onFocus={handleFocusInput}
+                  onBlur={handleBlurInput}
                 />
                 <button
-                  className={`footer-subscribe__form__submit ${subscribeBtnClasses}`}
+                  className={`footer-subscribe__form__submit ${subscribeBtnClasses.join(
+                    " "
+                  )}`}
                   type="submit"
                 >
                   Subscribe<span>&nbsp;</span>

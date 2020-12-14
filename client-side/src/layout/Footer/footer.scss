@@ -66,6 +66,10 @@
         &:focus {
           outline: none;
         }
+
+        &-isSubmiting {
+          background-color: rgb(240, 240, 240);
+        }
       }
       &__submit {
         position: absolute;
@@ -189,6 +193,10 @@
             animation: SubscribeBlack 0.2s ease-in-out;
             animation-fill-mode: forwards;
           }
+        }
+        &-isSubmiting {
+          cursor: not-allowed;
+          opacity: 0.6;
         }
       }
     }
@@ -340,4 +348,3 @@
     opacity: 0;
   }
 }
-

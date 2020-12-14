@@ -139,7 +139,7 @@ const Activity = ({
         {hostUserId ===
           JSON.parse(localStorage.getItem("user") || "{}")["id"] && (
           <div className="my-activities__activities-side__activity__editing">
-            <Link to={`${hostUserId}/edit/${id}`}>
+            <Link to={`/activities/${hostUserId}/edit/${id}`}>
               <img src="/images/activities/edit.svg" alt="edit" />
             </Link>
             <img

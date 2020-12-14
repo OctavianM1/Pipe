@@ -25,7 +25,7 @@ export default function LoadOnDemand({
   }, []);
 
   return shouldRender ? (
-    <React.Suspense fallback={<div>Loading</div>}>{children}</React.Suspense>
+    <React.Suspense fallback={<div />}>{children}</React.Suspense>
   ) : (
     <div style={{ height: "200px" }} ref={elRef} />
   );
