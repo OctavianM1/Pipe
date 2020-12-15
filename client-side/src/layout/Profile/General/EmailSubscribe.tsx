@@ -15,8 +15,6 @@ const EmailSubscribe = ({
 
   const error = useApiErrorHandler();
 
-  console.log(userData);
-
   const submitSubscribeToEmails = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!isSubscribing) {

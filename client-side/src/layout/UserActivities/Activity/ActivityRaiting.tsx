@@ -19,7 +19,7 @@ const ActivityRaiting = ({
   personalRate: number;
   activityId: string;
 }) => {
-  const [isHoveringTotalRaiting, setIsHoveringTotalRaiting] = useState(false);
+  const [displayRaiting, setDisplayRaiting] = useState(false);
   const [totalRaitingState, dispatchTotalRaiting] = useReducer(
     totalRaitingReducer,
     {
@@ -29,6 +29,7 @@ const ActivityRaiting = ({
     }
   );
   const raitingUsersRef = useRef<HTMLDivElement>(null);
+  const isHovering = useRef(false);
 
   const visitorUser: ServerUser = JSON.parse(
     window.localStorage.getItem("user") || "{}"
@@ -37,7 +38,8 @@ const ActivityRaiting = ({
 
   const onHoverRaiting = () => {
     if (raitingUsersRef.current) {
-      setIsHoveringTotalRaiting(true);
+      isHovering.current = true;
+      setDisplayRaiting(true);
       setTimeout(() => {
         const container = raitingUsersRef?.current?.firstElementChild;
         container?.classList.add(
@@ -51,13 +53,15 @@ const ActivityRaiting = ({
     if (raitingUsersRef.current) {
       const container = raitingUsersRef?.current?.firstElementChild;
       if (container) {
-        container.addEventListener("transitionend", function end() {
-          container.removeEventListener("transitionend", end);
-          setIsHoveringTotalRaiting(false);
-        });
+        isHovering.current = false;
         container.classList.remove(
           "my-activities__activities-side__activity__total-raiting__users-active"
         );
+        setTimeout(() => {
+          if (!isHovering.current) {
+            setDisplayRaiting(false);
+          }
+        }, 150);
       }
     }
   };
@@ -114,7 +118,7 @@ const ActivityRaiting = ({
         onMouseLeave={onDishoverRaiting}
       >
         <div ref={raitingUsersRef}>
-          {isHoveringTotalRaiting && totalRaitingState.raiting !== 0 && (
+          {displayRaiting && totalRaitingState.raiting !== 0 && (
             <div className="my-activities__activities-side__activity__total-raiting__users">
               <div className="my-activities__activities-side__activity__total-raiting__users__arrow">
                 &nbsp;

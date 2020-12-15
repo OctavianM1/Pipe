@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Users } from "../../api/axios";
 import StandardButton from "../../components/Buttons/StandardBtn/StandardButton";
@@ -22,22 +22,27 @@ const ConfirmEmail = () => {
 
   const user = JSON.parse(window.localStorage.getItem("user") || "{}");
   if (user && user.id) {
-    history.push("/");
+    setTimeout(() => {
+      history.push("/");
+    });
   }
 
   const { token } = useParams<{ token: string }>();
-  let decodedToken: any;
-  try {
-    decodedToken = jwt_decode(token);
-  } catch {
-    dispatchEmailConfirmation({ type: "wrong" });
-  }
 
-  useDocumentTitle('Confirm email');
+  let decodedToken = useRef<any>(null);
+  useEffect(() => {
+    try {
+      decodedToken.current = jwt_decode(token);
+    } catch {
+      dispatchEmailConfirmation({ type: "wrong" });
+    }
+  }, [token]);
+
+  useDocumentTitle("Confirm email");
 
   useEffect(() => {
-    if (decodedToken) {
-      Users.confirmEmail(decodedToken.nameid)
+    if (decodedToken.current) {
+      Users.confirmEmail(decodedToken.current.nameid)
         .then(() => dispatchEmailConfirmation({ type: "confirmed" }))
         .catch((err: any) => {
           if (err.status === 400 && err.data.errors.email) {

@@ -28,7 +28,9 @@ const RestorePassword = () => {
 
   const user = JSON.parse(window.localStorage.getItem("user") || "{}");
   if (user && user.id) {
-    history.push("/");
+    setTimeout(() => {
+      history.push("/");
+    });
   }
 
   const [validToken, setValidToken] = useState(false);

@@ -26,10 +26,11 @@ const PostIntroductionSection: React.FC = () => {
             Follow on Pipe<span>.</span>
           </h2>
           <p>
-            Chat runs inside your Pipe team, which means no additional software
-            to learn. Be available to chat with visitors on your website and
-            your team members all in one place. Each conversation creates a new
-            thread, allowing your team to manage it all from one place.
+            <span style={{ marginLeft: "15px" }}>&nbsp;</span>Project runs
+            inside Pipe host, which means no additional software to learn. Be
+            available to communicate with all followers on your account in one
+            place. Each conversation creates a new thread, allowing your all
+            followers to be notified from one place.
           </p>
         </div>
         <div className="post-right-side">
