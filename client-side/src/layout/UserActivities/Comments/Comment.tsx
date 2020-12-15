@@ -165,6 +165,17 @@ const Comment = ({
     [visitorUser.id, error, commentData.id]
   );
 
+  const displayDate = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const el = ev.target as Element;
+    if (el && !el.classList.contains("comment-likes__container")) {
+      setDisplayCommentDate(true);
+    }
+  };
+
+  const hideDate = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setDisplayCommentDate(false);
+  };
+
   let displayUsersReplied =
     (numberOfResponses > 0 && commentResponses.length === 0) ||
     displayedResponsesNr === 0;
@@ -185,8 +196,8 @@ const Comment = ({
             alt="anonym user"
           />
           <div
-            onMouseEnter={() => setDisplayCommentDate(true)}
-            onMouseLeave={() => setDisplayCommentDate(false)}
+            onMouseEnter={displayDate}
+            onMouseLeave={hideDate}
             className={
               commentEdit.editMode ? "comment__container__full-width" : ""
             }

@@ -33,16 +33,21 @@ const CommentTemplate = ({
     part: 1, // 1 to right, 2 to left
   });
 
-  const handleHoverCommentLike = useCallback(() => {
-    const activityRight = activityRef?.current?.getBoundingClientRect().right!;
-    const likeContainerRight = commentLikeRef?.current?.getBoundingClientRect()
-      .right!;
-    if (likeContainerRight + 300 < activityRight) {
-      setHoveringCommentLikes({ hover: true, part: 1 });
-    } else {
-      setHoveringCommentLikes({ hover: true, part: 2 });
-    }
-  }, [activityRef, commentLikeRef]);
+  const handleHoverCommentLike = useCallback(
+    (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      ev.stopPropagation();
+      const activityRight = activityRef?.current?.getBoundingClientRect()
+        .right!;
+      const likeContainerRight = commentLikeRef?.current?.getBoundingClientRect()
+        .right!;
+      if (likeContainerRight + 300 < activityRight) {
+        setHoveringCommentLikes({ hover: true, part: 1 });
+      } else {
+        setHoveringCommentLikes({ hover: true, part: 2 });
+      }
+    },
+    [activityRef, commentLikeRef]
+  );
 
   const handleUnHoverCommentLike = useCallback(() => {
     setHoveringCommentLikes((oldHover) => {
