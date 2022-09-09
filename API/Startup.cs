@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
@@ -34,10 +35,10 @@ namespace API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-
+      
       services.AddDbContext<DataContext>(opt =>
       {
-        opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+        opt.UseInMemoryDatabase("MemoryDb");
       });
 
       services.AddCors(opt =>

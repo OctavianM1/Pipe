@@ -23,8 +23,8 @@ namespace API
         var services = scope.ServiceProvider;
         try
         {
-          var context = services.GetRequiredService<DataContext>();
-          context.Database.Migrate();
+          // var context = services.GetRequiredService<DataContext>();
+          // context.Database.Migrate();
 
         }
         catch (Exception ex)
