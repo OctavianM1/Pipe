@@ -39,10 +39,10 @@ namespace Application.Users
           throw new RestException(System.Net.HttpStatusCode.BadRequest, new { email = "Invalid email" });
         }
 
-        if (user.IsEmailConfirmed == false)
-        {
-          throw new RestException(System.Net.HttpStatusCode.BadRequest, new { email = "Email is not confirmed" });
-        }
+        // if (user.IsEmailConfirmed == false)
+        // {
+        //   throw new RestException(System.Net.HttpStatusCode.BadRequest, new { email = "Email is not confirmed" });
+        // }
 
         var origHashedParts = user.Password.Split('|');
         var origSalt = Convert.FromBase64String(origHashedParts[0]);
