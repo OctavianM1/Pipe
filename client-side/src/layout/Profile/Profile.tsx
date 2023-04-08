@@ -73,14 +73,14 @@ const Profile = () => {
               >
                 General
               </li>
-              <li
+              {/* <li
                 className={
                   profileNavigateIdx === 1 ? "profile__side-bar__active" : ""
                 }
                 onClick={() => onNavigate(1)}
               >
                 Activity
-              </li>
+              </li> */}
             </ul>
             <WatchActivity />
             <CSSTransition

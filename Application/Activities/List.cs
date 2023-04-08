@@ -12,6 +12,7 @@ using Application.Activities.ApplicationRaiting;
 using ApplicationComment;
 using ApplicationActivityLikes;
 using ApplicationUser;
+using Domain;
 
 namespace Application.Activities
 {
@@ -23,6 +24,15 @@ namespace Application.Activities
       public string MatchString { get; set; }
     }
 
+    public static double GetAverage(IEnumerable<float> values)
+    {
+      if (values.Count() == 0)
+      {
+        return 0;
+      }
+      return values.Average();
+    }
+
     public class Handler : IRequestHandler<Command, List<AppActivity>>
     {
       private readonly DataContext _context;
@@ -31,6 +41,7 @@ namespace Application.Activities
       {
         _context = context;
       }
+
 
       public async Task<List<AppActivity>> Handle(Command request, CancellationToken cancellationToken)
       {
@@ -61,7 +72,7 @@ namespace Application.Activities
               Rate = ar.Raiting,
               CoverImageExtension = ar.User.CoverImageExtension
             }).ToList(),
-            Raiting = a.ActivityRaiting.Average(ar => ar.Raiting)
+            Raiting = GetAverage(a.ActivityRaiting.Select(ar => ar.Raiting))
           },
           Likes = new AppActivityLikes
           {

@@ -42,9 +42,9 @@ namespace Application.Activities
 
       public async Task<List<AppActivity>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var activitiesIds = await _context.ActivityLikes.Where(al => al.UserId == request.UserId).Select(al => al.ActivityId).ToListAsync();
+        // var activitiesIds = await _context.ActivityLikes.Where(al => al.UserId == request.UserId).Select(al => al.ActivityId).ToListAsync();
 
-        var allActivities = _context.Activities.Where(a => activitiesIds.Contains(a.Id))
+        var allActivities = _context.Activities
         .Select(a => new AppActivity
         {
           Id = a.Id,
@@ -64,7 +64,7 @@ namespace Application.Activities
               Rate = ar.Raiting,
               CoverImageExtension = ar.User.CoverImageExtension
             }).ToList(),
-            Raiting = a.ActivityRaiting.Average(ar => ar.Raiting)
+            Raiting = List.GetAverage(a.ActivityRaiting.Select(ar => ar.Raiting))
           },
           Likes = new AppActivityLikes
           {
@@ -111,7 +111,7 @@ namespace Application.Activities
 
         var filteredActivities = allActivities.Filter(request.FilterRaitingMin - 0.5, request.FilterRaitingMax, request.FilterTitle, request.FilterSubject);
 
-        return await filteredActivities.SortAsync(request.SortBy, request.Took, request.ToTake);
+        return await allActivities.SortAsync(request.SortBy, request.Took, request.ToTake);
       }
     }
   }
