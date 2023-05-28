@@ -41,3 +41,21 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
+  deploy:
+    needs: [build_frontend, build_backend]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build using Node.js 14.19.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.19.0'
+      - run: |
+          cd CDK
+          npm install
+          npm run build
+          npm run deploy
