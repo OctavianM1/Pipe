@@ -14,10 +14,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      - name: Build using Node.js 16.15.1
+      - name: Build using Node.js 14.19.0
         uses: actions/setup-node@v3
         with:
-          node-version: '16.15.1'
+          node-version: '14.19.0'
       - run: |
           cd client-side
           npm install
