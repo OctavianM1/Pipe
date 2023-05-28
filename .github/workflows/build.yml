@@ -1,0 +1,43 @@
+name: CI build
+
+on:
+  push:
+    branches:
+      - main
+      - deployment
+
+jobs:
+  build_frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build using Node.js 16.15.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.1'
+      - run: |
+          cd client-side
+          npm install
+          npm run build
+
+  build_backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
