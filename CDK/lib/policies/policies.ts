@@ -2,7 +2,6 @@ import { Policy, PolicyStatement, IRole } from 'aws-cdk-lib/aws-iam';
 import { CfnJson, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-// Scope fluentbit to push logs to log-group /aws/containerinsights/CLUSTER_NAME/ only
 export function createFluentbitPolicy(stack: Stack, clusterName: string, roleSA: IRole): Policy {
   const fluentBitSaRoleStatementPolicy = new PolicyStatement({
     resources: [
@@ -25,10 +24,8 @@ export function createFluentbitPolicy(stack: Stack, clusterName: string, roleSA:
     ],
   });
 }
-// Scope ClusterAutoscaler to read/write to tags with cluster-name
 export function createClusterAutoscalerPolicy(stack: Construct, clusterName: string, roleSA: IRole): Policy {
   const clusterAutoscalerSAPolicyStatementDescribe = new PolicyStatement({
-    // https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html#ca-create-policy
     resources: [
       '*',
     ],
@@ -41,8 +38,6 @@ export function createClusterAutoscalerPolicy(stack: Construct, clusterName: str
     ],
 
   });
-  // Cluster Autoscaler tags resources using the tags below, so scope resources to those tags
-  // Create CfnJson as variables are not allowed to be in keys for key:value pairs.
   const clusterAutoscalerPolicyStatementWriteJson = new CfnJson(stack, 'clusterAutoscalerPolicyStatementWriteJson', {
     value: {
       'autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled': 'true',
@@ -75,7 +70,6 @@ export function createClusterAutoscalerPolicy(stack: Construct, clusterName: str
 }
 
 export function createEFSPolicy(stack: Stack, clusterName: string, roleSA: IRole): Policy {
-  // Scope EFS Permissions DescribeFileSystems,DescribeMountTargets on all, but limit create/delete AccessPoint to tag eks:clustername: <ClusterName>
   const readEFSResources = new PolicyStatement({
     resources: [
       '*',
@@ -92,7 +86,6 @@ export function createEFSPolicy(stack: Stack, clusterName: string, roleSA: IRole
     actions: [
       'elasticfilesystem:CreateAccessPoint',
     ],
-    // Requires tags in Request call
     conditions: {
       StringEquals: {
         'aws:RequestTag/eks/cluster-name': clusterName,
@@ -107,7 +100,6 @@ export function createEFSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'elasticfilesystem:DeleteAccessPoint',
     ],
     conditions: {
-      // Requires already created resource to contain tags
       StringEquals: {
         'aws:ResourceTag/eks/cluster-name': clusterName,
       },
@@ -126,8 +118,6 @@ export function createEFSPolicy(stack: Stack, clusterName: string, roleSA: IRole
 }
 
 export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole): Policy {
-  // Scope permissions to describe on all resources, some APIs like ec2:DescribeAvailabilityZones do not Resource types
-  // https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html#amazonec2-actions-as-permissions
   const readEBSPolicy = new PolicyStatement({
     resources: [
       '*',
@@ -141,7 +131,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:DescribeVolumesModifications',
     ],
   });
-  // Scope to createTags only creation of volumes and snapshots
   const createTags = new PolicyStatement({
     resources: [
       `arn:aws:ec2:${stack.region}:${stack.account}:volume/*`,
@@ -159,7 +148,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:CreateTags',
     ],
   });
-  // Scope deletion of tags on volumes and snapshots that already contain eks:cluster-name: MY_CLUSTER_NAME
   const deleteTags = new PolicyStatement({
     resources: [
       `arn:aws:ec2:${stack.region}:${stack.account}:volume/*`,
@@ -174,7 +162,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:DeleteTags',
     ],
   });
-  // Scope Attach/Detach/Modify of EBS policies to tags eks:cluster-name': MY_CLUSTER_NAME
   const modifyVolume = new PolicyStatement({
     resources: [
       `arn:aws:ec2:${stack.region}:${stack.account}:instance/*`,
@@ -191,7 +178,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       },
     },
   });
-  // Scope CreateVolume only when Request contains tags eks:cluster-name: MY_CLUSTER_NAME
   const createVolume = new PolicyStatement({
     resources: [
       '*',
@@ -205,7 +191,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:CreateVolume',
     ],
   });
-  // Scope DeleteVolume only when Resource contains tag eks:cluster-name: MY_CLUSTER_NAME
   const deleteVolume = new PolicyStatement({
     resources: [
       '*',
@@ -222,7 +207,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:ModifyVolume',
     ],
   });
-  // Scope Permission to createsnapshot only when Request contains tag eks:cluster-name: MY_CLUSTER_NAME
   const createSnapshot = new PolicyStatement({
     resources: [
       '*',
@@ -236,7 +220,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
       'ec2:CreateSnapshot',
     ],
   });
-  // Scope Permission to DeleteSnapshot only when Resource contains tag eks:cluster-name: MY_CLUSTER_NAME
   const deleteSnapshot = new PolicyStatement({
     resources: [
       '*',
@@ -268,13 +251,6 @@ export function createEBSPolicy(stack: Stack, clusterName: string, roleSA: IRole
 }
 
 export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA: IRole): Policy {
-  /* Permissions are board to include all functionality of ALB, Permissions can be removed as fit, refer to annotations to see which actions are needed
-  https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/
-  Custom Permission set can be generated by using IAM generated policy
-  https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_generate-policy.html
-  */
-
-  // Permission to create ELB ServiceLinkRole if not already created, scoped to only elasticloadbalancing service role
   const serviceLinkedRole = new PolicyStatement({
     actions: [
       'iam:CreateServiceLinkedRole',
@@ -286,7 +262,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Permission needs to self discovery networking attributes
   const readPolicy = new PolicyStatement({
     actions: [
       'ec2:DescribeAccountAttributes',
@@ -314,7 +289,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['*'],
   });
-  // Additional Permissions for shield, waf acm and cognito feature set enablement
   const readPolicyAdd = new PolicyStatement({
     actions: [
       'cognito-idp:DescribeUserPoolClient',
@@ -337,7 +311,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['*'],
   });
-  // Enable usage of ingress rule for security groups created outside of controller
   const writeSG = new PolicyStatement({
     actions: [
       'ec2:AuthorizeSecurityGroupIngress',
@@ -345,7 +318,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['*'],
   });
-  // Enable controller to automatically create security groups, tags may be added later
   const createSG = new PolicyStatement({
 
     actions: [
@@ -353,7 +325,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['*'],
   });
-  // Give tagging permission to actions that create the resource, CreateSecurityGroup
   const createTags = new PolicyStatement({
 
     actions: [
@@ -369,7 +340,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Create and Delete Tags for security groups when at time of authorization aws:RequestTag/elbv2.k8s.aws/cluster is null
   const createdeleteTags = new PolicyStatement({
 
     actions: [
@@ -384,7 +354,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Management of SecurityGroup when at time of authorization aws:ResourceTag/elbv2.k8s.aws/cluster is not null
   const writeSGIngress = new PolicyStatement({
 
     actions: [
@@ -399,7 +368,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Allow creation of LoadBalancer/TargetGroup only if Request contains Tags eks:cluster-name: MY_CLUSTER_NAME
   const createLoadBalancer = new PolicyStatement({
 
     actions: [
@@ -413,9 +381,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Management of LoadBalancer Listeners and Rules
-  // TODO Scope to use tags with release of v2.2.0
-  // https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/1966
   const createLoadBalancerAdd = new PolicyStatement({
 
     actions: [
@@ -426,7 +391,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['*'],
   });
-  // Management of ELB Tags when at authorization time aws:RequestTag/elbv2.k8s.aws/cluster is null
   const loadBalancerTags = new PolicyStatement(
     {
 
@@ -446,9 +410,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
         },
       },
     });
-  // Management of ListenerTags
-  // TODO Scope using Tags RequestTags for AddTags
-  // https://docs.aws.amazon.com/service-authorization/latest/reference/list_elasticloadbalancingv2.html#elasticloadbalancingv2-actions-as-permissions
   const loadBalancerListenersTags = new PolicyStatement({
 
     actions: [
@@ -462,7 +423,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       'arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*',
     ],
   });
-  // Management of LoadBalancer Targetgroup and Attributes, scoped to when at authorization time aws:ResourceTag/elbv2.k8s.aws/cluster is not null
   const modifyLoadBalancer = new PolicyStatement({
 
     actions: [
@@ -480,7 +440,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Delete Load Balancer and TargetGroups to tag eks:cluster-name : MY_CLUSTER_NAME
   const deleteLoadBalancer = new PolicyStatement({
     resources: ['*'],
     actions: [
@@ -493,7 +452,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
       },
     },
   });
-  // Management of Target scoped to target-groups
   const registerTarget = new PolicyStatement({
 
     actions: [
@@ -502,7 +460,6 @@ export function createAlbIngressPolicy(stack: Stack, clusterName: string, roleSA
     ],
     resources: ['arn:aws:elasticloadbalancing:*:*:targetgroup/*/*'],
   });
-  // Management of LoadBalancer Certs, WebACL and Rules
   const modifyLoadBalancerCerts = new PolicyStatement({
 
     actions: [

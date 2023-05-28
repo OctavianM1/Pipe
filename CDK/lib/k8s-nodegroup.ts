@@ -42,12 +42,10 @@ export class K8snodegroups extends cdk.Stack {
     });
 
     const userdataCommands = UserData.forLinux();
-    // SSH only allowed via SSM Session Manager - https://aws.github.io/aws-eks-best-practices/security/docs/hosts/#minimize-access-to-worker-nodes
     userdataCommands.addCommands(
       `sudo yum install -y https://s3.${this.region}.amazonaws.com/amazon-ssm-${this.region}/latest/linux_amd64/amazon-ssm-agent.rpm`,
     );
     const multipart = new MultipartUserData();
-    // const part = MultipartBody
     multipart.addPart(
       MultipartBody.fromUserData(userdataCommands),
     );
@@ -56,7 +54,6 @@ export class K8snodegroups extends cdk.Stack {
       launchTemplateData: {
         instanceType: nodeType.valueAsString,
         userData: Fn.base64(multipart.render()),
-        // Ensure Managed Nodes Instances EBS Volumes are encrypted
         blockDeviceMappings: [
           {
             deviceName: '/dev/xvda',
@@ -66,11 +63,6 @@ export class K8snodegroups extends cdk.Stack {
             },
           },
         ],
-        // Restrict access to the instance profile assigned to the worker node (not enabled)
-        // Not all components are IMDSv2 aware. Ex. Fluentbit
-        // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#restrict-access-to-the-instance-profile-assigned-to-the-worker-node
-        // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-launchtemplate-launchtemplatedata-metadataoptions.html#aws-properties-ec2-launchtemplate-launchtemplatedata-metadataoptions-properties
-        // https://aws.github.io/aws-eks-best-practices/security/docs/iam/#when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2
         metadataOptions: {
           httpTokens: 'optional',
           httpPutResponseHopLimit: 2,
@@ -93,16 +85,12 @@ export class K8snodegroups extends cdk.Stack {
 
     (() => new Nodegroup(this, 'ng-1', {
       cluster: props.eksCluster,
-      // https://docs.aws.amazon.com/eks/latest/userguide/eks-linux-ami-versions.html
       releaseVersion: nodeAMIVersion.valueAsString,
       nodegroupName: 'ng-1',
-      // Require specific order of max,desired,min or generated CDK Tokens fail desired>min check
-      // https://github.com/aws/aws-cdk/issues/15485
       nodeRole: props.nodeGroupRole,
       maxSize: nodegroupMax.valueAsNumber,
       desiredSize: nodegroupCount.valueAsNumber,
       minSize: nodegroupMin.valueAsNumber,
-      // LaunchTemplate for custom userdata to install SSM Agent
       launchTemplateSpec: {
         id: launchtemplate.ref,
         version: launchtemplate.attrLatestVersionNumber,
@@ -111,7 +99,6 @@ export class K8snodegroups extends cdk.Stack {
         Name: Fn.join('-', [props.eksCluster.clusterName, 'WorkerNodes']),
       },
     }))();
-    // Permissions for SSM Manager for core functionality
     props.nodeGroupRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
   }
 }

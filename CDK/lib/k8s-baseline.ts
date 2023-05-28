@@ -16,9 +16,7 @@ export class K8sBaselineStack extends cdk.Stack {
     id: string,
     props: k8sBaselineProps) {
     super(scope, id, props);
-    // ============================================================================================================================================
-    // Parameters
-    // ============================================================================================================================================
+
     const ebsDriver = new CfnParameter(this, 'ebsDriver', {
       type: 'String',
       default: 'false',
@@ -37,8 +35,7 @@ export class K8sBaselineStack extends cdk.Stack {
       description: 'Deploy EFS CSI Driver',
       allowedValues: ['true', 'false'],
     });
-    // FluentBit needs to implement IMDSv2
-    // https://github.com/fluent/fluent-bit/issues/2840#issuecomment-774393238
+
     const fluentBitDriver = new CfnParameter(this, 'fluentBit', {
       type: 'String',
       default: 'true',
@@ -78,10 +75,6 @@ export class K8sBaselineStack extends cdk.Stack {
       allowedValues: ['true', 'false'],
     });
 
-    // ============================================================================================================================================
-    // Conditions
-    // ============================================================================================================================================
-
     const ebsDriverCondition = new CfnCondition(this, 'ebsDriverCondition', {
       expression: Fn.conditionEquals(ebsDriver.valueAsString, 'true'),
     });
@@ -111,21 +104,6 @@ export class K8sBaselineStack extends cdk.Stack {
       expression: Fn.conditionEquals(metricServerDriver.valueAsString, 'true'),
     });
 
-    // ============================================================================================================================================
-    // Resource Creation
-    // ============================================================================================================================================
-    /*
-    Service Account Resources will be created in CDK to ensure proper IAM to K8s RBAC Mapping
-    Helm Chart Version are taken from cdk.json file or from command line parameter -c
-    Helm Chart full version list can be found via helm repo list or viewing yaml file on github directly, see README.
-    */
-
-    /*
-    Resources needed to create Cluster Autoscaler
-    Service Account Role
-    IAM Policy
-    Helm Chart
-    */
     const clusterAutoscalerSA = new ServiceAccount(this, 'clusterAutoscalerSA', {
       name: 'cluster-autoscaler-sa',
       cluster: props.eksCluster,
@@ -139,9 +117,7 @@ export class K8sBaselineStack extends cdk.Stack {
       chart: 'cluster-autoscaler',
       namespace: 'kube-system',
       wait: true,
-      // https://github.com/kubernetes/autoscaler/blob/gh-pages/index.yaml
       version: this.node.tryGetContext('cluster-autoscaler-helm-version'),
-      // https://github.com/kubernetes/autoscaler/tree/master/charts/cluster-autoscaler#values
       values: {
         cloudProvider: 'aws',
         awsRegion: this.region,
@@ -155,36 +131,19 @@ export class K8sBaselineStack extends cdk.Stack {
           },
         },
         extraArgs: {
-          // https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-the-parameters-to-ca
           'skip-nodes-with-system-pods': false,
           'skip-nodes-with-local-storage': false,
           'balance-similar-node-groups': true,
-          // How long a node should be unneeded before it is eligible for scale down
           'scale-down-unneeded-time': '300s',
-          // How long after scale up that scale down evaluation resumes
           'scale-down-delay-after-add': '300s',
         },
 
       },
     });
-    // Generate IAM Policy with scoped permissions
     const clusterAutoscalerPolicy = genPolicy.createClusterAutoscalerPolicy(this, props.eksCluster.clusterName, clusterAutoscalerSA.role);
-    // Add condition to deploy clusterAutoscaler Resources only if condition is true
     this.addConditions(clusterAutoscalerDeploy, clusterAutoscalerDriverCondition);
     this.addConditions(clusterAutoscalerPolicy, clusterAutoscalerDriverCondition);
-    /*
-    Resources needed to create Fluent Bit DaemonSet
-    Namespace
-    Service Account Role
-    IAM Policy
-    K8s Manifest
-
-    Current Config pushes to Cloudwatch , other outputs found here https://docs.fluentbit.io/manual/pipeline/outputs
-    Fluentbit does not support IMDSv2
-    https://github.com/fluent/fluent-bit/issues/2840#issuecomment-774393238
-    */
-
-    // YAML contains fluentbit parser configurations, remove namespace and serviceaccount from yaml to properly annotate with IAM Role
+  
     const manifestFluentBitSetup = this.cleanManifest('manifests/fluentBitSetup.yaml');
     const fluentBitNamespace = new KubernetesManifest(this, 'amazon-cloudwatch-namespace', {
       cluster: props.eksCluster,
@@ -205,12 +164,10 @@ export class K8sBaselineStack extends cdk.Stack {
       namespace: 'amazon-cloudwatch',
       cluster: props.eksCluster,
     });
-    // Ensure Namespace is created first before fluentBitSA resource
     fluentBitSA.node.addDependency(fluentBitNamespace);
     const fluentbitPolicy = genPolicy.createFluentbitPolicy(this, props.eksCluster.clusterName, fluentBitSA.role);
     this.addConditions(fluentbitPolicy, fluentBitDriverCondition);
     this.addConditions(fluentBitSA, fluentBitDriverCondition);
-    // Configurable variables for  manifests/fluentBitSetup.yaml
     const fluentBitClusterInfo = new KubernetesManifest(this, 'fluentbit-cluster-info', {
       cluster: props.eksCluster,
       manifest: [{
@@ -245,16 +202,7 @@ export class K8sBaselineStack extends cdk.Stack {
     fluentBitResource.node.addDependency(fluentBitClusterInfo);
     this.addConditions(fluentBitResource, fluentBitDriverCondition);
 
-    /*
-    Resources needed to create ALB Ingress Controller
-    Namespace
-    Service Account Role
-    IAM Policy
-    Helm Chart
-    AddOn: https://github.com/aws/containers-roadmap/issues/1162
-    */
 
-    // Create Namespace and Service Account for ALB Ingress
     const albNamespace = new KubernetesManifest(this, 'alb-ingress-controller-namespace', {
       cluster: props.eksCluster,
       manifest: [{
@@ -277,10 +225,8 @@ export class K8sBaselineStack extends cdk.Stack {
     albSA.node.addDependency(albNamespace);
     this.addConditions(albSA, albDriverCondition);
 
-    // ALB Controller IAMPolicy
     const albIamTest = genPolicy.createAlbIngressPolicy(this, props.eksCluster.clusterName, albSA.role);
     this.addConditions(albIamTest, albDriverCondition);
-    // https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/values.yaml
     const albIngressHelmChart = new HelmChart(this, 'alb-ingress-controller-chart', {
       chart: 'aws-load-balancer-controller',
       cluster: props.eksCluster,
@@ -289,17 +235,14 @@ export class K8sBaselineStack extends cdk.Stack {
       release: 'aws-load-balancer-controller',
       createNamespace: true,
       namespace: 'alb-ingress-controller',
-      // https://github.com/aws/eks-charts/blob/gh-pages/index.yaml
       version: this.node.tryGetContext('aws-load-balancer-controller-helm-version'),
       values: {
         clusterName: props.eksCluster.clusterName,
         defaultTags: {
           'eks:cluster-name': props.eksCluster.clusterName,
         },
-        // Start - values needed if ec2metadata endpoint is unavailable - https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller#configuration
         region: this.region,
         vpcId: props.eksCluster.vpc.vpcId,
-        // End - values needed if ec2metadata endpoint is unavailable
         serviceAccount: {
           create: false,
           name: albSA.serviceAccountName,
@@ -308,15 +251,7 @@ export class K8sBaselineStack extends cdk.Stack {
     });
     albIngressHelmChart.node.addDependency(albSA);
     this.addConditions(albIngressHelmChart, albDriverCondition);
-    /*
-    Resources needed to create EBS CSI Driver
-    Service Account Role
-    IAM Policy
-    Helm Chart
-    Add On: https://github.com/aws/containers-roadmap/issues/247
-    */
 
-    // Create Service Account (Pod IAM Role Mapping) for EBS Controller
     const ebsSA = new ServiceAccount(this, 'ebs-csi-controller-sa', {
       name: 'ebs-csi-controller-sa',
       namespace: 'kube-system',
@@ -324,10 +259,8 @@ export class K8sBaselineStack extends cdk.Stack {
     });
     this.addConditions(ebsSA, ebsDriverCondition);
 
-    // EBS Controller IAMPolicyDoc
     const ebsIamPolicyTest = genPolicy.createEBSPolicy(this, props.eksCluster.clusterName, ebsSA.role);
     this.addConditions(ebsIamPolicyTest, ebsDriverCondition);
-    // Helm Chart Values: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/charts/aws-ebs-csi-driver/values.yaml
     const ebsCsiHelmChart = new HelmChart(this, 'ebs-csi-helm-chart', {
       chart: 'aws-ebs-csi-driver',
       cluster: props.eksCluster,
@@ -336,7 +269,6 @@ export class K8sBaselineStack extends cdk.Stack {
       release: 'aws-ebs-csi-driver',
       namespace: 'kube-system',
       wait: true,
-      // Helm Chart Versions: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/gh-pages/index.yaml
       version: this.node.tryGetContext('aws-ebs-csi-driver-helm-version'),
       values: {
         controller: {
@@ -356,12 +288,7 @@ export class K8sBaselineStack extends cdk.Stack {
     ebsCsiHelmChart.node.addDependency(ebsSA);
     this.addConditions(ebsCsiHelmChart, ebsDriverCondition);
 
-    /*
-       Resources needed to create EFS Controller
-       Service Account Role
-       IAM Policy
-       Helm Chart
-       */
+   
 
     const efsSA = new ServiceAccount(this, 'efs-csi-controller-sa', {
       name: 'efs-csi-controller-sa',
@@ -370,13 +297,8 @@ export class K8sBaselineStack extends cdk.Stack {
     });
     this.addConditions(efsSA, efsDriverCondition);
 
-    // Make sure to allow traffic on port 2049 on the security group associated to your EFS file system from the CIDR assigned to your EKS cluster.
-    // https://docs.aws.amazon.com/efs/latest/ug/network-access.html
-    // Ensure EFS connections are using TLS when provisioning EFS PersistentVolume
-    // https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html#efs-install-driver
     const efsPolicy = genPolicy.createEFSPolicy(this, props.eksCluster.clusterName, efsSA.role);
     this.addConditions(efsPolicy, efsDriverCondition);
-    // Helm Chart Values: https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/master/charts/aws-efs-csi-driver/values.yaml
     const efsCsiHelmChart = new HelmChart(this, 'efs-csi-helm-chart', {
       chart: 'aws-efs-csi-driver',
       cluster: props.eksCluster,
@@ -385,7 +307,6 @@ export class K8sBaselineStack extends cdk.Stack {
       release: 'aws-efs-csi-driver',
       namespace: 'kube-system',
       wait: true,
-      // Helm Chart Versions: https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/gh-pages/index.yaml
       version: this.node.tryGetContext('aws-efs-csi-driver-helm-version'),
       values: {
         controller: {
@@ -395,8 +316,6 @@ export class K8sBaselineStack extends cdk.Stack {
             name: efsSA.serviceAccountName,
           },
           tags: {
-            // Unable to use ":" in tags due to EFS CSI Driver splitting string by ":" eks:cluster-name: myclustername -> eks: cluster-name
-            // https://github.com/kubernetes-sigs/aws-efs-csi-driver/blob/388c3f90f21f9c550935815bc8af25ddce4c7f32/pkg/driver/driver.go#L145
             'eks/cluster-name': props.eksCluster.clusterName,
           },
         },
@@ -408,13 +327,6 @@ export class K8sBaselineStack extends cdk.Stack {
     efsCsiHelmChart.node.addDependency(efsSA);
     this.addConditions(efsCsiHelmChart, efsDriverCondition);
 
-    /*
-       Resources needed to create Secrets Manager
-       Service Account Role
-       Helm Chart
-       Kubernetes Manifest
-    */
-
     const awsSecretSa = new ServiceAccount(this, 'aws-secrets-sa', {
       cluster: props.eksCluster,
       name: 'csi-secrets-store-provider-aws',
@@ -423,8 +335,6 @@ export class K8sBaselineStack extends cdk.Stack {
 
     this.addConditions(awsSecretSa, secretsDriverCondition);
 
-    // https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/master/charts/secrets-store-csi-driver/values.yaml
-    // Deploys Secrets Store CSI Driver
     const secretsCsiHelmChart = new HelmChart(this, 'secrets-csi-helm-chart', {
       chart: 'secrets-store-csi-driver',
       cluster: props.eksCluster,
@@ -433,19 +343,14 @@ export class K8sBaselineStack extends cdk.Stack {
       release: 'csi-secrets-store',
       namespace: 'kube-system',
       wait: true,
-      // Helm Chart Values: https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/master/charts/index.yaml
       version: this.node.tryGetContext('secrets-store-csi-helm-version'),
       values: {
         grpcSupportedProviders: 'aws',
-        // alpha feature reconciler feature
-        // rotationPollInterval: 3600
-        // enableSecretRotation: true
       },
 
     });
 
     this.addConditions(secretsCsiHelmChart, secretsDriverCondition);
-    // Deploys AWS Secrets and Configuration Provider (ASCP)
     const awsSecretsManifest = this.cleanManifest('manifests/awsSecretsManifest.yaml');
     const awsSecretsManifestDeploy = new KubernetesManifest(this, 'aws-secrets-manifest', {
       cluster: props.eksCluster,
@@ -455,12 +360,6 @@ export class K8sBaselineStack extends cdk.Stack {
     awsSecretsManifestDeploy.node.addDependency(secretsCsiHelmChart);
     this.addConditions(awsSecretsManifestDeploy, secretsDriverCondition);
 
-    /*
-       Resources needed to create Calico Policy Engine
-       Helm Chart
-    */
-    // https://github.com/aws/eks-charts/blob/master/stable/aws-calico/values.yaml
-    // https://github.com/aws/amazon-vpc-cni-k8s/issues/1517
     const calicoPolicyEngine = new HelmChart(this, 'calico-policy-engine', {
       chart: 'aws-calico',
       cluster: props.eksCluster,
@@ -469,9 +368,7 @@ export class K8sBaselineStack extends cdk.Stack {
       release: 'aws-calico',
       namespace: 'kube-system',
       wait: true,
-      // https://github.com/aws/eks-charts/blob/gh-pages/index.yaml
       version: this.node.tryGetContext('aws-calico-helm-version'),
-      // increase limits for calico pods, more needed as number of nodes/pods increase. Uses default Requests values in values.yaml in above comment
       values: {
         calico: {
           node: {
@@ -489,16 +386,6 @@ export class K8sBaselineStack extends cdk.Stack {
     });
     this.addConditions(calicoPolicyEngine, networkPolicyDriverCondition);
 
-    /*
-    Resources needed to create Container Insights using OpenTelemetry
-    Service Account Role
-    IAM Policy
-    Kubernetes Manifest
-
-    OpenTelemetry is configured to emit all public available metrics for ContainerInsights, to reduce CloudWatch Metric cost customize the ADOT collector
-    https://aws-otel.github.io/docs/getting-started/container-insights/eks-infra#advanced-usage
-    */
-    // Create Namespace for Container Insights components
     const containerInsightsNamespace = new KubernetesManifest(this, 'container-insights-namespace', {
       cluster: props.eksCluster,
       manifest: [{
@@ -532,13 +419,7 @@ export class K8sBaselineStack extends cdk.Stack {
     });
     containerInsightsDeploy.node.addDependency(containerInsightsSA);
     this.addConditions(containerInsightsDeploy, containerInsightsDriverCondition);
-    /* Resources needed to create Metric Server
-        Manifest
 
-        Metric Server Scaling Requirements -> https://github.com/kubernetes-sigs/metrics-server#scaling
-        AddOn: https://github.com/aws/containers-roadmap/issues/261
-    */
-    // version is based on default metric server manifest see file for origin, does not require clean up function as namespace service account does not reply on IAM Role creation dependency.
     const manifestMetricServer = yaml.loadAll(fs.readFileSync('manifests/metricServerManifest.yaml', 'utf-8'), null, { schema: yaml.JSON_SCHEMA });
     const metricServerManifestDeploy = new KubernetesManifest(this, 'metric-server', {
       cluster: props.eksCluster,
@@ -549,10 +430,7 @@ export class K8sBaselineStack extends cdk.Stack {
     this.addConditions(metricServerManifestDeploy, metricServerDriverCondition);
   }
 
-  // Takes a CDK Abstract Resource and adds CFN Conditions to the underlying CFN Resources to ensure proper resource creation/deletion
   addConditions(resource: IConstruct, cond: CfnCondition) {
-    // Add Conditions to Cfn type resources only, which map directly to Cloudformation resource type AWS::TYPE::RESOURCE
-    // https://docs.aws.amazon.com/cdk/api/latest/docs/core-readme.html#intrinsic-functions-and-condition-expressions
     if (resource.node.defaultChild !== undefined && resource.node.defaultChild.constructor.name.match(/^Cfn+/)) {
       (resource.node.defaultChild as CfnResource).cfnOptions.condition = cond;
     } else {
@@ -562,7 +440,6 @@ export class K8sBaselineStack extends cdk.Stack {
     }
   }
 
-  // Removes namespace and ServiceAccount objects from manifests, performing this in code to keep original manifest files.
   cleanManifest(file: string) {
     const manifest = yaml.loadAll(fs.readFileSync(file, 'utf-8'), null, { schema: yaml.JSON_SCHEMA });
     return manifest.filter(element => (element.kind !== 'Namespace' && element.kind !== 'ServiceAccount'));
